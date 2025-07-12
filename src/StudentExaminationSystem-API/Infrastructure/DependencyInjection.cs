@@ -1,5 +1,7 @@
 ﻿using Domain.Models;
 using Domain.Repositories;
+using Domain.UserContext;
+using Infrastructure.Helpers;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.Repositories;
@@ -14,6 +16,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<UpdateAuditFieldsInterceptor>();
         services.AddDbContext<DataContext>((sp, options) =>
         {
             var auditInterceptor = sp.GetRequiredService<UpdateAuditFieldsInterceptor>();
@@ -25,6 +28,7 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();
+        services.AddSingleton<IUserContext, UserContext>();
         services.AddIdentity<User, IdentityRole>(options =>
             {
                 // Password settings

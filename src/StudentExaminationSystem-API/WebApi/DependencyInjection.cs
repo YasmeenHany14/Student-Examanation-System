@@ -1,7 +1,10 @@
 ﻿using System.Security.Claims;
 using System.Text;
+using Application.DTOs.StudentDtos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Shared.ResourceParameters;
+using WebApi.Helpers.PaginationHelper;
 
 namespace WebApi;
 
@@ -9,6 +12,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddWebApi(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddScoped<IPaginationHelper<GetStudentByIdAppDto, StudentResourceParameters>
+            , PaginationHelper<GetStudentByIdAppDto, StudentResourceParameters>>();
         
         #region Configure JWT Authentication
         services.AddAuthentication(options =>

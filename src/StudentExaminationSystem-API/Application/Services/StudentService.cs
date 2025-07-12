@@ -6,6 +6,7 @@ using Application.Helpers;
 using Application.Mappers.StudentMappers;
 using Domain.Repositories;
 using FluentValidation;
+using Shared.ResourceParameters;
 
 namespace Application.Services;
 
@@ -14,26 +15,32 @@ public class StudentService(
     IUnitOfWork unitOfWork,
     IAuthService authService
     ) : IStudentService
-{ 
-    public async Task<Result<GetStudentAppDto>> AddAsync(CreateStudentAppDto studentAppDto)
+{
+    public async Task<Result<PagedList<GetStudentByIdAppDto>>> GetAllAsync(StudentResourceParameters resourceParameters)
+    {
+        var students = await unitOfWork.StudentRepository.GetAllAsync(resourceParameters);
+        return Result<PagedList<GetStudentByIdAppDto>>.Success(students.ToListDto());
+    }
+
+    public async Task<Result<string>> AddAsync(CreateStudentAppDto studentAppDto)
     {
         var validationResult = await ValidationHelper.ValidateAndReportAsync(createStudentValidator, studentAppDto, "CreateBusiness");
         if(!validationResult.IsSuccess)
-            return Result<GetStudentAppDto>.Failure(validationResult.Error);
+            return Result<string>.Failure(validationResult.Error);
 
         var createUserResult = await authService.RegisterAsync(studentAppDto.ToCreateUserAppDto());
         if (!createUserResult.IsSuccess)
-            return Result<GetStudentAppDto>.Failure(createUserResult.Error);
+            return Result<string>.Failure(createUserResult.Error);
         
         var newStudent = studentAppDto.ToEntity(createUserResult.Value.Id);
         await unitOfWork.StudentRepository.AddAsync(newStudent);
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)
-            return Result<GetStudentAppDto>.Failure(CommonErrors.InternalServerError);
+            return Result<string>.Failure(CommonErrors.InternalServerError);
         
         await authService.AddToRoleAsync("Student", createUserResult.Value, null);
         
-        return Result<GetStudentAppDto>.Success(studentAppDto.ToGetStudentAppDto(createUserResult.Value.Id));
+        return Result<string>.Success(createUserResult.Value.Id);
     }
 
     public async Task<Result<GetStudentByIdAppDto>> GetByIdAsync(string id)

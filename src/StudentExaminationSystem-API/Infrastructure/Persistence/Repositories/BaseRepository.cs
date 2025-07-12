@@ -1,6 +1,7 @@
 ﻿using Domain.Models.Common;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Shared.ResourceParameters;
 
 namespace Infrastructure.Persistence.Repositories;
 
@@ -30,19 +31,14 @@ public class BaseRepository<TEntity>(DataContext context) : ReadonlyBaseReposito
         throw new NotImplementedException();
     }
 
-    // public virtual async Task<TEntity?> FindByIdAsync(int id)
-    // {
-    //     return await context.Set<TEntity>().FindAsync(id);
-    // }
-    //
-    // protected static async Task<PagedList<TEntity>> CreateAsync(
-    //     IQueryable<TEntity> source, int pageNumber, int pageSize)
-    // {
-    //     var count = source.Count();
-    //     var items = await source
-    //         .Skip((pageNumber - 1) * pageSize)
-    //         .Take(pageSize)
-    //         .ToListAsync();
-    //     return new PagedList<TEntity>(items, count, pageNumber, pageSize);
-    // }
+    protected static async Task<PagedList<T>> CreateAsync<T>(
+        IQueryable<T> source, int pageNumber, int pageSize)
+    {
+        var count = source.Count();
+        var items = await source
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+        return new PagedList<T>(items, count, pageNumber, pageSize);
+    }
 }

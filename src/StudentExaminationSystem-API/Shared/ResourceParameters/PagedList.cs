@@ -32,15 +32,4 @@ public class PagedList<TEntity> : List<TEntity>
         var pagedList = new PagedList<TEntity>(items.ToList(), count, pageNumber, pageSize);
         return pagedList;
     }
-    
-    // public static async Task<PagedList<TEntity>> CreateAsync(
-    //     IQueryable<TEntity> source, int pageNumber, int pageSize)
-    // {
-    //     var count = source.Count();
-    //     var items = await source
-    //         .Skip((pageNumber - 1) * pageSize)
-    //         .Take(pageSize)
-    //         .ToListAsync();
-    //     return new PagedList<TEntity>(items, count, pageNumber, pageSize);
-    // }
 }

@@ -32,16 +32,4 @@ public static class CreateStudentDtoMappers
             StudentId = Random.Shared.Next(100000, 200000).ToString()
         };
     }
-
-    public static GetStudentAppDto ToGetStudentAppDto(this CreateStudentAppDto studentDto, string userId)
-    {
-        return new GetStudentAppDto()
-        {
-            Id = userId,
-            Name = studentDto.FirstName + " " + studentDto.LastName,
-            Email = studentDto.Email,
-            Age = DateTime.Now.Year - studentDto.Birthdate.Year,
-            JoinDate = studentDto.JoinDate
-        };
-    }
 }
