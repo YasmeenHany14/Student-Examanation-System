@@ -17,7 +17,7 @@ namespace Infrastructure.Persistence.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "60628d11-b8b2-40d0-bcf3-fb9e60f76f30", "8bccf7f0-8125-4d99-8072-9951990d25a4", "Owner", "OWNER" },
+                    { "60628d11-b8b2-40d0-bcf3-fb9e60f76f30", "8bccf7f0-8125-4d99-8072-9951990d25a4", "Student", "STUDENT" },
                     { "751f7dfb-f40e-4c20-af72-26012c4b5ef4", "6b6366a6-3a14-4962-afe9-03c50aa87b71", "Admin", "ADMIN" }
                 });
         }

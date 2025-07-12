@@ -3,6 +3,7 @@ using Application.DTOs.AuthDtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Helpers.Extensions;
+using WebApi.Helpers.Filters;
 
 namespace WebApi.Controllers;
 
@@ -31,12 +32,9 @@ public class AccountController(
     
     // Refresh
     [HttpPost("refresh-token")]
-    // USE input validation filter
+    [InputValidationFilter<RefreshRequestDto>]
     public async Task<IActionResult> RefreshToken([FromBody] RefreshRequestDto refreshRequest)
     {
-        if (string.IsNullOrEmpty(refreshRequest.AccessToken) || string.IsNullOrEmpty(refreshRequest.RefreshToken))
-            return BadRequest("Access token and refresh token are required.");
-
         var response = await authService.RefreshTokenAsync(refreshRequest.AccessToken, refreshRequest.RefreshToken);
         return response.ToActionResult();
     }

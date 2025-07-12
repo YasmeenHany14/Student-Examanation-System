@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
 
-namespace WebApi.Helpers.Validation;
+namespace WebApi.Helpers.Filters;
 
 public class ValidationFilter : IActionFilter
 {

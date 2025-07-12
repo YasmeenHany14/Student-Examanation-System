@@ -13,8 +13,8 @@ public class RolesConfigurations : IEntityTypeConfiguration<IdentityRole>
             new IdentityRole
             {
                 Id = Roles.UserRoleId,
-                Name = Roles.OwnerRole,
-                NormalizedName = Roles.OwnerRole.ToUpper(),
+                Name = Roles.Student,
+                NormalizedName = Roles.Student.ToUpper(),
                 ConcurrencyStamp = "8bccf7f0-8125-4d99-8072-9951990d25a4"
             },
             new IdentityRole

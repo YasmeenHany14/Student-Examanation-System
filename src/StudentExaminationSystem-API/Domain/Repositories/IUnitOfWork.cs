@@ -4,5 +4,6 @@ public interface IUnitOfWork
 {
     IRefreshTokenRepository RefreshTokenRepository { get; }
     IUserRepository UserRepository { get; }
+    IStudentRepository StudentRepository { get; }
     Task<int> SaveChangesAsync();
 }

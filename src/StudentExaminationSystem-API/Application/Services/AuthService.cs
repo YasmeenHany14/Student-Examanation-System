@@ -14,14 +14,14 @@ public class AuthService(
     IGenerateTokenService generateTokenService,
     IUnitOfWork unitOfWork) : IAuthService
 {
-    public async Task<Result<UserServiceDto>> RegisterAsync(CreateUserServiceDto registerDto)
+    public async Task<Result<User>> RegisterAsync(CreateUserAppDto registerDto)
     {
         var user = registerDto.ToUser();
-        var (id, identityResult) = await unitOfWork.UserRepository.CreateAsync(user);
+        var (id, identityResult) = await unitOfWork.UserRepository.CreateAsync(user, registerDto.Password);
         if (id == null || !identityResult.Succeeded)
-            return Result<UserServiceDto>.Failure(CommonErrors.InternalServerError);
+            return Result<User>.Failure(CommonErrors.InternalServerError);
 
-        return Result<UserServiceDto>.Success(registerDto.ToUserServiceDto(id));
+        return Result<User>.Success(user);
     }
 
     public async Task<Result<AuthTokensResponse>> LoginAsync(LoginDto userDto)
@@ -31,7 +31,7 @@ public class AuthService(
         if (!isValid)
             return Result<AuthTokensResponse>.Failure(CommonErrors.WrongCredentials);
         
-        var response = await GenerateTokenResponse(user.ToUserServiceDto());
+        var response = await GenerateTokenResponse(user);
         if (!response.IsSuccess)
             return Result<AuthTokensResponse>.Failure(response.Error);
         
@@ -66,7 +66,7 @@ public class AuthService(
         if (token == null || token.ExpiryDate < DateTime.UtcNow || token.IsRevoked)
             return Result<AuthTokensResponse>.Failure(CommonErrors.InvalidRefreshToken);
         
-        var response = await GenerateTokenResponse(user.ToUserServiceDto());
+        var response = await GenerateTokenResponse(user);
         if (!response.IsSuccess)
             return Result<AuthTokensResponse>.Failure(response.Error);
         
@@ -76,7 +76,7 @@ public class AuthService(
         return response;
     }
 
-    private async Task<Result<AuthTokensResponse>> GenerateTokenResponse(UserServiceDto user)
+    private async Task<Result<AuthTokensResponse>> GenerateTokenResponse(User user)
     {
         var generatToken = await generateTokenService.GenerateAccessTokenAsync(user);
         var generateRefreshToken = generateTokenService.GenerateRefreshToken();
@@ -102,25 +102,22 @@ public class AuthService(
         return Result.Success();
     }
     
-    public async Task<Result>AddToRoleAsync(string role, UserServiceDto? sentUser, string? email)
+    public async Task<Result>AddToRoleAsync(string role, User? sentUser, string? email)
     {
         var user = sentUser;
         if (email != null) // handle use case where this is method is called from assignRole endpoint
-        {
-            var userInfraDto = await unitOfWork.UserRepository.FindByEmailAsync(email);
-            user = userInfraDto?.ToUserServiceDto();
-        }
+            user = await unitOfWork.UserRepository.FindByEmailAsync(email);
+        
         if (user == null)
             return Result.Failure(CommonErrors.NotFound);
-
-        var infraUser = user.ToUserInfraDto();
-        var roles = await unitOfWork.UserRepository.GetRolesAsync(infraUser);
+        
+        var roles = await unitOfWork.UserRepository.GetRolesAsync(user);
         foreach (var r in roles)
         {
-            await unitOfWork.UserRepository.RemoveFromRoleAsync(infraUser, r); // TODO: Think about allowing multiple roles
+            await unitOfWork.UserRepository.RemoveFromRoleAsync(user, r); // TODO: Think about allowing multiple roles
         }
         
-        var result = await unitOfWork.UserRepository.AddToRoleAsync(infraUser, role);
+        var result = await unitOfWork.UserRepository.AddToRoleAsync(user, role);
         
         return result.Succeeded? Result.Success() : Result.Failure(CommonErrors.InternalServerError);
     }

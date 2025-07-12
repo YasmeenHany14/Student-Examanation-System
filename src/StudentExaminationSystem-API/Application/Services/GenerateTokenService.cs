@@ -21,9 +21,9 @@ public class GenerateTokenService(
     IUserRepository userRepository)
     : IGenerateTokenService
 {
-    private async Task<List<Claim>> GetClaims(UserServiceDto user)
+    private async Task<List<Claim>> GetClaims(User user)
     {
-        var roles = await userRepository.GetRolesAsync(user.ToUserInfraDto());
+        var roles = await userRepository.GetRolesAsync(user);
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id),
@@ -33,7 +33,7 @@ public class GenerateTokenService(
         return claims;
     }
     
-    public async Task<Result<string>> GenerateAccessTokenAsync(UserServiceDto user)
+    public async Task<Result<string>> GenerateAccessTokenAsync(User user)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

@@ -1,71 +1,58 @@
-﻿using Domain.DTOs.UserDtos;
-using Domain.Models;
+﻿using Domain.Models;
 using Domain.Repositories;
-using Infrastructure.Persistence.Mappers.UserMappers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence.Repositories;
 
 public class UserRepository(UserManager<User> userManager) : IUserRepository
 {
-    public async Task<(string?, IdentityResult)> CreateAsync(CreateUserInfraDto infraDto)
+    public async Task<(string?, IdentityResult)> CreateAsync(User user, string password)
     {
-        var user = infraDto.ToUser();
-        var identityResult = await userManager.CreateAsync(user, infraDto.Password);
+        user.UserName = user.Email;
+        var identityResult = await userManager.CreateAsync(user, password);
         return (user.Id, identityResult);
     }
 
-    public async Task<bool> CheckPasswordAsync(UserInfraDto userInfraDto, string password)
+    public async Task<bool> CheckPasswordAsync(User user, string password)
     {
-        var user = userInfraDto.ToUser();
         var result = await userManager.CheckPasswordAsync(user, password);
         return result;
     }
 
-    public async Task<bool> CheckPasswordAsync(string email, string password)
+    public async Task<User?> FindByEmailAsync(string email)
     {
-        var user = new User { Email = email };
-        return await userManager.CheckPasswordAsync(user, password);
+        return await userManager.FindByEmailAsync(email);
     }
 
-    public async Task<UserInfraDto?> FindByEmailAsync(string email)
+    public async Task<bool> CheckUserExistsAsync(Guid userId)
     {
-        var user = await userManager.FindByEmailAsync(email);
-        return user?.ToUserDto();
+        return await userManager.FindByIdAsync(userId.ToString()) != null;
+    }
+    
+    public async Task<bool> CheckUserExistsAsync(string email)
+    {
+        return await userManager.Users.AnyAsync(user => user.Email == email);
+    }
+    
+    public async Task<IList<string>> GetRolesAsync(User user)
+    {
+        return await userManager.GetRolesAsync(user);
     }
 
-    public async Task<bool> CheckUserExistsAsync(string userId)
+    public async Task RemoveFromRoleAsync(User user, string role)
     {
-        return await userManager.FindByIdAsync(userId) != null;
+        await userManager.RemoveFromRoleAsync(user, role);
     }
 
-    public async Task<IList<string>> GetRolesAsync(UserInfraDto user)
+    public async Task<IdentityResult> AddToRoleAsync(User user, string roleName)
     {
-        var userEntity = user.ToUser();
-        return await userManager.GetRolesAsync(userEntity);
-    }
-
-    public async Task RemoveFromRoleAsync(UserInfraDto user, string role)
-    {
-        var userEntity = user.ToUser();
-        await userManager.RemoveFromRoleAsync(userEntity, role);
-    }
-
-    public async Task<IdentityResult> AddToRoleAsync(UserInfraDto userInfraDto, string roleName)
-    {
-        var user = userInfraDto.ToUser();
         return await userManager.AddToRoleAsync(user, roleName);
     }
 
-    public async Task<IdentityResult> AddToRoleAsync(string userId, string roleName)
+    public async Task<User?> FindByIdAsync(string userId)
     {
-        var user = new User { Id = userId };
-        return await userManager.AddToRoleAsync(user, roleName);
-    }
-
-    public async Task<UserInfraDto?> FindByIdAsync(string userId)
-    {
-        var user = await userManager.FindByIdAsync(userId);
-        return user?.ToUserDto();
+        return await userManager.FindByIdAsync(userId);
+  
     }
 }

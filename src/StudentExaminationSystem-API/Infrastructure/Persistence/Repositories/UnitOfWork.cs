@@ -1,6 +1,42 @@
-﻿namespace Infrastructure.Persistence.Repositories;
+﻿using Domain.Repositories;
 
-public class UnitOfWork
+namespace Infrastructure.Persistence.Repositories;
+
+public class UnitOfWork : IUnitOfWork
 {
+    private readonly DataContext _dbContext;
+    public IRefreshTokenRepository RefreshTokenRepository { get; }
+    public IUserRepository UserRepository { get; }
+    public IStudentRepository StudentRepository { get; }
+
+    public async Task<int> SaveChangesAsync()
+    {
+        return await _dbContext.SaveChangesAsync();
+    }
     
+    public UnitOfWork(
+        DataContext dbContext,
+        IRefreshTokenRepository refreshTokenRepository,
+        IUserRepository userRepository,
+        IStudentRepository studentRepository)
+    {
+        _dbContext = dbContext;
+        RefreshTokenRepository = refreshTokenRepository;
+        UserRepository = userRepository;
+        StudentRepository = studentRepository;
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual async void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            await _dbContext.DisposeAsync();
+        }
+    }
 }

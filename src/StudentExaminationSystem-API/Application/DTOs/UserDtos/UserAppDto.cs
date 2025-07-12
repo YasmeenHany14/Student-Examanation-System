@@ -2,7 +2,7 @@
 
 namespace Application.DTOs.UserDtos;
 
-public class UserServiceDto 
+public class UserAppDto 
 {
     public string Id { get; set; }
     public string FirstName { get; set; } = string.Empty;

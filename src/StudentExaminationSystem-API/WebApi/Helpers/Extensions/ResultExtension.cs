@@ -1,4 +1,6 @@
-﻿using Application.Common.ErrorAndResults;
+﻿using Application.Common.Constants.Errors;
+using Application.Common.Constants.ValidationMessages;
+using Application.Common.ErrorAndResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Helpers.Extensions;
@@ -23,17 +25,17 @@ public static class ResultExtension
     {
         return error.Code switch
         {
-            // nameof(ErrorMessages.NotFound) or "NotFound" => new NotFoundObjectResult(error),
-            // nameof(ErrorMessages.Unauthorized) or "Unauthorized" => new UnauthorizedObjectResult(error),
-            // nameof(ErrorMessages.InvalidInput) or "InvalidInput" => new BadRequestObjectResult(error),
-            // nameof(ErrorMessages.ValidationError) or "ValidationError" =>
-            //     error.Description == CommonValidationErrorMessages.ResourceNotFound
-            //         ? new NotFoundObjectResult(error)
-            //         : new BadRequestObjectResult(error),
-            // nameof(ErrorMessages.InternalServerError) or "InternalServerError" => new ObjectResult(error) { StatusCode = 500 },
-            // nameof(ErrorMessages.WrongCredentials) or "WrongCredentials" => new UnauthorizedObjectResult(error),
-            // nameof(ErrorMessages.CannotGenerateToken) or "CannotGenerateToken" => new ObjectResult(error) { StatusCode = 500 },
-            // nameof(ErrorMessages.InvalidRefreshToken) or "InvalidRefreshToken" => new UnauthorizedObjectResult(error),
+            nameof(CommonErrors.NotFound) or "NotFound" => new NotFoundObjectResult(error),
+            nameof(CommonErrors.Unauthorized) or "Unauthorized" => new UnauthorizedObjectResult(error),
+            nameof(CommonErrors.InvalidInput) or "InvalidInput" => new BadRequestObjectResult(error),
+            nameof(CommonErrors.ValidationError) or "ValidationError" =>
+                error.Description == CommonValidationErrorMessages.ResourceNotFound
+                    ? new NotFoundObjectResult(error)
+                    : new BadRequestObjectResult(error),
+            nameof(CommonErrors.InternalServerError) or "InternalServerError" => new ObjectResult(error) { StatusCode = 500 },
+            nameof(CommonErrors.WrongCredentials) or "WrongCredentials" => new UnauthorizedObjectResult(error),
+            nameof(CommonErrors.CannotGenerateToken) or "CannotGenerateToken" => new ObjectResult(error) { StatusCode = 500 },
+            nameof(CommonErrors.InvalidRefreshToken) or "InvalidRefreshToken" => new UnauthorizedObjectResult(error),
             _ => new ObjectResult(error) { StatusCode = 500 }
         };
     }

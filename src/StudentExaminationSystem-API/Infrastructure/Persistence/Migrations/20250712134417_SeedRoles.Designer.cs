@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250710152335_SeedRoles")]
+    [Migration("20250712134417_SeedRoles")]
     partial class SeedRoles
     {
         /// <inheritdoc />
@@ -648,8 +648,8 @@ namespace Infrastructure.Persistence.Migrations
                         {
                             Id = "60628d11-b8b2-40d0-bcf3-fb9e60f76f30",
                             ConcurrencyStamp = "8bccf7f0-8125-4d99-8072-9951990d25a4",
-                            Name = "Owner",
-                            NormalizedName = "OWNER"
+                            Name = "Student",
+                            NormalizedName = "STUDENT"
                         },
                         new
                         {

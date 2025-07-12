@@ -19,4 +19,8 @@ public static class AuthValidationMessages
     public const string TokenInvalid = "Token is invalid.";
     public const string RefreshTokenNotFound = "Refresh token not found.";
     public const string RefreshTokenInvalid = "Refresh token is invalid.";
+    
+    // Refresh Token
+    public const string RefreshTokenRequired = "Refresh token is required.";
+    public const string AccessTokenRequired = "Token is required.";
 }

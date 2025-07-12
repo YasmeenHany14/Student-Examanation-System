@@ -7,9 +7,9 @@ namespace Application.Contracts;
 
 public interface IAuthService
 {
-    Task<Result<UserServiceDto>> RegisterAsync(CreateUserServiceDto registerDto);
+    Task<Result<User>> RegisterAsync(CreateUserAppDto registerDto);
     Task<Result<AuthTokensResponse>> LoginAsync(LoginDto userDto);
     Task<Result<AuthTokensResponse>> RefreshTokenAsync(string accessToken, string refreshToken);
     public Task<Result> LogoutAsync(string refreshToken);
-    Task<Result> AddToRoleAsync(string role, UserServiceDto? user, string? email);
+    Task<Result> AddToRoleAsync(string role, User? user, string? email);
 }
