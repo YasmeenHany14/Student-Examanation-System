@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Domain.Repositories;
 using Infrastructure.Persistence;
+using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ public static class DependencyInjection
     {
         services.AddDbContext<DataContext>((sp, options) =>
         {
+            var auditInterceptor = sp.GetRequiredService<UpdateAuditFieldsInterceptor>();
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             options.EnableDetailedErrors();
         });

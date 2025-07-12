@@ -1,5 +1,6 @@
 ﻿using Application.Contracts;
 using Application.DTOs.AuthDtos;
+using Application.DTOs.UserDtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Helpers.Extensions;

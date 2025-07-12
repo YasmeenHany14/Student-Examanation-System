@@ -21,7 +21,8 @@ public class StudentController(
     [HttpGet("{id}", Name = "GetStudentById")]
     public async Task<IActionResult> GetByIdAsync(string id)
     {
-        return Ok();
+        var result = await studentService.GetByIdAsync(id);
+        return result.ToActionResult();
     }
     
     // POST ASYNC

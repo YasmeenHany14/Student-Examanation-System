@@ -35,7 +35,16 @@ public class StudentService(
         
         return Result<GetStudentAppDto>.Success(studentAppDto.ToGetStudentAppDto(createUserResult.Value.Id));
     }
-    
+
+    public async Task<Result<GetStudentByIdAppDto>> GetByIdAsync(string id)
+    {
+        var student = await unitOfWork.StudentRepository.GetByIdAsync(id);
+        if (student == null)
+            return Result<GetStudentByIdAppDto>.Failure(CommonErrors.NotFound);
+        
+        return Result<GetStudentByIdAppDto>.Success(student.ToGetStudentAppDto());
+    }
+
     public Task<Result> DeleteAsync(int id)
     {
         throw new NotImplementedException();

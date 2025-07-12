@@ -1,8 +1,7 @@
 ﻿using Application.DTOs.UserDtos;
 
 namespace Application.Mappers.StudentMappers;
-using Application.DTOs.StudentDtos;
-using Domain.Enums;
+using DTOs.StudentDtos;
 using Domain.Models;
 
 public static class CreateStudentDtoMappers
