@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Domain.Enums;
+using Domain.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Persistence.SeedData;
@@ -36,27 +37,22 @@ public class Seed(DataContext context)
             var math = new Subject { Name = "Mathematics", Code = "MATH" };
             var science = new Subject { Name = "Science", Code = "SCI1" };
             context.Subjects.AddRange(math, science);
-
-            // 4. Create Difficulties
-            var easy = new Difficulty { Name = "Easy" };
-            var medium = new Difficulty { Name = "Medium" };
-            var hard = new Difficulty { Name = "Hard" };
-            context.Difficulties.AddRange(easy, medium, hard);
+            
             context.SaveChanges();
 
             // 5. Create Questions and Choices (10 questions, 4 choices each)
             var questions = new List<Question>
             {
-                new Question { SubjectId = math.Id, Content = "What is 2+2?", DifficultyId = easy.Id, IsActive = true },
-                new Question { SubjectId = science.Id, Content = "What planet is known as the Red Planet?", DifficultyId = easy.Id, IsActive = true },
-                new Question { SubjectId = math.Id, Content = "What is 10/2?", DifficultyId = medium.Id, IsActive = true },
-                new Question { SubjectId = science.Id, Content = "What is H2O?", DifficultyId = easy.Id, IsActive = true },
-                new Question { SubjectId = math.Id, Content = "What is 3*3?", DifficultyId = medium.Id, IsActive = true },
-                new Question { SubjectId = science.Id, Content = "What is the boiling point of water?", DifficultyId = hard.Id, IsActive = true },
-                new Question { SubjectId = math.Id, Content = "What is the derivative of x^2?", DifficultyId = hard.Id, IsActive = true },
-                new Question { SubjectId = science.Id, Content = "What is the chemical symbol for gold?", DifficultyId = medium.Id, IsActive = true },
-                new Question { SubjectId = math.Id, Content = "What is 7+8?", DifficultyId = easy.Id, IsActive = true },
-                new Question { SubjectId = science.Id, Content = "What is the largest planet?", DifficultyId = medium.Id, IsActive = true }
+                new Question { SubjectId = math.Id, Content = "What is 2+2?", Difficulty = Difficulty.Easy, IsActive = true },
+                new Question { SubjectId = science.Id, Content = "What planet is known as the Red Planet?", Difficulty = Difficulty.Easy, IsActive = true },
+                new Question { SubjectId = math.Id, Content = "What is 10/2?", Difficulty = Difficulty.Medium, IsActive = true },
+                new Question { SubjectId = science.Id, Content = "What is H2O?", Difficulty = Difficulty.Easy, IsActive = true },
+                new Question { SubjectId = math.Id, Content = "What is 3*3?", Difficulty = Difficulty.Medium, IsActive = true },
+                new Question { SubjectId = science.Id, Content = "What is the boiling point of water?", Difficulty = Difficulty.Hard, IsActive = true },
+                new Question { SubjectId = math.Id, Content = "What is the derivative of x^2?", Difficulty = Difficulty.Hard, IsActive = true },
+                new Question { SubjectId = science.Id, Content = "What is the chemical symbol for gold?", Difficulty = Difficulty.Medium, IsActive = true },
+                new Question { SubjectId = math.Id, Content = "What is 7+8?", Difficulty = Difficulty.Easy, IsActive = true },
+                new Question { SubjectId = science.Id, Content = "What is the largest planet?", Difficulty = Difficulty.Medium, IsActive = true }
             };
             context.Questions.AddRange(questions);
             context.SaveChanges();
@@ -150,14 +146,12 @@ public class Seed(DataContext context)
             context.SaveChanges();
 
             // 8. Seed configuration profiles
-            var difficultyProfile = new DifficultyProfile { Name = "Standard Profile" };
+            var difficultyProfile = new DifficultyProfile { Name = "Standard Profile", EasyPercentage = 0, MediumPercentage = 50, HardPercentage = 50};
             context.DifficultyProfiles.Add(difficultyProfile);
             context.SaveChanges();
             var subjectExamConfig = new SubjectExamConfig { SubjectId = math.Id, TotalQuestions = 10, DurationMinutes = 60, DifficultyProfileId = difficultyProfile.Id };
             context.SubjectExamConfigs.Add(subjectExamConfig);
-            context.SaveChanges();
-            var difficultyProfileConfig = new DifficultyProfileConfig { DifficultyProfileId = difficultyProfile.Id, DifficultyId = easy.Id, DifficultyPercentage = 50 };
-            context.DifficultyProfileConfigs.Add(difficultyProfileConfig);
+            
             context.SaveChanges();
         }
     }

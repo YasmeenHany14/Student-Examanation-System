@@ -6,3 +6,4 @@ public class GetSubjectAppDto : AppBaseDto
     public string Name { get; set; }
     public string? Code { get; set; }
 }
+

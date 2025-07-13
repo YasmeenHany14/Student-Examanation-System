@@ -3,6 +3,8 @@
 public class GetQuestionInfraDto : BaseDto
 {
     public int Id { get; set; }
-    public string Text { get; set; } = string.Empty;
-    
+    public string Content { get; set; } = string.Empty;
+    public int? SubjectId { get; set; }
+    public int? DifficultyId { get; set; }
+    public IEnumerable<GetQuestionChoiceInfraDto> Choices { get; set; } = new List<GetQuestionChoiceInfraDto>();
 }

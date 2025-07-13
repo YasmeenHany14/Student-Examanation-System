@@ -15,9 +15,11 @@ public class QuestionService(
     IValidator<CreateQuestionAppDto> createQuestionValidator
     ) : IQuestionService
 {
-    public Task<Result<PagedList<GetQuestionAppDto>>> GetAllAsync(QuestionResourceParameters resourceParameters)
+    public async Task<Result<PagedList<GetQuestionAppDto>>> GetAllAsync(
+        QuestionResourceParameters resourceParameters)
     {
-        throw new NotImplementedException();
+        var questions = await unitOfWork.QuestionRepository.GetAllAsync(resourceParameters);
+        return Result<PagedList<GetQuestionAppDto>>.Success(questions.ToListDto());
     }
 
     public async Task<Result<int>> CreateAsync(CreateQuestionAppDto questionAppDto)

@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Text;
+using Application.DTOs.QuestionDtos;
 using Application.DTOs.StudentDtos;
 using Application.DTOs.SubjectsDtos;
 using Infrastructure.Persistence.SeedData;
@@ -20,6 +21,8 @@ public static class DependencyInjection
             , PaginationHelper<GetStudentByIdAppDto, StudentResourceParameters>>();
         services.AddScoped<IPaginationHelper<GetSubjectAppDto, SubjectResourceParameters>
             , PaginationHelper<GetSubjectAppDto, SubjectResourceParameters>>();
+        services.AddScoped<IPaginationHelper<GetQuestionAppDto, QuestionResourceParameters>
+            , PaginationHelper<GetQuestionAppDto, QuestionResourceParameters>>();
         
         #region Configure JWT Authentication
         services.AddAuthentication(options =>

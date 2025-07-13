@@ -1,0 +1,43 @@
+﻿using Application.DTOs.QuestionChoiceDtos;
+using Application.DTOs.QuestionDtos;
+using Domain.DTOs.QuestionDtos;
+using Domain.Models;
+using Shared.ResourceParameters;
+
+namespace Application.Mappers.QuestionMappers;
+
+public static class GetQuestionDtoMapper
+{
+    public static GetQuestionAppDto ToGetQuestionAppDto(this GetQuestionInfraDto questionDto)
+    {
+        return new GetQuestionAppDto
+        {
+            Id = questionDto.Id,
+            Content = questionDto.Content,
+            SubjectId = questionDto.SubjectId,
+            DifficultyId = questionDto.DifficultyId,
+            Choices = questionDto.Choices.Select(c => new GetQuestionChoiceAppDto
+            {
+                Id = c.Id,
+                Content = c.Content,
+                IsCorrect = c.IsCorrect
+            }).ToList()
+        };
+    }
+    
+    public static PagedList<GetQuestionAppDto> ToListDto(
+        this PagedList<GetQuestionInfraDto> questions)
+    {
+        var count = questions.TotalCount;
+        var pageNumber = questions.CurrentPage;
+        var pageSize = questions.PageSize;
+        var totalPages = questions.TotalPages;
+        return new PagedList<GetQuestionAppDto>(
+            questions.Select(s => ToGetQuestionAppDto(s)).ToList(),
+            count,
+            pageNumber,
+            pageSize,
+            totalPages
+        );
+    }
+}

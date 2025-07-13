@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.QuestionDtos;
+using Domain.Enums;
 
 namespace Application.Mappers.QuestionMappers;
 using Domain.Models;
@@ -12,7 +13,7 @@ public static class CreateQuestionDtoMapper
         {
             Content = createQuestionDto.Content,
             SubjectId = createQuestionDto.SubjectId,
-            DifficultyId = createQuestionDto.DifficultyId,
+            Difficulty = (Difficulty?)createQuestionDto.DifficultyId,
             Choices = createQuestionDto.QuestionChoices?.Select(c => new QuestionChoice()
             {
                 Content = c.Content,

@@ -14,3 +14,4 @@ public class Subject : PrimaryKeyBaseEntity, ISoftDelete
     public bool IsDeleted { get; set; } = false;
     public string DeletedBy { get; set; } = string.Empty;
 }
+

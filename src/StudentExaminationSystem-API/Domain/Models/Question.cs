@@ -1,3 +1,4 @@
+using Domain.Enums;
 using Domain.Models.Common;
 
 namespace Domain.Models;
@@ -6,7 +7,6 @@ public class Question : PrimaryKeyBaseEntity, ISoftDelete
 {
     public int SubjectId { get; set; } // FK
     public string Content { get; set; } = string.Empty;
-    public int DifficultyId { get; set; } // FK
     public bool IsActive { get; set; }
     
     public Subject? Subject { get; set; }

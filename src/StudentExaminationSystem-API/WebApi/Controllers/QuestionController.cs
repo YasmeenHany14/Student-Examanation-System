@@ -11,7 +11,9 @@ namespace WebApi.Controllers;
 [ApiController]
 [Route("api/question")]
 public class QuestionController(
-    IQuestionService questionService) : ControllerBase
+    IQuestionService questionService,
+    IPaginationHelper<GetQuestionAppDto, QuestionResourceParameters> paginationHelper
+    ) : ControllerBase
 {
     // GetAllAsync Paged
     [HttpGet(Name = "GetAllQuestions")]
@@ -19,8 +21,12 @@ public class QuestionController(
     public async Task<IActionResult> GetAllAsync(
         [FromQuery] QuestionResourceParameters resourceParameters)
     {
-        // Implementation for getting all questions with pagination
-        return Ok(); // Placeholder
+        var questions = await questionService.GetAllAsync(resourceParameters);
+        paginationHelper
+            .CreateMetaDataHeader(
+                questions.Value, resourceParameters, Response.Headers, Url, "GetAllQuestions");
+        
+        return questions.ToActionResult();
     }
     
     // CreateAsync

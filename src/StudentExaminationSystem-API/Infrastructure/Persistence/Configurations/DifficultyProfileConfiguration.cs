@@ -13,10 +13,5 @@ public class DifficultyProfileConfiguration : IEntityTypeConfiguration<Difficult
         builder.Property(dp => dp.Name)
             .IsRequired()
             .HasMaxLength(50);
-
-        builder.HasMany(dp => dp.DifficultyProfileConfigs)
-            .WithOne(dpc => dpc.DifficultyProfile)
-            .HasForeignKey(dpc => dpc.DifficultyProfileId)
-            .OnDelete(DeleteBehavior.Cascade);
     }
 }
