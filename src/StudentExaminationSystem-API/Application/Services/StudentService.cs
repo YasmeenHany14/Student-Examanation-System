@@ -52,7 +52,7 @@ public class StudentService(
         return Result<GetStudentByIdAppDto>.Success(student.ToGetStudentAppDto());
     }
 
-    public Task<Result> DeleteAsync(int id)
+    public Task<Result<bool>> DeleteAsync(int id)
     {
         throw new NotImplementedException();
     }

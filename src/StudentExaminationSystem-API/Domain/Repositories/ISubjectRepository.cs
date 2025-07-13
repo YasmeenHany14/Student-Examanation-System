@@ -1,6 +1,14 @@
-﻿namespace Domain.Repositories;
+﻿using Domain.DTOs.SubjectDtos;
+using Domain.Models;
+using Shared.ResourceParameters;
 
-public interface ISubjectRepository
+namespace Domain.Repositories;
+
+public interface ISubjectRepository : IBaseRepository<Subject>
 {
     Task<bool> CheckSubjectsExists(IEnumerable<int> subjectIds);
+    Task<bool> CheckCodeUniqueAsync(string code, int? id = null);
+    Task<PagedList<GetSubjectInfraDto>> GetAllAsync(SubjectResourceParameters resourceParameters);
+    Task<IEnumerable<GetSubjectInfraDto>> GetAllAsync();
+    Task<GetSubjectInfraDto?> GetByIdAsync(int id);
 }

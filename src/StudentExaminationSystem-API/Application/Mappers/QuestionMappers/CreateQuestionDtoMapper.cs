@@ -10,9 +10,9 @@ public static class CreateQuestionDtoMapper
     {
         return new Question
         {
-            Content = createQuestionDto.QuestionText,
-            SubjectId = createQuestionDto.CourseId,
-            DifficultyId = createQuestionDto.QuestionTypeId,
+            Content = createQuestionDto.Content,
+            SubjectId = createQuestionDto.SubjectId,
+            DifficultyId = createQuestionDto.DifficultyId,
             Choices = createQuestionDto.QuestionChoices?.Select(c => new QuestionChoice()
             {
                 Content = c.Content,

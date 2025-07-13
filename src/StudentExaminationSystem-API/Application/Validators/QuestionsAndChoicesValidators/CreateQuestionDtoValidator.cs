@@ -15,9 +15,9 @@ public class CreateQuestionDtoValidator : AbstractValidator<CreateQuestionAppDto
         RuleSet("Input", () =>
         {
             // Validate that question text is not empty
-            RuleFor(q => q.QuestionText)
-                .NotEmpty().WithMessage(q => string.Format(CommonValidationErrorMessages.NotEmpty, nameof(q.QuestionText)))
-                .MaximumLength(300).WithMessage(q => string.Format(CommonValidationErrorMessages.MaxLength, nameof(q.QuestionText), 300));
+            RuleFor(q => q.Content)
+                .NotEmpty().WithMessage(q => string.Format(CommonValidationErrorMessages.NotEmpty, nameof(q.Content)))
+                .MaximumLength(300).WithMessage(q => string.Format(CommonValidationErrorMessages.MaxLength, nameof(q.Content), 300));
                 
             // Validate choices count (between 2 and 5)
             RuleFor(q => q.QuestionChoices)

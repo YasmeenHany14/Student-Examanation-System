@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Text;
 using Application.DTOs.StudentDtos;
+using Application.DTOs.SubjectsDtos;
 using Infrastructure.Persistence.SeedData;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -17,6 +18,8 @@ public static class DependencyInjection
         services.AddTransient<Seed>();
         services.AddScoped<IPaginationHelper<GetStudentByIdAppDto, StudentResourceParameters>
             , PaginationHelper<GetStudentByIdAppDto, StudentResourceParameters>>();
+        services.AddScoped<IPaginationHelper<GetSubjectAppDto, SubjectResourceParameters>
+            , PaginationHelper<GetSubjectAppDto, SubjectResourceParameters>>();
         
         #region Configure JWT Authentication
         services.AddAuthentication(options =>

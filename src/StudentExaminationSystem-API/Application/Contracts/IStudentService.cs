@@ -9,5 +9,5 @@ public interface IStudentService
     Task<Result<PagedList<GetStudentByIdAppDto>>> GetAllAsync(StudentResourceParameters resourceParameters);
     Task<Result<string>> AddAsync(CreateStudentAppDto studentAppDto);
     Task<Result<GetStudentByIdAppDto>> GetByIdAsync(string id);
-    Task<Result> DeleteAsync(int id);
+    Task<Result<bool>> DeleteAsync(int id);
 }
