@@ -12,8 +12,10 @@ public static class CommonValidationErrorMessages
     public const string NotNull = "The {0} field cannot be null.";
     public const string NameExists = "The name '{0}' already exists.";
     public const string BirthDateFuture = "The birth date cannot be in the future.";
-    public const string InvalidId = "The provided ID is invalid.";
+    public const string InvalidId = "The field {0} ID is invalid.";
+    public const string InvalidIdList = "The field {0} ID list is invalid.";
     public const string MaxCount = "The {0} field cannot have more than {1} items.";
     public const string DoesNotExist = "The {0} of ID {1} does not exist.";
     public const string ResourceNotFound = "The requested resource was not found.";
+    public const string MaxLength = "The {0} field must have a maximum length of {1} characters.";
 }

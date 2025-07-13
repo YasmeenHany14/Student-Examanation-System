@@ -5,7 +5,7 @@ using Shared.ResourceParameters;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class BaseRepository<TEntity>(DataContext context) : ReadonlyBaseRepository<TEntity>(context), IBaseRepository<TEntity>
+public class BaseRepository<TEntity>(DataContext context) : IBaseRepository<TEntity>
     where TEntity : BaseEntity
 {    
     public virtual async Task<TEntity> AddAsync(TEntity entity)

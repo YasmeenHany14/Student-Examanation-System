@@ -5,5 +5,7 @@ public interface IUnitOfWork
     IRefreshTokenRepository RefreshTokenRepository { get; }
     IUserRepository UserRepository { get; }
     IStudentRepository StudentRepository { get; }
+    ISubjectRepository SubjectRepository { get; set; }
+    IQuestionRepository QuestionRepository { get; set; }
     Task<int> SaveChangesAsync();
 }

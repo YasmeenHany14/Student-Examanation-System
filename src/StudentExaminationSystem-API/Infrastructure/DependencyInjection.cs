@@ -28,6 +28,8 @@ public static class DependencyInjection
         services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IStudentRepository, StudentRepository>();
+        services.AddScoped<ISubjectRepository, SubjectRepository>();
+        services.AddScoped<IQuestionRepository, QuestionRepository>();
         services.AddSingleton<IUserContext, UserContext>();
         services.AddIdentity<User, IdentityRole>(options =>
             {

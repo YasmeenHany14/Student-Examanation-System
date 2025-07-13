@@ -13,6 +13,7 @@ public static class DependencyInjection
         services.AddScoped<IStudentService, StudentService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IGenerateTokenService, GenerateTokenService>();
+        services.AddScoped<IQuestionService, QuestionService>();
         services.AddValidatorsFromAssemblyContaining<CreateStudentAppDto>();
         return services;
     }

@@ -8,6 +8,8 @@ public class UnitOfWork : IUnitOfWork
     public IRefreshTokenRepository RefreshTokenRepository { get; }
     public IUserRepository UserRepository { get; }
     public IStudentRepository StudentRepository { get; }
+    public ISubjectRepository SubjectRepository { get; set; }
+    public IQuestionRepository QuestionRepository { get; set; }
 
     public async Task<int> SaveChangesAsync()
     {
@@ -18,12 +20,16 @@ public class UnitOfWork : IUnitOfWork
         DataContext dbContext,
         IRefreshTokenRepository refreshTokenRepository,
         IUserRepository userRepository,
-        IStudentRepository studentRepository)
+        IStudentRepository studentRepository, 
+        ISubjectRepository subjectRepository,
+        IQuestionRepository questionRepository)
     {
         _dbContext = dbContext;
         RefreshTokenRepository = refreshTokenRepository;
         UserRepository = userRepository;
         StudentRepository = studentRepository;
+        SubjectRepository = subjectRepository;
+        QuestionRepository = questionRepository;
     }
 
     public void Dispose()

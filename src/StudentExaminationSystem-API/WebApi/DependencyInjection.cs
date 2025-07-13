@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Text;
 using Application.DTOs.StudentDtos;
+using Infrastructure.Persistence.SeedData;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Shared.ResourceParameters;
@@ -12,6 +13,8 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddWebApi(this IServiceCollection services, IConfiguration configuration)
     {
+        
+        services.AddTransient<Seed>();
         services.AddScoped<IPaginationHelper<GetStudentByIdAppDto, StudentResourceParameters>
             , PaginationHelper<GetStudentByIdAppDto, StudentResourceParameters>>();
         

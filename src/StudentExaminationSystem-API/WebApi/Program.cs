@@ -1,6 +1,9 @@
 using System.Security.Claims;
 using Application;
+using Domain.Models;
 using Infrastructure;
+using Infrastructure.Persistence.SeedData;
+using Microsoft.AspNetCore.Identity;
 using WebApi;
 using WebApi.Helpers;
 using WebApi.Helpers.Filters;
@@ -29,6 +32,22 @@ builder.Services.AddAuthorization(options =>
 
 
 var app = builder.Build();
+
+#region Seed Data
+if (args.Length == 1 && args[0].ToLower() == "seeddata")
+    SeedData(app);
+
+void SeedData(IHost app)
+{
+    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+
+    using var scope = scopedFactory.CreateScope();
+    var service = scope.ServiceProvider.GetService<Seed>();
+    var userManager = scope.ServiceProvider.GetService<UserManager<User>>();
+    service.SeedDataContext(userManager);
+}
+#endregion
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

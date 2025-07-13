@@ -29,7 +29,11 @@ public static class CreateStudentDtoMappers
         {
             UserId = userId,
             EnrollmentDate = createStudentAppDto.JoinDate,
-            StudentId = Random.Shared.Next(100000, 200000).ToString()
+            StudentId = Random.Shared.Next(100000, 200000).ToString(),
+            StudentSubjects = createStudentAppDto.CourseIds?.Select(id => new StudentSubject()
+            {
+                SubjectId = id
+            }).ToList() ?? new List<StudentSubject>()
         };
     }
 }
