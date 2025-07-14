@@ -14,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add(new ValidationFilter());
+    options.InputFormatters.Insert(0, JsonPatchInputFormatter.GetJsonPatchInputFormatter());
 });
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication();

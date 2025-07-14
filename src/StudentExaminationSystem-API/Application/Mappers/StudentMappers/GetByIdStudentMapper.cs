@@ -24,23 +24,24 @@ public static class GetByIdStudentMapper
         };
     }
     
-    private static GetStudentByIdAppDto ToListDto(this GetStudentByIdInfraDto owner)
+    private static GetStudentByIdAppDto ToListDto(this GetStudentByIdInfraDto student)
     {
         return new GetStudentByIdAppDto
         {
-            Id = owner.Id,
-            Name = owner.Name,
+            Id = student.Id,
+            Name = student.Name,
+            IsActive = student.IsActive
         };
     }
     
-    public static PagedList<GetStudentByIdAppDto> ToListDto(this PagedList<GetStudentByIdInfraDto> owners)
+    public static PagedList<GetStudentByIdAppDto> ToListDto(this PagedList<GetStudentByIdInfraDto> students)
     {
-        var count = owners.TotalCount;
-        var pageNumber = owners.CurrentPage;
-        var pageSize = owners.PageSize;
-        var totalPages = owners.TotalPages;
+        var count = students.TotalCount;
+        var pageNumber = students.CurrentPage;
+        var pageSize = students.PageSize;
+        var totalPages = students.TotalPages;
         return new PagedList<GetStudentByIdAppDto>(
-            owners.Select(s => ToListDto(s)).ToList(),
+            students.Select(s => ToListDto(s)).ToList(),
             count,
             pageNumber,
             pageSize,

@@ -30,6 +30,8 @@ public class AuthService(
         var isValid = user != null && await unitOfWork.UserRepository.CheckPasswordAsync(user, userDto.Password);
         if (!isValid)
             return Result<AuthTokensResponse>.Failure(CommonErrors.WrongCredentials);
+        if (!user.IsActive)
+            return Result<AuthTokensResponse>.Failure(AuthErrors.UserNotActive);
         
         var response = await GenerateTokenResponse(user);
         if (!response.IsSuccess)

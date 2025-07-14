@@ -35,7 +35,8 @@ public class StudentRepository(DataContext context)
         var projectedCollection = collection.Select(s => new GetStudentByIdInfraDto
         {
             Id = s.UserId,
-            Name = s.User.FirstName + " " + s.User.LastName
+            Name = s.User.FirstName + " " + s.User.LastName,
+            IsActive = s.User.IsActive
         });
         
         // var sortedList = sortHelper.ApplySort(collection, resourceParameters.OrderBy);
@@ -52,6 +53,7 @@ public class StudentRepository(DataContext context)
                 Name = s.User.FirstName + " " + s.User.LastName,
                 Birthdate = s.User.Birthdate,
                 JoinDate = s.EnrollmentDate,
+                IsActive = s.User.IsActive,
                 Courses = s.StudentSubjects
                     .Where(ss => s.Id == ss.StudentId)
                     .Select(ss => new DropdownInfraDto
@@ -63,4 +65,3 @@ public class StudentRepository(DataContext context)
             }).FirstOrDefaultAsync(s => s.Id == id);
     }
 }
-

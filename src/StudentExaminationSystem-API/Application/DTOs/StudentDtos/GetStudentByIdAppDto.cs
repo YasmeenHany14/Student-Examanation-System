@@ -6,6 +6,9 @@ public class GetStudentByIdAppDto
 {
     public string Id { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? IsActive { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public DateOnly? Birthdate { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

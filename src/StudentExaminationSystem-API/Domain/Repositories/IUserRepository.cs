@@ -14,4 +14,5 @@ public interface IUserRepository
     Task<User?> FindByIdAsync(string userId);
     Task RemoveFromRoleAsync(User user, string role);
     Task<IdentityResult> AddToRoleAsync(User user, string roleName);
+    Task<IdentityResult> UpdateAsync(User user);
 }

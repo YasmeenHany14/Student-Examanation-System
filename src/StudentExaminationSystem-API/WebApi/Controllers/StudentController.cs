@@ -2,6 +2,7 @@
 using Application.DTOs.StudentDtos;
 using Application.Helpers;
 using FluentValidation;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Shared.ResourceParameters;
 using WebApi.Helpers.Extensions;
@@ -14,10 +15,11 @@ namespace WebApi.Controllers;
 [Route("api/student")]
 public class StudentController(
     IStudentService studentService,
+    IUserService userService,
     IValidator<CreateStudentAppDto> createStudentValidator,
     IPaginationHelper<GetStudentByIdAppDto, StudentResourceParameters> paginationHelper)
     : ControllerBase
-{    
+{
     // GET ALL ASYNC
     [HttpGet(Name = "GetAllStudents")]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -28,10 +30,10 @@ public class StudentController(
         paginationHelper
             .CreateMetaDataHeader(
                 students.Value, resourceParameters, Response.Headers, Url, "GetAllStudents");
-        
+
         return students.ToActionResult();
     }
-    
+
     // GET BY ID ASYNC
     [HttpGet("{id}", Name = "GetStudentById")]
     public async Task<IActionResult> GetByIdAsync(string id)
@@ -39,7 +41,7 @@ public class StudentController(
         var result = await studentService.GetByIdAsync(id);
         return result.ToActionResult();
     }
-    
+
     // POST ASYNC
     [HttpPost(Name = "AddStudent")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -51,5 +53,13 @@ public class StudentController(
         if (!result.IsSuccess)
             return result.ToActionResult();
         return CreatedAtRoute("GetStudentById", new { id = result.Value });
+    }
+
+    // Disable student => update is active status to true/false
+    [HttpPatch("{id}", Name = "UpdateStudentStatus")]
+    public async Task<IActionResult> ToggleStatusAsync(string id)
+    {
+        var result = await userService.ToggleStatusAsync(id);
+        return result.ToActionResult();
     }
 }

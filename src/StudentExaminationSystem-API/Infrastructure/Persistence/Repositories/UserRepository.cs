@@ -50,6 +50,11 @@ public class UserRepository(UserManager<User> userManager) : IUserRepository
         return await userManager.AddToRoleAsync(user, roleName);
     }
 
+    public async Task<IdentityResult> UpdateAsync(User user)
+    {
+        return await userManager.UpdateAsync(user);
+    }
+
     public async Task<User?> FindByIdAsync(string userId)
     {
         return await userManager.FindByIdAsync(userId);
