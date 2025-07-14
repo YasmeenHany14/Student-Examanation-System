@@ -10,4 +10,5 @@ public interface IStudentService
     Task<Result<string>> AddAsync(CreateStudentAppDto studentAppDto);
     Task<Result<GetStudentByIdAppDto>> GetByIdAsync(string id);
     Task<Result<bool>> DeleteAsync(int id);
+    Task<Result<bool>> AddStudentSubjectAsync(string studentId, int subjectId);
 }

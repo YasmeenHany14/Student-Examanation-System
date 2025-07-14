@@ -1,4 +1,6 @@
-﻿namespace Domain.Repositories;
+﻿using Domain.Models.Common;
+
+namespace Domain.Repositories;
 
 public interface IUnitOfWork
 {
@@ -8,4 +10,6 @@ public interface IUnitOfWork
     ISubjectRepository SubjectRepository { get; set; }
     IQuestionRepository QuestionRepository { get; set; }
     Task<int> SaveChangesAsync();
+    IBaseRepository<TEntity> GetRepository<TEntity>()
+        where TEntity : BaseEntity;
 }

@@ -36,6 +36,7 @@ public class StudentController(
 
     // GET BY ID ASYNC
     [HttpGet("{id}", Name = "GetStudentById")]
+    // [TypeFilter(typeof(CanAccessResourceFilter), Arguments = [true])]
     public async Task<IActionResult> GetByIdAsync(string id)
     {
         var result = await studentService.GetByIdAsync(id);
@@ -52,7 +53,7 @@ public class StudentController(
         var result = await studentService.AddAsync(studentAppDto);
         if (!result.IsSuccess)
             return result.ToActionResult();
-        return CreatedAtRoute("GetStudentById", new { id = result.Value });
+        return Created();
     }
 
     // Disable student => update is active status to true/false
@@ -61,5 +62,18 @@ public class StudentController(
     {
         var result = await userService.ToggleStatusAsync(id);
         return result.ToActionResult();
+    }
+    
+    // Add new student subject
+    [HttpPost("{id}", Name = "AddStudentSubject")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    public async Task<IActionResult> AddStudentSubjectAsync(
+        string id, [FromBody] int subjectId)
+    {
+        var result = await studentService.AddStudentSubjectAsync(id, subjectId);
+        if (!result.IsSuccess)
+            return result.ToActionResult();
+        return Created();
     }
 }

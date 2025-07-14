@@ -1,4 +1,5 @@
-﻿using Domain.Repositories;
+﻿using Domain.Models.Common;
+using Domain.Repositories;
 
 namespace Infrastructure.Persistence.Repositories;
 
@@ -30,6 +31,11 @@ public class UnitOfWork : IUnitOfWork
         StudentRepository = studentRepository;
         SubjectRepository = subjectRepository;
         QuestionRepository = questionRepository;
+    }
+    
+    public IBaseRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseEntity
+    {
+        return new BaseRepository<TEntity>(_dbContext);
     }
 
     public void Dispose()

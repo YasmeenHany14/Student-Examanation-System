@@ -64,4 +64,11 @@ public class StudentRepository(DataContext context)
                     .ToList()
             }).FirstOrDefaultAsync(s => s.Id == id);
     }
+    
+    public async Task<Student?> FindByUserIdAsync(string userId)
+    {
+        return await context.Students
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.UserId == userId);
+    }
 }

@@ -5,6 +5,7 @@ using Application.DTOs.StudentDtos;
 using Application.Helpers;
 using Application.Mappers.StudentMappers;
 using Domain.DTOs.DtosMappers;
+using Domain.Models;
 using Domain.Repositories;
 using FluentValidation;
 using Shared.ResourceParameters;
@@ -17,6 +18,8 @@ public class StudentService(
     IAuthService authService
     ) : IStudentService
 {
+    private IStudentService _studentServiceImplementation;
+
     public async Task<Result<PagedList<GetStudentByIdAppDto>>> GetAllAsync(StudentResourceParameters resourceParameters)
     {
         var students = await unitOfWork.StudentRepository.GetAllAsync(resourceParameters);
@@ -56,5 +59,23 @@ public class StudentService(
     public Task<Result<bool>> DeleteAsync(int id)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<Result<bool>> AddStudentSubjectAsync(string studentId, int subjectId)
+    {
+        var student = await unitOfWork.StudentRepository.FindByUserIdAsync(studentId);
+        if (student == null)
+            return Result<bool>.Failure(CommonErrors.NotFound);
+        
+        var studentSubjectRepository = unitOfWork.GetRepository<StudentSubject>();
+        studentSubjectRepository.AddAsync(new StudentSubject
+        {
+            StudentId = student.Id,
+            SubjectId = subjectId
+        });
+        var result = await unitOfWork.SaveChangesAsync();
+        if (result <= 0)
+            return Result<bool>.Failure(CommonErrors.InternalServerError);
+        return Result<bool>.Success(true);
     }
 }

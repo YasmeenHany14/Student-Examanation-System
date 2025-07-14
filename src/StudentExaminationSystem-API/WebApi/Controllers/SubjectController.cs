@@ -3,6 +3,7 @@ using Application.DTOs.SubjectsDtos;
 using Microsoft.AspNetCore.Mvc;
 using Shared.ResourceParameters;
 using WebApi.Helpers.Extensions;
+using WebApi.Helpers.Filters;
 using WebApi.Helpers.PaginationHelper;
 
 namespace WebApi.Controllers;
@@ -32,7 +33,9 @@ public class SubjectController(
     // GET ALL ASYNC WITHOUT PAGINATION
     [HttpGet("all", Name = "GetAllSubjectsDropdown")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAllAsync()
+    [TypeFilter(typeof(CanAccessResourceFilter), Arguments = [false])]
+
+    public async Task<IActionResult> GetAllAsync([FromQuery] string? userId)
     {
         var subjects = await subjectService.GetAllAsync();
         return Ok(subjects);
