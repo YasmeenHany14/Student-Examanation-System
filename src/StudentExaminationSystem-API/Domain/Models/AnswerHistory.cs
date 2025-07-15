@@ -12,4 +12,5 @@ public class AnswerHistory : BaseEntity
     
     public Question? Question { get; set; }
     public QuestionChoice? QuestionChoice { get; set; }
+    public GeneratedExam? GeneratedExam { get; set; }
 }

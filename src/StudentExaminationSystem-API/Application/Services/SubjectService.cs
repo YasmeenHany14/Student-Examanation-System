@@ -5,6 +5,7 @@ using Application.DTOs.SubjectsDtos;
 using Application.Helpers;
 using Application.Mappers.SubjectMappers;
 using Domain.Repositories;
+using Domain.UserContext;
 using FluentValidation;
 using Shared.ResourceParameters;
 
@@ -13,7 +14,9 @@ namespace Application.Services;
 public class SubjectService(
     IUnitOfWork unitOfWork,
     IValidator<CreateSubjectAppDto> createDtoValidator,
-    IValidator<UpdateSubjectAppDto> updateDtoValidator) : ISubjectService
+    IValidator<UpdateSubjectAppDto> updateDtoValidator,
+    IUserContext userContext
+    ) : ISubjectService
 {
     public async Task<Result<PagedList<GetSubjectAppDto>>> GetAllAsync(SubjectResourceParameters resourceParameters)
     {
@@ -24,7 +27,8 @@ public class SubjectService(
     
     public async Task<Result<IEnumerable<GetSubjectAppDto>>> GetAllAsync()
     {
-        var subjects = await unitOfWork.SubjectRepository.GetAllAsync();
+        var userId = AccessResourceIdFilter.FilterResourceId<string?>(userContext);
+        var subjects = await unitOfWork.SubjectRepository.GetAllAsync(userId);
         return Result<IEnumerable<GetSubjectAppDto>>.Success(subjects.Select(s => s.ToGetSubjectAppDto()));
     }
 

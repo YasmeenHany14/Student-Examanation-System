@@ -42,16 +42,18 @@ public class SubjectRepository(DataContext context) : BaseRepository<Subject>(co
         return await CreateAsync(projectedCollection, resourceParameters.PageNumber, resourceParameters.PageSize);
     }
 
-    public async Task<IEnumerable<GetSubjectInfraDto>> GetAllAsync()
+    public async Task<IEnumerable<GetSubjectInfraDto>> GetAllAsync(string? userId = null)
     {
-        return await context.Subjects
+        var query = await context.Subjects
             .AsNoTracking()
+            .AsQueryable()
             .Select(s => new GetSubjectInfraDto
             {
                 Id = s.Id,
                 Name = s.Name + " (" + s.Code + ")",
             })
             .ToListAsync();
+        return userId == null ? query : query.Where(s => s.Id.ToString() == userId);
     }
 
     public async Task<GetSubjectInfraDto?> GetByIdAsync(int id)

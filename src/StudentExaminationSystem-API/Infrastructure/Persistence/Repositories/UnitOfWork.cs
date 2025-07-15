@@ -13,6 +13,7 @@ public class UnitOfWork : IUnitOfWork
     public IQuestionRepository QuestionRepository { get; set; }
     public ISubjectExamConfigRepository SubjectExamConfigRepository { get; set; }
     public IDifficultyProfileRepository DifficultyProfileRepository { get; set; }
+    public IExamRepository ExamHistoryRepository { get; set; }
 
     public async Task<int> SaveChangesAsync()
     {
@@ -27,7 +28,8 @@ public class UnitOfWork : IUnitOfWork
         ISubjectRepository subjectRepository,
         IQuestionRepository questionRepository,
         ISubjectExamConfigRepository subjectExamConfigRepository,
-        IDifficultyProfileRepository difficultyProfileRepository)
+        IDifficultyProfileRepository difficultyProfileRepository,
+        IExamRepository examHistoryRepository)
     {
         _dbContext = dbContext;
         RefreshTokenRepository = refreshTokenRepository;
@@ -37,6 +39,7 @@ public class UnitOfWork : IUnitOfWork
         QuestionRepository = questionRepository;
         SubjectExamConfigRepository = subjectExamConfigRepository;
         DifficultyProfileRepository = difficultyProfileRepository;
+        ExamHistoryRepository = examHistoryRepository;
     }
     
     public IBaseRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseEntity

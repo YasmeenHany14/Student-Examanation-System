@@ -9,7 +9,7 @@ public interface ISubjectRepository : IBaseRepository<Subject>
     Task<bool> CheckSubjectsExists(IEnumerable<int> subjectIds);
     Task<bool> CheckCodeUniqueAsync(string code, int? id = null);
     Task<PagedList<GetSubjectInfraDto>> GetAllAsync(SubjectResourceParameters resourceParameters);
-    Task<IEnumerable<GetSubjectInfraDto>> GetAllAsync();
+    Task<IEnumerable<GetSubjectInfraDto>> GetAllAsync(string? userId = null);
     Task<GetSubjectInfraDto?> GetByIdAsync(int id);
     Task<Subject?> GetEntityByIdAsync(int id);
     Task<bool> ExistsAsync(int id);
