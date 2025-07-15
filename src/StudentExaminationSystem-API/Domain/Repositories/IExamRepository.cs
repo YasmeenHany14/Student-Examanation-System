@@ -9,4 +9,6 @@ public interface IExamRepository : IBaseRepository<GeneratedExam>
     Task<PagedList<GetAllExamsInfraDto>> GetAllExamHistoryAsync(
         ExamHistoryResourceParameters resourceParameters, string? userId);
     Task<GetFullExamInfraDto?> GetAllQuestionHistoryAsync(int examId);
+    
+    Task<GeneratedExam?> GetExamForUpdate(int examId);
 }

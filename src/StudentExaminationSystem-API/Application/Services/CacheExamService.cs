@@ -22,7 +22,7 @@ public class CacheExamService(IMemoryCache cache) : ICacheExamService
         }
     }
     
-    public void RemoveExamEntry(int examId, string userId)
+    public void RemoveExamEntry(string userId)
     {
         var cacheKey = $"ExamEntry_{userId}";
         if (cache.TryGetValue(cacheKey, out _))

@@ -83,4 +83,11 @@ public class ExamRepository(
             QuestionHistory = questionHistory
         };
     }
+
+    public async Task<GeneratedExam?> GetExamForUpdate(int examId)
+    {
+        return await context.GeneratedExams
+            .Include(e => e.QuestionHistory)
+            .FirstOrDefaultAsync(e => e.Id == examId);
+    }
 }

@@ -2,6 +2,7 @@
 using Application.DTOs.QuestionChoiceDtos;
 using Domain.DTOs;
 using Domain.DTOs.ExamDtos;
+using Domain.Models;
 using Shared.ResourceParameters;
 
 namespace Application.Mappers;
@@ -61,5 +62,20 @@ public static class ExamMappers
                     c.MapTo<GetQuestionChoiceHistoryInfraDto, LoadExamChoiceAppDto>())
             }).ToList()
         };
+    }
+    
+    public static void MapUpdate(this GeneratedExam examEntity, SubmitExamAppDto submitExamDto)
+    {
+        foreach (var answer in submitExamDto.Answers)
+        {
+            var existingQuestionHistory = examEntity.QuestionHistory?
+                .FirstOrDefault(qh => qh.QuestionId == answer.QuestionId);
+                
+            if (existingQuestionHistory != null)
+            {
+                existingQuestionHistory.QuestionChoiceId = answer.ChoiceId;
+                existingQuestionHistory.IsCorrect = answer.IsCorrect;
+            }
+        }
     }
 }

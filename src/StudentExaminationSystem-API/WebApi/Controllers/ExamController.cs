@@ -51,4 +51,15 @@ public class ExamController(
         var exam = await examService.GetExamAsync(subjectId);
         return exam.ToActionResult();
     }
+    
+    [HttpPost(Name = "SubmitExam")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    public async Task<IActionResult> SubmitExamAsync([FromBody] SubmitExamAppDto submitExamDto)
+    {
+        var result = await examService.SubmitExamAsync(submitExamDto);
+        return result.ToActionResult();
+    }
 }

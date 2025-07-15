@@ -69,7 +69,28 @@ public class ExamService(
             return await generateService.GetCachedExamEntryAsync(examEntry.Value);
             
         return await generateService.GenerateExamAsync(subjectId, hiddenUserId);
-
     }
 
+    public async Task<Result<bool>> SubmitExamAsync(SubmitExamAppDto submitExamDto)
+    {
+        var userId = userContext.UserId;
+        var examEntry = cacheService.GetExamEntryAsync(userId.ToString());
+
+        if (examEntry.Value is null)
+            return Result<bool>.Failure(CommonErrors.BadRequest(ExamValidationErrorMessages.ExamNotFound));
+
+        if (examEntry.Value.SubjectId != submitExamDto.SubjectId)
+            return Result<bool>.Failure(CommonErrors.BadRequest(ExamValidationErrorMessages.ExamSubjectMismatch));
+
+        var examEntity = await unitOfWork.ExamHistoryRepository.GetExamForUpdate(submitExamDto.ExamId);
+        examEntity.MapUpdate(submitExamDto);
+        
+        unitOfWork.ExamHistoryRepository.UpdateAsync(examEntity);
+        var result = await unitOfWork.SaveChangesAsync();
+        if (result <= 0)
+            return Result<bool>.Failure(CommonErrors.InternalServerError());
+        
+        cacheService.RemoveExamEntry(userId.ToString());
+        return Result<bool>.Success(true);
+    }
 }

@@ -6,6 +6,6 @@ namespace Application.Contracts;
 public interface ICacheExamService
 {
     void CacheExamEntry(int examId, int subjectId, string userId, int durationMinutes);
-    void RemoveExamEntry(int examId, string userId);
+    void RemoveExamEntry(string userId);
     Result<ExamCacheEntryDto?> GetExamEntryAsync(string userId);
 }
