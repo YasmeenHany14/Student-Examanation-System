@@ -11,7 +11,6 @@ public class UserService(
 {
     public async Task<Result<bool>> ToggleStatusAsync(string id)
     {
-        //TODO: make a separate repository method or use existing ????
         var user = await unitOfWork.UserRepository.FindByIdAsync(id);
         if (user == null)
             return Result<bool>.Failure(CommonErrors.NotFound);

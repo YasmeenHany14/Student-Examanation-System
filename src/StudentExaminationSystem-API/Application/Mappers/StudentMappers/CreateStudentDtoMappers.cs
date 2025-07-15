@@ -20,7 +20,6 @@ public static class CreateStudentDtoMappers
         };
     }
 
-    //TODO: should i really expose entity models here? not doing so will prevent me from using generic repo
     public static Student ToEntity(
         this CreateStudentAppDto createStudentAppDto,
         string userId)

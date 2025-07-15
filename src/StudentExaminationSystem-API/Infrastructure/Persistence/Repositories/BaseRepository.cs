@@ -21,6 +21,7 @@ public class BaseRepository<TEntity>(DataContext context) : IBaseRepository<TEnt
     }
 
     // TODO: ASK WHETHER I SHOULD PASS ID OR ENTITY
+    // FOR SOFT DELETE, PASS ENTITY
     public void DeleteAsync(TEntity entity)
     {
         throw new NotImplementedException();

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Application.Mappers.SubjectMappers;
 
-public static class SubjectMappers
+public static class CreateSubjectMappers
 {
     public static Subject ToEntity(this CreateSubjectAppDto dto)
     {

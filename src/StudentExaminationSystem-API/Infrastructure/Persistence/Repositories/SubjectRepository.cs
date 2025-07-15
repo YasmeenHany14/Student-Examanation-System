@@ -66,4 +66,17 @@ public class SubjectRepository(DataContext context) : BaseRepository<Subject>(co
             })
             .FirstOrDefaultAsync();
     }
+
+    public async Task<Subject?> GetEntityByIdAsync(int id)
+    {
+        return await context.Subjects
+            .FindAsync(id);
+    }
+
+    public async Task<bool> ExistsAsync(int id)
+    {
+        return await context.Subjects
+            .AsNoTracking()
+            .AnyAsync(s => s.Id == id);
+    }
 }

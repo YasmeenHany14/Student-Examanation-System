@@ -1,10 +1,7 @@
-﻿using Domain.DTOs;
+﻿namespace Application.DTOs.SubjectsDtos;
 
-namespace Application.DTOs.SubjectsDtos;
-
-public class UpdateSubjectAppDto : BaseDto
+public class UpdateSubjectAppDto : AppBaseDto
 {
     public string? Code { get; set; }
     public string? Name { get; set; }
 }
-

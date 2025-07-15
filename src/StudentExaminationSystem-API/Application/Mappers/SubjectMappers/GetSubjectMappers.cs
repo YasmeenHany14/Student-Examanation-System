@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.SubjectsDtos;
 using Domain.DTOs.SubjectDtos;
+using Domain.Models;
 using Shared.ResourceParameters;
 
 namespace Application.Mappers.SubjectMappers;
@@ -7,6 +8,16 @@ namespace Application.Mappers.SubjectMappers;
 public static class GetSubjectMappers
 {
     public static GetSubjectAppDto ToGetSubjectAppDto(this GetSubjectInfraDto subject)
+    {
+        return new GetSubjectAppDto
+        {
+            Id = subject.Id,
+            Name = subject.Name,
+            Code = subject.Code
+        };
+    }
+    
+    public static GetSubjectAppDto ToGetSubjectAppDto(this Subject subject)
     {
         return new GetSubjectAppDto
         {

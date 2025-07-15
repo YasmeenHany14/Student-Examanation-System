@@ -11,4 +11,6 @@ public interface ISubjectRepository : IBaseRepository<Subject>
     Task<PagedList<GetSubjectInfraDto>> GetAllAsync(SubjectResourceParameters resourceParameters);
     Task<IEnumerable<GetSubjectInfraDto>> GetAllAsync();
     Task<GetSubjectInfraDto?> GetByIdAsync(int id);
+    Task<Subject?> GetEntityByIdAsync(int id);
+    Task<bool> ExistsAsync(int id);
 }

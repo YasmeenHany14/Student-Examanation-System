@@ -12,8 +12,8 @@ namespace Application.Services;
 
 public class SubjectService(
     IUnitOfWork unitOfWork,
-    IValidator<CreateSubjectAppDto> createDtoValidator
-    ) : ISubjectService
+    IValidator<CreateSubjectAppDto> createDtoValidator,
+    IValidator<UpdateSubjectAppDto> updateDtoValidator) : ISubjectService
 {
     public async Task<Result<PagedList<GetSubjectAppDto>>> GetAllAsync(SubjectResourceParameters resourceParameters)
     {
@@ -22,10 +22,10 @@ public class SubjectService(
             subjects.ToListDto());
     }
     
-    public async Task<IEnumerable<GetSubjectAppDto>> GetAllAsync()
+    public async Task<Result<IEnumerable<GetSubjectAppDto>>> GetAllAsync()
     {
         var subjects = await unitOfWork.SubjectRepository.GetAllAsync();
-        return subjects.Select(s => s.ToGetSubjectAppDto());
+        return Result<IEnumerable<GetSubjectAppDto>>.Success(subjects.Select(s => s.ToGetSubjectAppDto()));
     }
 
     public async Task<Result<int>> CreateAsync(CreateSubjectAppDto subjectAppDto)
@@ -51,17 +51,22 @@ public class SubjectService(
         return Result<GetSubjectAppDto?>.Success(subject.ToGetSubjectAppDto());
     }
 
-    public async Task<Result<int>> UpdateAsync(int id, UpdateSubjectAppDto subjectAppDto)
+    public async Task<Result<bool>> UpdateAsync(int id, UpdateSubjectAppDto subjectAppDto)
     {
-        // var subject = await unitOfWork.SubjectRepository.GetByIdAsync(id);
-        // if (subject == null)
-        //     return Result<int>.Failure("Subject not found.");
-        // subjectAppDto.MapUpdate(subject);
-        // var result = await unitOfWork.SaveChangesAsync();
-        // if (result <= 0)
-        //     return Result<int>.Failure("Failed to update subject.");
-        // return Result<int>.Success(subject.Id);
-        throw new NotImplementedException();
+        var validationResult = await ValidationHelper.ValidateAndReportAsync(updateDtoValidator,
+            subjectAppDto,
+            ctx => { ctx.RootContextData["subjectId"] = id; },
+            "CreateBusiness");
+        if (!validationResult.IsSuccess)
+            return Result<bool>.Failure(validationResult.Error);
+        
+        var subject = await unitOfWork.SubjectRepository.GetEntityByIdAsync(id);
+        subject.UpdateEntityFromDto(subjectAppDto);
+        unitOfWork.SubjectRepository.UpdateAsync(subject);
+        var result = await unitOfWork.SaveChangesAsync();
+        if (result <= 0)
+            return Result<bool>.Failure(CommonErrors.InternalServerError);
+        return Result<bool>.Success(true);
     }
 
     public async Task<Result<bool>> DeleteAsync(int id)

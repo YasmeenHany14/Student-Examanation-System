@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddScoped<IStudentRepository, StudentRepository>();
         services.AddScoped<ISubjectRepository, SubjectRepository>();
         services.AddScoped<IQuestionRepository, QuestionRepository>();
+        services.AddScoped<ISubjectExamConfigRepository, SubjectExamConfigRepository>();
         services.AddSingleton<IUserContext, UserContext>();
         services.AddIdentity<User, IdentityRole>(options =>
             {
