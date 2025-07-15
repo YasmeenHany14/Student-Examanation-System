@@ -33,7 +33,8 @@ public class SubjectRepository(DataContext context) : BaseRepository<Subject>(co
             {
                 Id = s.Id,
                 Name = s.Name,
-                Code = s.Code
+                Code = s.Code,
+                HasConfiguration = s.SubjectExamConfig != null
             });
         
         //TODO: add name, code filters later
@@ -62,7 +63,8 @@ public class SubjectRepository(DataContext context) : BaseRepository<Subject>(co
             {
                 Id = s.Id,
                 Name = s.Name,
-                Code = s.Code
+                Code = s.Code,
+                HasConfiguration = s.SubjectExamConfig != null
             })
             .FirstOrDefaultAsync();
     }

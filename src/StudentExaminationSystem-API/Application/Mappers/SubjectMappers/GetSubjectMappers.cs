@@ -13,7 +13,8 @@ public static class GetSubjectMappers
         {
             Id = subject.Id,
             Name = subject.Name,
-            Code = subject.Code
+            Code = subject.Code,
+            HasConfiguration = subject.HasConfiguration
         };
     }
     
@@ -23,7 +24,7 @@ public static class GetSubjectMappers
         {
             Id = subject.Id,
             Name = subject.Name,
-            Code = subject.Code
+            Code = subject.Code,
         };
     }
     
