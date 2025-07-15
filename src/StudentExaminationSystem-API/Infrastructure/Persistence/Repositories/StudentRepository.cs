@@ -1,5 +1,4 @@
-﻿using Domain.DTOs.CommonDtos;
-using Domain.DTOs.StudentDtos;
+﻿using Domain.DTOs;
 using Domain.Models;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;

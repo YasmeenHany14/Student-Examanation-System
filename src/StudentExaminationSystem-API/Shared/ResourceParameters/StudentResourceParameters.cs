@@ -4,6 +4,7 @@ namespace Shared.ResourceParameters;
 
 public class StudentResourceParameters : BaseResourceParameters
 {
+    public string? SearchQuery { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
     

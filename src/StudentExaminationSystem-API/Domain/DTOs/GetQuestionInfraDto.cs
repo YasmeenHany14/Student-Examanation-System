@@ -1,4 +1,4 @@
-﻿namespace Domain.DTOs.QuestionDtos;
+﻿namespace Domain.DTOs;
 
 public class GetQuestionInfraDto : BaseDto
 {

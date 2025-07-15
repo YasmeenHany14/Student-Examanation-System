@@ -1,5 +1,5 @@
 ﻿using System.Linq.Dynamic.Core;
-using Domain.DTOs.SubjectExamConfigDtos;
+using Domain.DTOs;
 using Domain.Models;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;

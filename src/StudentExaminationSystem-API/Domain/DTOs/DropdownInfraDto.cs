@@ -1,4 +1,4 @@
-﻿namespace Domain.DTOs.CommonDtos;
+﻿namespace Domain.DTOs;
 
 public class DropdownInfraDto : BaseDto
 {

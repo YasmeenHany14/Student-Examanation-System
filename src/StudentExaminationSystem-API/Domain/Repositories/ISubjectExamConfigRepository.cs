@@ -1,4 +1,4 @@
-﻿using Domain.DTOs.SubjectExamConfigDtos;
+﻿using Domain.DTOs;
 using Domain.Models;
 
 namespace Domain.Repositories;

@@ -2,7 +2,7 @@
 
 public abstract class BaseResourceParameters
 {
-    public string? SearchQuery { get; set; }
+    // public string? SearchQuery { get; set; }
     // filters
     public int PageNumber { get; set; } = 1;
     private int _pageSize = 5;

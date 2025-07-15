@@ -1,4 +1,4 @@
-﻿using Domain.DTOs.StudentDtos;
+﻿using Domain.DTOs;
 using Domain.Models;
 using Shared.ResourceParameters;
 

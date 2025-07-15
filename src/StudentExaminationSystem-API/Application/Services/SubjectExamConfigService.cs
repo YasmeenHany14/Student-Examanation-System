@@ -5,7 +5,7 @@ using Application.DTOs.SubjectExamConfigDtos;
 using Application.Helpers;
 using Application.Mappers;
 using Application.Mappers.SubjectConfigMappers;
-using Domain.DTOs.SubjectExamConfigDtos;
+using Domain.DTOs;
 using Domain.Repositories;
 using FluentValidation;
 

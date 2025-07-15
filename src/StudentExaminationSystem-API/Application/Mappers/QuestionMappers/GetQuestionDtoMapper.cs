@@ -1,6 +1,6 @@
 ﻿using Application.DTOs.QuestionChoiceDtos;
 using Application.DTOs.QuestionDtos;
-using Domain.DTOs.QuestionDtos;
+using Domain.DTOs;
 using Domain.Models;
 using Shared.ResourceParameters;
 

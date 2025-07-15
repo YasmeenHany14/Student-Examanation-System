@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Text;
+using Application.DTOs.DifficultyProfileDtos;
 using Application.DTOs.QuestionDtos;
 using Application.DTOs.StudentDtos;
 using Application.DTOs.SubjectsDtos;
@@ -23,6 +24,8 @@ public static class DependencyInjection
             , PaginationHelper<GetSubjectAppDto, SubjectResourceParameters>>();
         services.AddScoped<IPaginationHelper<GetQuestionAppDto, QuestionResourceParameters>
             , PaginationHelper<GetQuestionAppDto, QuestionResourceParameters>>();
+        services.AddScoped<IPaginationHelper<GetDifficultyProfileAppDto, DifficultyProfileResourceParameters>
+            , PaginationHelper<GetDifficultyProfileAppDto, DifficultyProfileResourceParameters>>();
         
         #region Configure JWT Authentication
         services.AddAuthentication(options =>

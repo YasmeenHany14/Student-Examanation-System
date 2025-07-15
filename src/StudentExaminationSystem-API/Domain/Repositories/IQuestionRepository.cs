@@ -1,4 +1,4 @@
-﻿using Domain.DTOs.QuestionDtos;
+﻿using Domain.DTOs;
 using Domain.Models;
 using Shared.ResourceParameters;
 

@@ -1,4 +1,4 @@
-﻿using Domain.DTOs.SubjectDtos;
+﻿using Domain.DTOs;
 using Domain.Models;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;

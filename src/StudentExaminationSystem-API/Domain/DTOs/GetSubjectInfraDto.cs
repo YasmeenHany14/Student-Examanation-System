@@ -1,4 +1,4 @@
-﻿namespace Domain.DTOs.SubjectDtos;
+﻿namespace Domain.DTOs;
 
 public class GetSubjectInfraDto : BaseDto
 {

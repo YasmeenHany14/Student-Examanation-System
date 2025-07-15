@@ -1,8 +1,7 @@
 ﻿using System.Reflection;
 using Application.DTOs.CommonDtos;
 using Application.DTOs.StudentDtos;
-using Domain.DTOs.CommonDtos;
-using Domain.DTOs.StudentDtos;
+using Domain.DTOs;
 using Shared.ResourceParameters;
 
 namespace Application.Mappers.StudentMappers;
