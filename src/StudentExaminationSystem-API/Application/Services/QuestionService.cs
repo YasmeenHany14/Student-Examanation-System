@@ -36,7 +36,7 @@ public class QuestionService(
         
         var result = unitOfWork.SaveChangesAsync();
         if (result.Result <= 0)
-            return Result<int>.Failure(CommonErrors.InternalServerError);
+            return Result<int>.Failure(CommonErrors.InternalServerError());
 
         return Result<int>.Success(question.Id);
     }

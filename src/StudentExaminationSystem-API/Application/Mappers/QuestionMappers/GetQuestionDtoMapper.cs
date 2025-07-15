@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.QuestionChoiceDtos;
 using Application.DTOs.QuestionDtos;
 using Domain.DTOs;
+using Domain.DTOs.ExamDtos;
 using Domain.Models;
 using Shared.ResourceParameters;
 
@@ -39,5 +40,17 @@ public static class GetQuestionDtoMapper
             pageSize,
             totalPages
         );
+    }
+    
+    public static IEnumerable<LoadExamQuestionAppDto> ToLoadExamQuestionAppDto(
+        this IEnumerable<LoadExamQuestionInfraDto> questions)
+    {
+        return questions.Select((q, index) => new LoadExamQuestionAppDto
+        {
+            QuestionId = q.QuestionId,
+            QuestionText = q.QuestionText,
+            QuestionOrder = index + 1,
+            Choices = q.Choices.Select(c => c.MapTo<LoadExamChoiceInfraDto, LoadExamChoiceAppDto>())
+        }).ToList();
     }
 }

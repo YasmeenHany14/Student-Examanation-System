@@ -1,5 +1,7 @@
 ﻿using Application.Contracts;
 using Application.DTOs.ExamDtos;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.ResourceParameters;
 using WebApi.Helpers.Extensions;
@@ -28,13 +30,25 @@ public class ExamController(
         return exams.ToActionResult();
     }
     
-    [HttpGet("{examId}", Name = "GetFullExam")]
+    [HttpGet("{examId}", Name = "GetFullExamHistory")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<IActionResult> GetFullExamAsync(int examId)
     {
         var exam = await examService.GetFullExamAsync(examId);
+        return exam.ToActionResult();
+    }
+    
+    [HttpGet("subject/{subjectId}", Name = "GenerateExam")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [RequireAntiforgeryToken]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    public async Task<IActionResult> GetExamAsync(int subjectId)
+    {
+        var exam = await examService.GetExamAsync(subjectId);
         return exam.ToActionResult();
     }
 }

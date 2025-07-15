@@ -4,7 +4,7 @@ namespace Application.Mappers.SubjectConfigMappers;
 
 public static class CreateSubjectExamConfigMappers
 {
-    public static SubjectExamConfig ToEntity(this CreateUpdateSubjectExamConfigAppDto dto, int id)
+    public static SubjectExamConfig ToEntity(this CreateSubjectExamConfig dto, int id)
     {
         return new SubjectExamConfig
         {
@@ -16,7 +16,7 @@ public static class CreateSubjectExamConfigMappers
     }
     
     public static void MapUpdate(
-        this CreateUpdateSubjectExamConfigAppDto dto,
+        this UpdateSubjectExamConfigAppDto dto,
         SubjectExamConfig subjectExamConfig)
     {
         subjectExamConfig.DurationMinutes = (int)dto.DurationMinutes!;

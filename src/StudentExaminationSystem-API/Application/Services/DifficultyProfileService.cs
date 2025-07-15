@@ -37,7 +37,7 @@ public class DifficultyProfileService(
     {
         var profile = await unitOfWork.DifficultyProfileRepository.GetByIdAsync(id);
         if (profile == null)
-            return Result<GetDifficultyProfileAppDto?>.Failure(CommonErrors.NotFound);
+            return Result<GetDifficultyProfileAppDto?>.Failure(CommonErrors.NotFound());
         return Result<GetDifficultyProfileAppDto?>.Success(profile.MapTo<GetDifficultyProfileInfraDto, GetDifficultyProfileAppDto>());
     }
 
@@ -47,7 +47,7 @@ public class DifficultyProfileService(
         await unitOfWork.DifficultyProfileRepository.AddAsync(entity);
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)
-            return Result<int>.Failure(CommonErrors.InternalServerError);
+            return Result<int>.Failure(CommonErrors.InternalServerError());
         return Result<int>.Success(entity.Id);
     }
 
@@ -59,7 +59,7 @@ public class DifficultyProfileService(
         unitOfWork.DifficultyProfileRepository.UpdateAsync(entity);
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)
-            return Result<bool>.Failure(CommonErrors.InternalServerError);
+            return Result<bool>.Failure(CommonErrors.InternalServerError());
         return Result<bool>.Success(true);
     }
 

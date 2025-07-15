@@ -8,4 +8,5 @@ public interface ISubjectExamConfigRepository : IBaseRepository<SubjectExamConfi
     Task<GetSubjectExamConfigInfraDto?> GetByIdAsync(int id);
     Task<bool> ExistsAsync(int id);
     Task<SubjectExamConfig?> FindAsync(int id);
+    Task<SubjectExamConfig?> GetConfigToGenerateExamAsync(int subjectId);
 }

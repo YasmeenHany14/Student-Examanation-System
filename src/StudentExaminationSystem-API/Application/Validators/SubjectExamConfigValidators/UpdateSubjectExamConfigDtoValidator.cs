@@ -3,22 +3,22 @@ using Domain.Repositories;
 using FluentValidation;
 
 namespace Application.Validators.SubjectExamConfigValidators;
-public class CreateUpdateSubjectExamConfigDtoValidator : AbstractValidator<CreateUpdateSubjectExamConfigAppDto>
+public class UpdateSubjectExamConfigDtoValidator : AbstractValidator<UpdateSubjectExamConfigAppDto>
 {
-    public CreateUpdateSubjectExamConfigDtoValidator(IUnitOfWork unitOfWork)
+    public UpdateSubjectExamConfigDtoValidator(IUnitOfWork unitOfWork)
     {
         RuleSet("Input", () =>
         {
-            RuleFor(x => x.TotalQuestions)
-                .GreaterThan(5)
-                .WithMessage("Total questions must be greater than 0.");
-
-            RuleFor(x => x.DurationMinutes)
-                .GreaterThan(10)
-                .WithMessage("sss");
-            RuleFor(x => x.DifficultyProfileId)
-                .GreaterThan(0)
-                .WithMessage("sss");
+            // RuleFor(x => x.TotalQuestions)
+            //     .GreaterThan(5)
+            //     .WithMessage("Total questions must be greater than 0.");
+            //
+            // RuleFor(x => x.DurationMinutes)
+            //     .GreaterThan(10)
+            //     .WithMessage("sss");
+            // RuleFor(x => x.DifficultyProfileId)
+            //     .GreaterThan(0)
+            //     .WithMessage("sss");
         });
         
         

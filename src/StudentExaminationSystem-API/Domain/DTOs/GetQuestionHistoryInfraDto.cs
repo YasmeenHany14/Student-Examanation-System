@@ -2,6 +2,7 @@
 
 public class GetQuestionHistoryInfraDto : BaseDto
 {
+    public int QuestionId { get; set; }
     public string Question { get; set; } = string.Empty;
-    public IEnumerable<GetQuestionChoiceInfraDto> Choices { get; set; } = new List<GetQuestionChoiceInfraDto>();
+    public IEnumerable<GetQuestionChoiceHistoryInfraDto> Choices { get; set; } = new List<GetQuestionChoiceHistoryInfraDto>();
 }

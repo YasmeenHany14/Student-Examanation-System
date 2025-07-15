@@ -9,7 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
-    {
+    {   
+        services.AddMemoryCache();
         services.AddScoped<IStudentService, StudentService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IGenerateTokenService, GenerateTokenService>();
@@ -18,6 +19,8 @@ public static class DependencyInjection
         services.AddScoped<ISubjectExamConfigService, SubjectExamConfigService>();
         services.AddScoped<IDifficultyProfileService, DifficultyProfileService>();
         services.AddScoped<IExamService, ExamService>();
+        services.AddScoped<ICacheExamService, CacheExamService>();
+        services.AddScoped<IGenerateExamService, GenerateExamService>();
         services.AddScoped<IUserService, UserService>();
         services.AddValidatorsFromAssemblyContaining<CreateStudentAppDto>();
         return services;

@@ -6,7 +6,7 @@ public class GeneratedExam : PrimaryKeyBaseEntity
 {
     public int StudentId { get; set; } // FK
     public int SubjectId { get; set; } // FK
-    public DateTime SubmittedAt { get; set; }
+    public DateTime? SubmittedAt { get; set; }
     public bool IsCompleted { get; set; }
     public int ExamTotalScore { get; set; }
     public int StudentScore { get; set; }

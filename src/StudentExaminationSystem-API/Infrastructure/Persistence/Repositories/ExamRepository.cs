@@ -35,7 +35,6 @@ public class ExamRepository(
     
     public async Task<GetFullExamInfraDto?> GetAllQuestionHistoryAsync(int examId)
     {
-        // First, get basic exam info and validate existence
         var examInfo = await context.GeneratedExams
             .AsNoTracking()
             .Where(e => e.Id == examId)
@@ -49,7 +48,6 @@ public class ExamRepository(
         if (examInfo == null)
             return null;
 
-        // Get question history with minimal data - more efficient query
         var answerHistoryQuery = await context.AnswerHistories
             .AsNoTracking()
             .Where(ah => ah.GeneratedExamId == examId)
@@ -58,23 +56,23 @@ public class ExamRepository(
                 ah.QuestionId,
                 ah.DisplayOrder,
                 QuestionContent = ah.Question.Content,
-                QuestionChoices = ah.Question.Choices.Select(c => new GetQuestionChoiceInfraDto
+                QuestionChoices = ah.Question.Choices.Select(c => new GetQuestionChoiceHistoryInfraDto
                 {
-                    Id = c.Id,
-                    Content = c.Content,
+                    ChoiceId = c.Id,
+                    ChoiceText = c.Content,
                     IsCorrect = c.IsCorrect
                 })
             })
             .OrderBy(ah => ah.DisplayOrder)
             .ToListAsync();
 
-        // Group and project to DTOs - done in memory but with minimal data
         var questionHistory = answerHistoryQuery
             .GroupBy(ah => ah.QuestionId)
             .Select(g => new GetQuestionHistoryInfraDto
             {
+                QuestionId = g.Key,
                 Question = g.First().QuestionContent ?? string.Empty,
-                Choices = g.First().QuestionChoices ?? new List<GetQuestionChoiceInfraDto>()
+                Choices = g.First().QuestionChoices ?? new List<GetQuestionChoiceHistoryInfraDto>(),
             })
             .ToList();
 

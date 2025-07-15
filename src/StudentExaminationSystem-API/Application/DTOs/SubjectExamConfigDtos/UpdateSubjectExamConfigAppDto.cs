@@ -1,6 +1,6 @@
 namespace Application.DTOs.SubjectExamConfigDtos;
 
-public class CreateUpdateSubjectExamConfigAppDto : AppBaseDto 
+public class UpdateSubjectExamConfigAppDto : AppBaseDto 
 {
     public int? TotalQuestions { get; set; }
     public int? DurationMinutes { get; set; }

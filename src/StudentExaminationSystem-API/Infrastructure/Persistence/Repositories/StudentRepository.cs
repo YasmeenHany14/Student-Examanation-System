@@ -70,4 +70,13 @@ public class StudentRepository(DataContext context)
             .AsNoTracking()
             .FirstOrDefaultAsync(s => s.UserId == userId);
     }
+
+    public async Task<int> GetHiddenUserIdAsync(string userId)
+    {
+        return await context.Students
+            .AsNoTracking()
+            .Where(s => s.UserId == userId)
+            .Select(s => s.Id)
+            .FirstOrDefaultAsync();
+    }
 }

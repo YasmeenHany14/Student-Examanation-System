@@ -21,7 +21,7 @@ public static class PatchHelper
         patchDoc.ApplyTo(updateDto, controller.ModelState);
         if (!controller.ModelState.IsValid)
         {
-            return (updateDto, Result.Failure(CommonErrors.ValidationError));
+            return (updateDto, Result.Failure(CommonErrors.ValidationError()));
         }
         return (updateDto, Result.Success());
     }

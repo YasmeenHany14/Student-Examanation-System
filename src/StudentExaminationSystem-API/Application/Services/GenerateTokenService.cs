@@ -54,7 +54,7 @@ public class GenerateTokenService(
         var handler = new JsonWebTokenHandler();
         var token = handler.CreateToken(tokenDescriptor);
         if (string.IsNullOrEmpty(token))
-            return Result<string>.Failure(CommonErrors.CannotGenerateToken);
+            return Result<string>.Failure(CommonErrors.CannotGenerateToken());
         return Result<string>.Success(token);
     }
     

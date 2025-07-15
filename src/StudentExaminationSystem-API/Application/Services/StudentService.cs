@@ -39,7 +39,7 @@ public class StudentService(
         await unitOfWork.StudentRepository.AddAsync(newStudent);
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)
-            return Result<string>.Failure(CommonErrors.InternalServerError);
+            return Result<string>.Failure(CommonErrors.InternalServerError());
         
         await authService.AddToRoleAsync("Student", createUserResult.Value, null);
         
@@ -50,7 +50,7 @@ public class StudentService(
     {
         var student = await unitOfWork.StudentRepository.GetByIdAsync(id);
         if (student == null)
-            return Result<GetStudentByIdAppDto>.Failure(CommonErrors.NotFound);
+            return Result<GetStudentByIdAppDto>.Failure(CommonErrors.NotFound());
         
         return Result<GetStudentByIdAppDto>.Success(student.ToGetStudentAppDto());
     }
@@ -64,7 +64,7 @@ public class StudentService(
     {
         var student = await unitOfWork.StudentRepository.FindByUserIdAsync(studentId);
         if (student == null)
-            return Result<bool>.Failure(CommonErrors.NotFound);
+            return Result<bool>.Failure(CommonErrors.NotFound());
         
         var studentSubjectRepository = unitOfWork.GetRepository<StudentSubject>();
         studentSubjectRepository.AddAsync(new StudentSubject
@@ -74,7 +74,7 @@ public class StudentService(
         });
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)
-            return Result<bool>.Failure(CommonErrors.InternalServerError);
+            return Result<bool>.Failure(CommonErrors.InternalServerError());
         return Result<bool>.Success(true);
     }
 }

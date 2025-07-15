@@ -13,21 +13,21 @@ namespace Application.Services;
 
 public class SubjectExamConfigService(
     IUnitOfWork unitOfWork,
-    IValidator<CreateUpdateSubjectExamConfigAppDto> configValidator
+    IValidator<CreateSubjectExamConfig> configValidator
     ) : ISubjectExamConfigService
 {
     public async Task<Result<GetSubjectExamConfigAppDto?>> GetByIdAsync(int id) // includes difficulty profile
     {
         var config = await unitOfWork.SubjectExamConfigRepository.GetByIdAsync(id);
         if (config == null)
-            return Result<GetSubjectExamConfigAppDto?>.Failure(CommonErrors.NotFound);
+            return Result<GetSubjectExamConfigAppDto?>.Failure(CommonErrors.NotFound());
 
         var configDto = config.MapTo<GetSubjectExamConfigInfraDto, GetSubjectExamConfigAppDto>();
         return Result<GetSubjectExamConfigAppDto?>.Success(configDto);
     }
 
     public async Task<Result<int>> CreateAsync(
-        CreateUpdateSubjectExamConfigAppDto createDto,
+        CreateSubjectExamConfig createDto,
         int id)
     {
         var validationResult = await ValidationHelper.ValidateAndReportAsync(configValidator,
@@ -42,11 +42,11 @@ public class SubjectExamConfigService(
         await unitOfWork.SubjectExamConfigRepository.AddAsync(configEntity);
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)
-            return Result<int>.Failure(CommonErrors.InternalServerError);
+            return Result<int>.Failure(CommonErrors.InternalServerError());
         return Result<int>.Success(configEntity.SubjectId);
     }
 
-    public async Task<Result<bool>> UpdateAsync(int id, CreateUpdateSubjectExamConfigAppDto updateDto)
+    public async Task<Result<bool>> UpdateAsync(int id, UpdateSubjectExamConfigAppDto updateDto)
     {
         var config = await unitOfWork.SubjectExamConfigRepository.FindAsync(id);
         
@@ -55,7 +55,7 @@ public class SubjectExamConfigService(
         
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)
-            return Result<bool>.Failure(CommonErrors.InternalServerError);
+            return Result<bool>.Failure(CommonErrors.InternalServerError());
         
         return Result<bool>.Success(true);
     }

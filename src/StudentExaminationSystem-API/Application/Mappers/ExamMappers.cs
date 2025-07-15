@@ -1,6 +1,7 @@
 ﻿using Application.DTOs.ExamDtos;
 using Application.DTOs.QuestionChoiceDtos;
 using Domain.DTOs;
+using Domain.DTOs.ExamDtos;
 using Shared.ResourceParameters;
 
 namespace Application.Mappers;
@@ -29,7 +30,7 @@ public static class ExamMappers
         {
             Question = questionHistory.Question,
             Choices = questionHistory.Choices.Select(c =>
-                c.MapTo<GetQuestionChoiceInfraDto, GetQuestionChoiceHistoryAppDto>())
+                c.MapTo<GetQuestionChoiceHistoryInfraDto, GetQuestionChoiceHistoryAppDto>())
         };
     }
     
@@ -41,6 +42,24 @@ public static class ExamMappers
             FinalScore = fullExam.FinalScore,
             Passed = fullExam.FinalScore >= (fullExam.QuestionHistory.Count() / 2),
             QuestionHistory = fullExam.QuestionHistory.Select(qh => qh.MapToGetQuestionHistoryAppDto())
+        };
+    }
+
+    public static LoadExamAppDto MapToLoadExamAppDto(
+        this GetFullExamInfraDto fullExam, ExamCacheEntryDto examCacheEntry)
+    {
+        return new LoadExamAppDto
+        {
+            ExamId = examCacheEntry.ExamId,
+            SubjectId = examCacheEntry.SubjectId,
+            ExamEndTime = examCacheEntry.ExamEndTime,
+            Questions = fullExam.QuestionHistory.Select(qh => new LoadExamQuestionAppDto
+            {
+                QuestionId = qh.QuestionId,
+                QuestionText = qh.Question,
+                Choices = qh.Choices.Select(c =>
+                    c.MapTo<GetQuestionChoiceHistoryInfraDto, LoadExamChoiceAppDto>())
+            }).ToList()
         };
     }
 }

@@ -19,7 +19,7 @@ public class AuthService(
         var user = registerDto.ToUser();
         var (id, identityResult) = await unitOfWork.UserRepository.CreateAsync(user, registerDto.Password);
         if (id == null || !identityResult.Succeeded)
-            return Result<User>.Failure(CommonErrors.InternalServerError);
+            return Result<User>.Failure(CommonErrors.InternalServerError());
 
         return Result<User>.Success(user);
     }
@@ -29,7 +29,7 @@ public class AuthService(
         var user = await unitOfWork.UserRepository.FindByEmailAsync(userDto.Email);
         var isValid = user != null && await unitOfWork.UserRepository.CheckPasswordAsync(user, userDto.Password);
         if (!isValid)
-            return Result<AuthTokensResponse>.Failure(CommonErrors.WrongCredentials);
+            return Result<AuthTokensResponse>.Failure(CommonErrors.WrongCredentials());
         if (!user.IsActive)
             return Result<AuthTokensResponse>.Failure(AuthErrors.UserNotActive);
         
@@ -46,7 +46,7 @@ public class AuthService(
         
         var result = await unitOfWork.SaveChangesAsync();
         
-        return result <= 0 ? Result<AuthTokensResponse>.Failure(CommonErrors.InternalServerError) : response;
+        return result <= 0 ? Result<AuthTokensResponse>.Failure(CommonErrors.InternalServerError()) : response;
     }
 
     public async Task<Result<AuthTokensResponse>> RefreshTokenAsync(string accessToken, string refreshToken)
@@ -57,16 +57,16 @@ public class AuthService(
         if (string.IsNullOrEmpty(userId))
         {
             await unitOfWork.RefreshTokenRepository.RevokeToken(refreshToken);
-            return Result<AuthTokensResponse>.Failure(CommonErrors.InvalidRefreshToken);
+            return Result<AuthTokensResponse>.Failure(CommonErrors.InvalidRefreshToken());
         }
         
         var user = await unitOfWork.UserRepository.FindByIdAsync(userId);
         if (user == null)
-            return Result<AuthTokensResponse>.Failure(CommonErrors.InvalidRefreshToken);
+            return Result<AuthTokensResponse>.Failure(CommonErrors.InvalidRefreshToken());
             
         var token = await unitOfWork.RefreshTokenRepository.CheckTokenExistsByUserId(refreshToken, userId);
         if (token == null || token.ExpiryDate < DateTime.UtcNow || token.IsRevoked)
-            return Result<AuthTokensResponse>.Failure(CommonErrors.InvalidRefreshToken);
+            return Result<AuthTokensResponse>.Failure(CommonErrors.InvalidRefreshToken());
         
         var response = await GenerateTokenResponse(user);
         if (!response.IsSuccess)
@@ -96,7 +96,7 @@ public class AuthService(
     {
         var tokenExists = await unitOfWork.RefreshTokenRepository.CheckTokenExists(refreshToken);
         if (!tokenExists)
-            return Result.Failure(CommonErrors.InvalidRefreshToken);
+            return Result.Failure(CommonErrors.InvalidRefreshToken());
         
         await unitOfWork.RefreshTokenRepository.RevokeToken(refreshToken);
         await unitOfWork.SaveChangesAsync();
@@ -111,7 +111,7 @@ public class AuthService(
             user = await unitOfWork.UserRepository.FindByEmailAsync(email);
         
         if (user == null)
-            return Result.Failure(CommonErrors.NotFound);
+            return Result.Failure(CommonErrors.NotFound());
         
         var roles = await unitOfWork.UserRepository.GetRolesAsync(user);
         foreach (var r in roles)
@@ -121,6 +121,6 @@ public class AuthService(
         
         var result = await unitOfWork.UserRepository.AddToRoleAsync(user, role);
         
-        return result.Succeeded? Result.Success() : Result.Failure(CommonErrors.InternalServerError);
+        return result.Succeeded? Result.Success() : Result.Failure(CommonErrors.InternalServerError());
     }
 }

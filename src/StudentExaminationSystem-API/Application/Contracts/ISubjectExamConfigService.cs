@@ -5,6 +5,6 @@ namespace Application.Contracts;
 public interface ISubjectExamConfigService
 {
     Task<Result<GetSubjectExamConfigAppDto?>> GetByIdAsync(int id);
-    Task<Result<int>> CreateAsync(CreateUpdateSubjectExamConfigAppDto dto, int id);
-    Task<Result<bool>> UpdateAsync(int id, CreateUpdateSubjectExamConfigAppDto dto);
+    Task<Result<int>> CreateAsync(CreateSubjectExamConfig dto, int id);
+    Task<Result<bool>> UpdateAsync(int id, UpdateSubjectExamConfigAppDto dto);
 }

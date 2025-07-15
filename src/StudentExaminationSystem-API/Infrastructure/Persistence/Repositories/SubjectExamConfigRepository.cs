@@ -19,11 +19,18 @@ public class SubjectExamConfigRepository(DataContext context)
                 TotalQuestions = config.TotalQuestions,
                 DifficultyProfileId = config.DifficultyProfileId,
                 DifficultyProfileSpecifications =
-                    config.DifficultyProfile.Name + " " +
+                    config.DifficultyProfile!.Name + " " +
                     config.DifficultyProfile.EasyPercentage + "% Easy, " +
                     config.DifficultyProfile.MediumPercentage + "% Medium, " +
                     config.DifficultyProfile.HardPercentage + "% Hard"
             }).FirstOrDefaultAsync(c => c.Id == id);
+    }
+    
+    public async Task<SubjectExamConfig?> GetConfigToGenerateExamAsync(int subjectId)
+    {
+        return await context.SubjectExamConfigs
+            .Include(c => c.DifficultyProfile)
+            .FirstOrDefaultAsync(c => c.SubjectId == subjectId);
     }
 
     public async Task<bool> ExistsAsync(int id)

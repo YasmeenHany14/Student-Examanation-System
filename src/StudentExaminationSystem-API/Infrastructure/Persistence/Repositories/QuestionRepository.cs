@@ -1,4 +1,6 @@
 using Domain.DTOs;
+using Domain.DTOs.ExamDtos;
+using Domain.Enums;
 using Domain.Models;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -37,5 +39,50 @@ public class QuestionRepository(DataContext context) : BaseRepository<Question>(
             projectedCollection,
             resourceParameters.PageNumber,
             resourceParameters.PageSize);
+    }
+
+    public async Task<IEnumerable<LoadExamQuestionInfraDto>> GetQuestionsForExamAsync(
+        GenerateExamConfigDto generateExamConfig)
+    {
+        var allQuestions = new List<LoadExamQuestionInfraDto>();
+        foreach (var difficulty in generateExamConfig.QuestionCounts)
+        {
+            var questions = await GetQuestionsByDifficultyAsync(
+                (Difficulty)difficulty.Key, difficulty.Value);
+            allQuestions.AddRange(questions);
+        }
+        return allQuestions.OrderBy(_ => Guid.NewGuid()).ToList();
+    }
+
+    private async Task<IEnumerable<LoadExamQuestionInfraDto>> GetQuestionsByDifficultyAsync(
+        Difficulty difficulty, 
+        int count)
+    {
+        if (count <= 0)
+            return new List<LoadExamQuestionInfraDto>();
+
+        return await context.Questions
+            .AsNoTracking()
+            .Where(q => q.Difficulty == difficulty)
+            .Include(q => q.Choices)
+            .OrderBy(q => Guid.NewGuid()) // Random ordering
+            .Take(count)
+            .Select(q => new LoadExamQuestionInfraDto
+            {
+                QuestionId = q.Id,
+                QuestionText = q.Content,
+                Choices = q.Choices!.Select(c => new LoadExamChoiceInfraDto
+                {
+                    ChoiceId = c.Id,
+                    ChoiceText = c.Content,
+                    IsSelected = false
+                }).ToList()
+            })
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<LoadExamQuestionInfraDto>> GetRunningExamQuestionsAsync(int examId)
+    {
+        throw new NotImplementedException();
     }
 }

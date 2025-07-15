@@ -10,6 +10,7 @@ public class Subject : PrimaryKeyBaseEntity, ISoftDelete
     public ICollection<Question>? Questions { get; set; } 
     public ICollection<GeneratedExam>? GeneratedExams { get; set; }
     public SubjectExamConfig? SubjectExamConfig { get; set; }
+    public ICollection<StudentSubject>? StudentSubjects { get; set; }
 
     public bool IsDeleted { get; set; } = false;
     public string DeletedBy { get; set; } = string.Empty;

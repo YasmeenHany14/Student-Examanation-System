@@ -1,9 +1,8 @@
-﻿namespace Domain.DTOs;
+﻿namespace Domain.DTOs.ExamDtos;
 
-public class GetQuestionChoiceHistoryInfraDto : BaseDto
+public class LoadExamChoiceInfraDto : BaseDto
 {
     public int ChoiceId { get; set; }
     public string ChoiceText { get; set; } = string.Empty;
-    public bool IsCorrect { get; set; }
     public bool IsSelected { get; set; }
 }
