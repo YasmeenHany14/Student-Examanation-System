@@ -74,6 +74,7 @@ public class ExamService(
     public async Task<Result<bool>> SubmitExamAsync(SubmitExamAppDto submitExamDto)
     {
         var userId = userContext.UserId;
+        var hiddenUserId = await unitOfWork.StudentRepository.GetHiddenUserIdAsync(userId.ToString());
         var examEntry = cacheService.GetExamEntryAsync(userId.ToString());
 
         if (examEntry.Value is null)

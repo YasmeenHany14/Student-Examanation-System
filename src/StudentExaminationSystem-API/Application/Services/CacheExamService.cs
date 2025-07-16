@@ -16,7 +16,8 @@ public class CacheExamService(IMemoryCache cache) : ICacheExamService
             var entry = new ExamCacheEntryDto(examId, subjectId, durationMinutes);
             var cacheEntryOptions = new MemoryCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(durationMinutes + 5)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(durationMinutes + 5),
+                Priority = CacheItemPriority.High
             };
             cache.Set(cacheKey, entry, cacheEntryOptions);
         }

@@ -9,12 +9,14 @@ using Domain.DTOs.ExamDtos;
 using Domain.Enums;
 using Domain.Models;
 using Domain.Repositories;
+using Domain.UserContext;
 
 namespace Application.Services;
 
 public class GenerateExamService(
     IUnitOfWork unitOfWork,
-    ICacheExamService cacheService
+    ICacheExamService cacheService,
+    IUserContext userContext
     ) : IGenerateExamService
 {
     public async Task<Result<LoadExamAppDto>> GenerateExamAsync(int subjectId, int userId)
@@ -51,13 +53,16 @@ public class GenerateExamService(
             {
                 ExamId = examEntryId,
                 SubjectId = subjectId,
-                Questions = examQuestions
+                Questions = examQuestions,
+                ExamEndTime = DateTime.UtcNow.AddMinutes(examConfig.DurationMinutes)
             });
-
     }
     
     private async Task<Result<int>> SaveExamEntryToDatabaseAsync(
-        int subjectId, int userId, SubjectExamConfig examConfig, IEnumerable<LoadExamQuestionAppDto> questions)
+        int subjectId,
+        int userId,
+        SubjectExamConfig examConfig,
+        IEnumerable<LoadExamQuestionAppDto> questions)
     {
         var exam = new GeneratedExam()
         {
@@ -72,14 +77,16 @@ public class GenerateExamService(
                 QuestionId = q.QuestionId,
                 IsCorrect = false,
                 QuestionChoiceId = null,
+                DisplayOrder = q.QuestionOrder
             }).ToList()
         };
         await unitOfWork.ExamHistoryRepository.AddAsync(exam);
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)
             return Result<int>.Failure(CommonErrors.InternalServerError());
-        
-        cacheService.CacheExamEntry(exam.Id, subjectId, userId.ToString(), examConfig.DurationMinutes);
+
+        var userIdString = userContext.UserId;
+        cacheService.CacheExamEntry(exam.Id, subjectId, userIdString.ToString(), examConfig.DurationMinutes);
         return Result<int>.Success(exam.Id);
     }
     

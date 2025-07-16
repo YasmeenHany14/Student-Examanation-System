@@ -21,6 +21,7 @@ builder.Services.AddApplication();
 builder.Services.AddWebApi(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAntiforgery();
 
 builder.Services.AddAuthorization(options =>
 {
@@ -57,6 +58,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseAntiforgery();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

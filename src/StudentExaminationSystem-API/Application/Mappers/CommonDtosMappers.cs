@@ -13,10 +13,19 @@ public static class CommonDtosMappers
         var destination = new TDestination();
         foreach (var prop in typeof(TSource).GetProperties())
         {
+            //TODO: number mapping does not work for update here, and maybe it does not work somewhere else - investigate
             var destProp = typeof(TDestination).GetProperty(prop.Name);
-            if (destProp != null && destProp.CanWrite && destProp.PropertyType == prop.PropertyType)
+            if (destProp != null && destProp.CanWrite)
             {
-                destProp.SetValue(destination, prop.GetValue(source));
+                var sourceType = prop.PropertyType;
+                var destType = destProp.PropertyType;
+                var sourceUnderlying = Nullable.GetUnderlyingType(sourceType) ?? sourceType;
+                var destUnderlying = Nullable.GetUnderlyingType(destType) ?? destType;
+
+                if (sourceUnderlying == destUnderlying)
+                {
+                    destProp.SetValue(destination, prop.GetValue(source));
+                }
             }
         }
         return destination;
