@@ -81,6 +81,14 @@ public class SubjectService(
 
     public async Task<Result<bool>> DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        var subject = await unitOfWork.SubjectRepository.GetEntityByIdAsync(id);
+        if (subject == null)
+            return Result<bool>.Failure(CommonErrors.NotFound());
+
+        unitOfWork.SubjectRepository.DeleteAsync(subject);
+        var result = await unitOfWork.SaveChangesAsync();
+        if (result <= 0)
+            return Result<bool>.Failure(CommonErrors.InternalServerError());
+        return Result<bool>.Success(true);
     }
 }

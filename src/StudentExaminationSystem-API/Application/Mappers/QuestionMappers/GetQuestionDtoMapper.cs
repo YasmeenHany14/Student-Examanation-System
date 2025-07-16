@@ -17,6 +17,7 @@ public static class GetQuestionDtoMapper
             Content = questionDto.Content,
             SubjectId = questionDto.SubjectId,
             DifficultyId = questionDto.DifficultyId,
+            IsActive = questionDto.IsActive,
             Choices = questionDto.Choices.Select(c => new GetQuestionChoiceAppDto
             {
                 Id = c.Id,

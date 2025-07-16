@@ -65,6 +65,15 @@ public class DifficultyProfileService(
 
     public async Task<Result<bool>> DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        var entity = await unitOfWork.DifficultyProfileRepository.GetEntityByIdAsync(id);
+        if (entity == null)
+            return Result<bool>.Failure(CommonErrors.NotFound());
+
+        unitOfWork.DifficultyProfileRepository.DeleteAsync(entity);
+        var result = await unitOfWork.SaveChangesAsync();
+        if (result <= 0)
+            return Result<bool>.Failure(CommonErrors.InternalServerError());
+        
+        return Result<bool>.Success(true);
     }
 }

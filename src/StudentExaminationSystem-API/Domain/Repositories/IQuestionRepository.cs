@@ -9,5 +9,5 @@ public interface IQuestionRepository : IBaseRepository<Question>
 {
     Task<PagedList<GetQuestionInfraDto>> GetAllAsync(QuestionResourceParameters resourceParameters);
     Task<IEnumerable<LoadExamQuestionInfraDto>> GetQuestionsForExamAsync(GenerateExamConfigDto generateExamConfig);
-    Task<IEnumerable<LoadExamQuestionInfraDto>> GetRunningExamQuestionsAsync(int examId);
+    Task<Question?> GetEntityByIdAsync(int id);
 }

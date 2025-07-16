@@ -10,6 +10,11 @@ namespace Infrastructure.Persistence.Repositories;
 
 public class QuestionRepository(DataContext context) : BaseRepository<Question>(context), IQuestionRepository
 {
+    public async Task<Question?> GetEntityByIdAsync(int id)
+    {
+        return await context.Questions
+            .FindAsync(id);
+    }
     public async Task<PagedList<GetQuestionInfraDto>> GetAllAsync(QuestionResourceParameters resourceParameters)
     {
         var collection = context.Questions
@@ -27,6 +32,7 @@ public class QuestionRepository(DataContext context) : BaseRepository<Question>(
             Content = q.Content,
             SubjectId = q.SubjectId,
             DifficultyId = (int?)q.Difficulty,
+            IsActive = q.IsActive,
             Choices = q.Choices!.Select(c => new GetQuestionChoiceInfraDto
             {
                 Id = c.Id,
@@ -63,7 +69,7 @@ public class QuestionRepository(DataContext context) : BaseRepository<Question>(
 
         return await context.Questions
             .AsNoTracking()
-            .Where(q => q.Difficulty == difficulty)
+            .Where(q => q.Difficulty == difficulty && q.IsActive)
             .Include(q => q.Choices)
             .OrderBy(q => Guid.NewGuid()) // Random ordering
             .Take(count)
@@ -79,10 +85,5 @@ public class QuestionRepository(DataContext context) : BaseRepository<Question>(
                 }).ToList()
             })
             .ToListAsync();
-    }
-
-    public async Task<IEnumerable<LoadExamQuestionInfraDto>> GetRunningExamQuestionsAsync(int examId)
-    {
-        throw new NotImplementedException();
     }
 }

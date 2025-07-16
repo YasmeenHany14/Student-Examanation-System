@@ -3,7 +3,7 @@ using Domain.Models.Common;
 
 namespace Domain.Models;
 
-public class Question : PrimaryKeyBaseEntity, ISoftDelete
+public class Question : PrimaryKeyBaseEntity
 {
     public int SubjectId { get; set; } // FK
     public string Content { get; set; } = string.Empty;
@@ -13,6 +13,4 @@ public class Question : PrimaryKeyBaseEntity, ISoftDelete
     public Difficulty? Difficulty { get; set; }
     public ICollection<QuestionChoice>? Choices { get; set; }
     public ICollection<AnswerHistory>? AnswerHistories { get; set; }
-    public bool IsDeleted { get; set; } = false;
-    public string DeletedBy { get; set; } = string.Empty;
 }

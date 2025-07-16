@@ -57,7 +57,7 @@ public class StudentController(
     }
 
     // Disable student => update is active status to true/false
-    [HttpPatch("{id}", Name = "UpdateStudentStatus")]
+    [HttpGet("{id}/state", Name = "UpdateStudentStatus")]
     public async Task<IActionResult> ToggleStatusAsync(string id)
     {
         var result = await userService.ToggleStatusAsync(id);

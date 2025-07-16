@@ -81,4 +81,16 @@ public class DifficultyProfileController(
 
         return NoContent();
     }
+    
+    // DELETE ASYNC
+    [HttpDelete("/{id}", Name = "DeleteDifficultyProfile")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteAsync(int id)
+    {
+        var result = await difficultyProfileService.DeleteAsync(id);
+        if (!result.IsSuccess)
+            return result.ToActionResult();
+        return NoContent();
+    }
 }

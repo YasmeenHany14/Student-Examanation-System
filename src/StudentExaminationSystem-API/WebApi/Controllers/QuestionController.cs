@@ -44,5 +44,31 @@ public class QuestionController(
         return Created();
     }
     
+    // MakeQuestionNotActiveAsync
+    [HttpGet("{questionId:int}/not-active", Name = "MakeQuestionNotActive")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> MakeQuestionNotActiveAsync(int questionId)
+    {
+        var result = await questionService.MakeQuestionNotActiveAsync(questionId);
+        if (!result.IsSuccess)
+            return result.ToActionResult();
+
+        return Ok();
+    }
+    
     // DeleteAsync
+    [HttpDelete("{questionId:int}", Name = "DeleteQuestion")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteAsync(int questionId)
+    {
+        var result = await questionService.DeleteAsync(questionId);
+        if (!result.IsSuccess)
+            return result.ToActionResult();
+
+        return NoContent();
+    }
 }

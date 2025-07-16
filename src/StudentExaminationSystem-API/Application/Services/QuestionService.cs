@@ -40,4 +40,33 @@ public class QuestionService(
 
         return Result<int>.Success(question.Id);
     }
+
+    public async Task<Result<bool>> MakeQuestionNotActiveAsync(int questionId)
+    {
+        var question = await unitOfWork.QuestionRepository.GetEntityByIdAsync(questionId);
+        if (question == null)
+            return Result<bool>.Failure(CommonErrors.NotFound());
+
+        question.IsActive = false;
+        unitOfWork.QuestionRepository.UpdateAsync(question);
+        
+        var result = await unitOfWork.SaveChangesAsync();
+        if (result <= 0)
+            return Result<bool>.Failure(CommonErrors.InternalServerError());
+
+        return Result<bool>.Success(true);
+    }
+
+    public async Task<Result<bool>> DeleteAsync(int questionId)
+    {
+        var question = await unitOfWork.QuestionRepository.GetEntityByIdAsync(questionId);
+        if (question == null)
+            return Result<bool>.Failure(CommonErrors.NotFound());
+        
+        unitOfWork.QuestionRepository.DeleteAsync(question);
+        var result = await unitOfWork.SaveChangesAsync();
+        if (result <= 0)
+            return Result<bool>.Failure(CommonErrors.InternalServerError());
+        return Result<bool>.Success(true);
+    }
 }

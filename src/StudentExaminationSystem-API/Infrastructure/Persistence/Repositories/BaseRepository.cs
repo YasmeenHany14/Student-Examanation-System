@@ -20,16 +20,11 @@ public class BaseRepository<TEntity>(DataContext context) : IBaseRepository<TEnt
         return entity;
     }
 
-    // TODO: ASK WHETHER I SHOULD PASS ID OR ENTITY
-    // FOR SOFT DELETE, PASS ENTITY
     public void DeleteAsync(TEntity entity)
     {
-        throw new NotImplementedException();
-    }
-
-    public Task<TEntity?> FindByIdAsync(int id)
-    {
-        throw new NotImplementedException();
+        entity.IsDeleted = true;
+        context.Entry(entity).State = EntityState.Modified;
+        // context.Set<TEntity>().Remove(entity);
     }
 
     protected static async Task<PagedList<T>> CreateAsync<T>(

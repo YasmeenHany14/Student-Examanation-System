@@ -12,5 +12,6 @@ public class GetQuestionAppDto : AppBaseDto
     public int? SubjectId { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? DifficultyId { get; set; }
+    public bool? IsActive { get; set; }
     public IEnumerable<GetQuestionChoiceAppDto> Choices { get; set; }
 }

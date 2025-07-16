@@ -99,4 +99,17 @@ public class SubjectController(
 
         return NoContent();
     }
+    
+    // DELETE ASYNC
+    [HttpDelete("{id}", Name = "DeleteSubject")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteAsync(int id)
+    {
+        var result = await subjectService.DeleteAsync(id);
+        if (!result.IsSuccess)
+            return result.ToActionResult();
+
+        return NoContent();
+    }
 }
