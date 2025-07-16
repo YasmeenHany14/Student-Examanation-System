@@ -5,23 +5,17 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace WebApi.Helpers.Filters;
 
 public class CanAccessResourceFilter(
-    IUserContext userContext,
-    bool requireAuthorization = true
+    IUserContext userContext
     ) : Attribute, IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context,
         ActionExecutionDelegate next)
     {
         var isAuthenticated = userContext.IsAuthenticated;
-
-        if (!isAuthenticated && requireAuthorization)
+        
+        if (!isAuthenticated)
         {
             context.Result = new UnauthorizedResult();
-            return;
-        }
-        if (!isAuthenticated && !requireAuthorization)
-        {
-            await next();
             return;
         }
         
@@ -29,9 +23,9 @@ public class CanAccessResourceFilter(
         var isAdmin = userContext.IsAdmin;
 
         string? id = null;
-        var hasOwnerId = context.ActionArguments.ContainsKey("Id");
+        var hasOwnerId = context.ActionArguments.ContainsKey("id");
         if (hasOwnerId)
-            id = context.ActionArguments["Id"]?.ToString() ?? string.Empty;
+            id = context.ActionArguments["id"]?.ToString() ?? string.Empty;
         else
         {
             if (context.ActionArguments.TryGetValue("id", out var objId))

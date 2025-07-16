@@ -1,7 +1,9 @@
 ﻿using Application.Contracts;
 using Application.DTOs.QuestionDtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shared.ResourceParameters;
+using WebApi.Helpers;
 using WebApi.Helpers.Extensions;
 using WebApi.Helpers.Filters;
 using WebApi.Helpers.PaginationHelper;
@@ -18,6 +20,7 @@ public class QuestionController(
     // GetAllAsync Paged
     [HttpGet(Name = "GetAllQuestions")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> GetAllAsync(
         [FromQuery] QuestionResourceParameters resourceParameters)
     {
@@ -34,6 +37,7 @@ public class QuestionController(
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     [InputValidationFilter<CreateQuestionAppDto>]
     public async Task<IActionResult> CreateAsync([FromBody] CreateQuestionAppDto questionDto)
     {
@@ -49,6 +53,7 @@ public class QuestionController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> MakeQuestionNotActiveAsync(int questionId)
     {
         var result = await questionService.MakeQuestionNotActiveAsync(questionId);
@@ -63,6 +68,7 @@ public class QuestionController(
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> DeleteAsync(int questionId)
     {
         var result = await questionService.DeleteAsync(questionId);

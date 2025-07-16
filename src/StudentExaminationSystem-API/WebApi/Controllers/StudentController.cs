@@ -2,9 +2,12 @@
 using Application.DTOs.StudentDtos;
 using Application.Helpers;
 using FluentValidation;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Shared.ResourceParameters;
+using WebApi.Helpers;
 using WebApi.Helpers.Extensions;
 using WebApi.Helpers.Filters;
 using WebApi.Helpers.PaginationHelper;
@@ -23,6 +26,8 @@ public class StudentController(
     // GET ALL ASYNC
     [HttpGet(Name = "GetAllStudents")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> GetAllAsync(
         [FromQuery] StudentResourceParameters resourceParameters)
     {
@@ -36,7 +41,11 @@ public class StudentController(
 
     // GET BY ID ASYNC
     [HttpGet("{id}", Name = "GetStudentById")]
-    // [TypeFilter(typeof(CanAccessResourceFilter), Arguments = [true])]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [RequireAntiforgeryToken]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    [ServiceFilter<CanAccessResourceFilter>]
     public async Task<IActionResult> GetByIdAsync(string id)
     {
         var result = await studentService.GetByIdAsync(id);
@@ -58,6 +67,11 @@ public class StudentController(
 
     // Disable student => update is active status to true/false
     [HttpGet("{id}/state", Name = "UpdateStudentStatus")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> ToggleStatusAsync(string id)
     {
         var result = await userService.ToggleStatusAsync(id);
@@ -68,6 +82,9 @@ public class StudentController(
     [HttpPost("{id}", Name = "AddStudentSubject")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> AddStudentSubjectAsync(
         string id, [FromBody] int subjectId)
     {

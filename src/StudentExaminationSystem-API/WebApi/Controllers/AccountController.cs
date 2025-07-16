@@ -16,6 +16,8 @@ public class AccountController(
 {
     // Login
     [HttpPost("login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Login([FromBody] LoginDto model)
     {
         var response = await authService.LoginAsync(model);
@@ -33,6 +35,8 @@ public class AccountController(
     
     // Refresh
     [HttpPost("refresh-token")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [InputValidationFilter<RefreshRequestDto>]
     public async Task<IActionResult> RefreshToken([FromBody] RefreshRequestDto refreshRequest)
     {

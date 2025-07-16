@@ -3,6 +3,7 @@ using Application.DTOs.DifficultyProfileDtos;
 using Application.Helpers;
 using FluentValidation;
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Shared.ResourceParameters;
@@ -24,6 +25,7 @@ public class DifficultyProfileController(
     // GET ALL ASYNC
     [HttpGet(Name = "GetAllDifficultyProfiles")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> GetAllAsync(
         [FromQuery] DifficultyProfileResourceParameters resourceParameters)
     {
@@ -38,7 +40,7 @@ public class DifficultyProfileController(
     // GET ALL ASYNC WITHOUT PAGINATION
     [HttpGet("all", Name = "GetAllDifficultyProfilesDropdown")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [TypeFilter(typeof(CanAccessResourceFilter), Arguments = [false])]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> GetAllAsync()
     {
         var profiles = await difficultyProfileService.GetAllAsync();
@@ -47,6 +49,9 @@ public class DifficultyProfileController(
     
     // POST ASYNC
     [HttpPost(Name = "CreateDifficultyProfile")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     [InputValidationFilter<CreateUpdateDifficultyProfileAppDto>]
     public async Task<IActionResult> CreateAsync(int id, [FromBody] CreateUpdateDifficultyProfileAppDto dto)
     {
@@ -58,6 +63,10 @@ public class DifficultyProfileController(
 
     // PATCH ASYNC
     [HttpPatch("/{id}" ,Name = "UpdateDifficultyProfile")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> UpdateAsync(
         int id,
         [FromBody] JsonPatchDocument<CreateUpdateDifficultyProfileAppDto> patchDocument)
@@ -86,6 +95,7 @@ public class DifficultyProfileController(
     [HttpDelete("/{id}", Name = "DeleteDifficultyProfile")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> DeleteAsync(int id)
     {
         var result = await difficultyProfileService.DeleteAsync(id);

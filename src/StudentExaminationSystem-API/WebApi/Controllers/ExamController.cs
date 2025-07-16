@@ -19,6 +19,8 @@ public class ExamController(
     // GET ALL ASYNC
     [HttpGet(Name = "GetAllExams")]
     [ProducesResponseType(StatusCodes.Status200OK)]
+    [RequireAntiforgeryToken]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<IActionResult> GetAllAsync(
         [FromQuery] ExamHistoryResourceParameters resourceParameters)
     {
@@ -34,6 +36,7 @@ public class ExamController(
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [RequireAntiforgeryToken]
     [Authorize(AuthenticationSchemes = "Bearer")]
     public async Task<IActionResult> GetFullExamAsync(int examId)
     {

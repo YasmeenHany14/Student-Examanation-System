@@ -2,6 +2,7 @@
 using Application.DTOs.SubjectExamConfigDtos;
 using Application.Helpers;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Helpers;
@@ -19,6 +20,7 @@ public class SubjectExamConfigController(
 {
     // GET BY ID ASYNC
     [HttpGet(Name = "GetSubjectExamConfigById")]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> GetByIdAsync(int id)
     {
         var result = await configService.GetByIdAsync(id);
@@ -27,6 +29,9 @@ public class SubjectExamConfigController(
 
     // POST ASYNC
     [HttpPost(Name = "CreateSubjectExamConfig")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     [InputValidationFilter<CreateUpdateSubjectExamConfig>]
     public async Task<IActionResult> CreateAsync(int id, [FromBody] CreateUpdateSubjectExamConfig dto)
     {
@@ -38,6 +43,9 @@ public class SubjectExamConfigController(
 
     // PATCH ASYNC
     [HttpPatch(Name = "UpdateSubjectExamConfig")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
     public async Task<IActionResult> UpdateAsync(
         int id,
         [FromBody] JsonPatchDocument<CreateUpdateSubjectExamConfig> patchDocument)

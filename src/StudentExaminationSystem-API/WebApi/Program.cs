@@ -58,6 +58,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseExceptionHandler();
 app.UseAntiforgery();
 app.UseHttpsRedirection();
 app.UseAuthentication();
