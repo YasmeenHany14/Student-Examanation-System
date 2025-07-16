@@ -14,7 +14,7 @@ namespace WebApi.Controllers;
 [Route("api/subject/{id}/exam-config")]
 public class SubjectExamConfigController(
     ISubjectExamConfigService configService,
-    IValidator<UpdateSubjectExamConfigAppDto> validator
+    IValidator<CreateUpdateSubjectExamConfig> validator
 ) : ControllerBase
 {
     // GET BY ID ASYNC
@@ -27,8 +27,8 @@ public class SubjectExamConfigController(
 
     // POST ASYNC
     [HttpPost(Name = "CreateSubjectExamConfig")]
-    [InputValidationFilter<CreateSubjectExamConfig>]
-    public async Task<IActionResult> CreateAsync(int id, [FromBody] CreateSubjectExamConfig dto)
+    [InputValidationFilter<CreateUpdateSubjectExamConfig>]
+    public async Task<IActionResult> CreateAsync(int id, [FromBody] CreateUpdateSubjectExamConfig dto)
     {
         var result = await configService.CreateAsync(dto, id);
         if (!result.IsSuccess)
@@ -40,7 +40,7 @@ public class SubjectExamConfigController(
     [HttpPatch(Name = "UpdateSubjectExamConfig")]
     public async Task<IActionResult> UpdateAsync(
         int id,
-        [FromBody] JsonPatchDocument<UpdateSubjectExamConfigAppDto> patchDocument)
+        [FromBody] JsonPatchDocument<CreateUpdateSubjectExamConfig> patchDocument)
     {
         var config = await configService.GetByIdAsync(id);
         if (!config.IsSuccess)

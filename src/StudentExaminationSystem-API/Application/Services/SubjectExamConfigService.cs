@@ -13,7 +13,7 @@ namespace Application.Services;
 
 public class SubjectExamConfigService(
     IUnitOfWork unitOfWork,
-    IValidator<CreateSubjectExamConfig> configValidator
+    IValidator<CreateUpdateSubjectExamConfig> configValidator
     ) : ISubjectExamConfigService
 {
     public async Task<Result<GetSubjectExamConfigAppDto?>> GetByIdAsync(int id) // includes difficulty profile
@@ -27,7 +27,7 @@ public class SubjectExamConfigService(
     }
 
     public async Task<Result<int>> CreateAsync(
-        CreateSubjectExamConfig createDto,
+        CreateUpdateSubjectExamConfig createDto,
         int id)
     {
         var validationResult = await ValidationHelper.ValidateAndReportAsync(configValidator,
@@ -46,7 +46,7 @@ public class SubjectExamConfigService(
         return Result<int>.Success(configEntity.SubjectId);
     }
 
-    public async Task<Result<bool>> UpdateAsync(int id, UpdateSubjectExamConfigAppDto updateDto)
+    public async Task<Result<bool>> UpdateAsync(int id, CreateUpdateSubjectExamConfig updateDto)
     {
         var config = await unitOfWork.SubjectExamConfigRepository.FindAsync(id);
         

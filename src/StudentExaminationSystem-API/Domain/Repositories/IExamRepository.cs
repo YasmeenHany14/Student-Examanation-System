@@ -11,4 +11,5 @@ public interface IExamRepository : IBaseRepository<GeneratedExam>
     Task<GetFullExamInfraDto?> GetAllQuestionHistoryAsync(int examId);
     
     Task<GeneratedExam?> GetExamForUpdate(int examId);
+    Task<bool> ExamExistsAsync(int userId, int subjectId);
 }

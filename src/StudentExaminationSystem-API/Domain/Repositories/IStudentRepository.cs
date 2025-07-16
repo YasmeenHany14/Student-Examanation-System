@@ -10,4 +10,5 @@ public interface IStudentRepository : IBaseRepository<Student>
     Task<GetStudentByIdInfraDto?> GetByIdAsync(string id);
     Task<Student?> FindByUserIdAsync(string id);
     Task<int> GetHiddenUserIdAsync(string userId);
+    Task<bool> IsSubjectAvailableAsync(int userId, int subjectId);
 }

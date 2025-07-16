@@ -1,24 +1,29 @@
+using Application.Common.Constants.ValidationMessages;
 using Application.DTOs.SubjectExamConfigDtos;
 using Domain.Repositories;
 using FluentValidation;
 
 namespace Application.Validators.SubjectExamConfigValidators;
-public class CreateSubjectExamConfigDtoValidator : AbstractValidator<CreateSubjectExamConfig>
+public class CreateSubjectExamConfigDtoValidator : AbstractValidator<CreateUpdateSubjectExamConfig>
 {
     public CreateSubjectExamConfigDtoValidator(IUnitOfWork unitOfWork)
     {
+        RuleLevelCascadeMode = CascadeMode.Stop;
         RuleSet("Input", () =>
         {
-            // RuleFor(x => x.TotalQuestions)
-            //     .GreaterThan(5)
-            //     .WithMessage("Total questions must be greater than 0.");
-            //
-            // RuleFor(x => x.DurationMinutes)
-            //     .GreaterThan(10)
-            //     .WithMessage("sss");
-            // RuleFor(x => x.DifficultyProfileId)
-            //     .GreaterThan(0)
-            //     .WithMessage("sss");
+            RuleFor(x => x.TotalQuestions)
+                .NotNull().WithMessage(x => string.Format(CommonValidationErrorMessages.NotNull, nameof(CreateUpdateSubjectExamConfig.TotalQuestions)))
+                .GreaterThanOrEqualTo(5).WithMessage(x => string.Format(CommonValidationErrorMessages.GreaterThanOrEqual, nameof(CreateUpdateSubjectExamConfig.TotalQuestions), 5))
+                .LessThanOrEqualTo(100).WithMessage(x => string.Format(CommonValidationErrorMessages.LessThanOrEqual, nameof(CreateUpdateSubjectExamConfig.TotalQuestions), 100));
+            
+            RuleFor(x => x.DurationMinutes)
+                .NotNull().WithMessage(x => string.Format(CommonValidationErrorMessages.NotNull, nameof(CreateUpdateSubjectExamConfig.DurationMinutes)))
+                .GreaterThanOrEqualTo(10).WithMessage(x => string.Format(CommonValidationErrorMessages.GreaterThanOrEqual, nameof(CreateUpdateSubjectExamConfig.DurationMinutes), 5))
+                .LessThanOrEqualTo(120).WithMessage(x => string.Format(CommonValidationErrorMessages.LessThanOrEqual, nameof(CreateUpdateSubjectExamConfig.DurationMinutes), 120));
+            
+            RuleFor(x => x.DifficultyProfileId)
+                .NotNull().WithMessage(x => string.Format(CommonValidationErrorMessages.NotNull, nameof(CreateUpdateSubjectExamConfig.DifficultyProfileId)))
+                .GreaterThan(0).WithMessage(x => string.Format(CommonValidationErrorMessages.GreaterThan, nameof(CreateUpdateSubjectExamConfig.DifficultyProfileId), 0));
         });
         
         

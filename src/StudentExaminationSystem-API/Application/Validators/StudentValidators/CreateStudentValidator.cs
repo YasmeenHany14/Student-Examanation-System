@@ -11,8 +11,6 @@ public class CreateStudentValidator : CreateUserValidator<CreateStudentAppDto>
     public CreateStudentValidator(IUnitOfWork unitOfWork) : base(unitOfWork.UserRepository)
     {
         RuleLevelCascadeMode = CascadeMode.Stop;
-        ClassLevelCascadeMode = CascadeMode.Stop;
-        
         RuleSet("CreateBusiness", () =>
         {
             // Add rules to check whether courses, and gender are valid

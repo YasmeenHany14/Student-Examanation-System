@@ -90,4 +90,11 @@ public class ExamRepository(
             .Include(e => e.QuestionHistory)
             .FirstOrDefaultAsync(e => e.Id == examId);
     }
+
+    public async Task<bool> ExamExistsAsync(int userId, int subjectId)
+    {
+        return await context.GeneratedExams
+            .AsNoTracking()
+            .AnyAsync(e => e.StudentId == userId && e.SubjectId == subjectId);
+    }
 }

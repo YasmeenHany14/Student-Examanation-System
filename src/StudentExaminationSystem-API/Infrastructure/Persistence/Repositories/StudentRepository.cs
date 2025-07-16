@@ -79,4 +79,11 @@ public class StudentRepository(DataContext context)
             .Select(s => s.Id)
             .FirstOrDefaultAsync();
     }
+
+    public async Task<bool> IsSubjectAvailableAsync(int userId, int subjectId)
+    {
+        return await context.StudentSubjects
+            .AsNoTracking()
+            .AnyAsync(ss => ss.StudentId == userId && ss.SubjectId == subjectId);
+    }
 }

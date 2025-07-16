@@ -9,6 +9,7 @@ public class CreateSubjectDtoValidator : AbstractValidator<CreateSubjectAppDto>
 {
     public CreateSubjectDtoValidator(IUnitOfWork unitOfWork)
     {
+        RuleLevelCascadeMode = CascadeMode.Stop;
         RuleSet("Input", () =>
         {
             RuleFor(s => s.Name)

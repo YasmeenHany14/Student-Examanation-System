@@ -54,11 +54,7 @@ public class ExamService(
     {
         var userId = userContext.UserId;
         var hiddenUserId = await unitOfWork.StudentRepository.GetHiddenUserIdAsync(userId.ToString());
-        var validationObject = new GenerateExamRequestDto(subjectId, hiddenUserId);
-        var validationResult = await ValidationHelper.ValidateAndReportAsync(generateValidator, validationObject, "Business");
-        
-        if (!validationResult.IsSuccess)
-            return Result<LoadExamAppDto>.Failure(validationResult.Error);
+
 
         var examEntry = cacheService.GetExamEntryAsync(userId.ToString());
         
@@ -68,6 +64,11 @@ public class ExamService(
         if (examEntry.Value is not null && examEntry.Value.ExamEndTime > DateTime.UtcNow)
             return await generateService.GetCachedExamEntryAsync(examEntry.Value);
             
+        var validationObject = new GenerateExamRequestDto(subjectId, hiddenUserId);
+        var validationResult = await ValidationHelper.ValidateAndReportAsync(generateValidator, validationObject, "Business");
+        
+        if (!validationResult.IsSuccess)
+            return Result<LoadExamAppDto>.Failure(validationResult.Error);
         return await generateService.GenerateExamAsync(subjectId, hiddenUserId);
     }
 

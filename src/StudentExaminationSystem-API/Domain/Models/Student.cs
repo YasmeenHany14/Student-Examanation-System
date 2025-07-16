@@ -10,7 +10,5 @@ public class Student : PrimaryKeyBaseEntity
     
     public User? User { get; set; }
     public ICollection<GeneratedExam>? GeneratedExams { get; set; }
-    
-    // TODO: many to many nav??
     public ICollection<StudentSubject>? StudentSubjects { get; set; }
 }

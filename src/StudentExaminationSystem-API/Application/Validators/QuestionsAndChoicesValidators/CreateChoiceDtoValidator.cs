@@ -7,7 +7,8 @@ namespace Application.Validators.QuestionsAndChoicesValidators;
 public class CreateChoiceDtoValidator : AbstractValidator<CreateQuestionChoiceAppDto>
 {
     public CreateChoiceDtoValidator()
-    {
+    {            
+        RuleLevelCascadeMode = CascadeMode.Stop;
         RuleSet("Input", () =>
         {
             RuleFor(c => c.Content)

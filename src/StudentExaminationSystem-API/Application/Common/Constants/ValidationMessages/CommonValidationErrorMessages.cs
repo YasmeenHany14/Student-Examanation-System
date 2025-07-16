@@ -18,4 +18,8 @@ public static class CommonValidationErrorMessages
     public const string DoesNotExist = "The {0} of ID {1} does not exist.";
     public const string ResourceNotFound = "The requested resource was not found.";
     public const string MaxLength = "The {0} field must have a maximum length of {1} characters.";
+    public const string TotalSum = "Total {0} sum must be equal to {1}.";
+    public const string GreaterThanOrEqual = "The {0} field must be greater than or equal to {1}.";
+    public const string LessThanOrEqual = "The {0} field must be less than or equal to {1}.";
+    public const string GreaterThan = "The {0} field must be greater than {1}.";
 }
