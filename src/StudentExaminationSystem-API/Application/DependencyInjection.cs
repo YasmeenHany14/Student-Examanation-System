@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddScoped<IExamService, ExamService>();
         services.AddScoped<ICacheExamService, CacheExamService>();
         services.AddScoped<IGenerateExamService, GenerateExamService>();
+        services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IUserService, UserService>();
         services.AddValidatorsFromAssemblyContaining<CreateStudentAppDto>();
         return services;

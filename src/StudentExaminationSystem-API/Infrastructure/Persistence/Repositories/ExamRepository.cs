@@ -33,6 +33,22 @@ public class ExamRepository(
             resourceParameters.PageSize);
     }
     
+    public async Task<AdminDashboardInfraDto> GetDashboardDataAsync()
+    {
+        var query = await context.GeneratedExams
+            .AsNoTracking()
+            .Where(e => e.IsCompleted)
+            .Select(e => new { passed = e.StudentScore >= e.ExamTotalScore / 2, })
+            .ToListAsync();
+        
+        return new AdminDashboardInfraDto
+        {
+            TotalExamsCompleted = query.Count,
+            PassedExamsCount = query.Count(e => e.passed),
+            FailedExamsCount = query.Count(e => !e.passed),
+        };
+    }
+    
     public async Task<GetFullExamInfraDto?> GetAllQuestionHistoryAsync(int examId)
     {
         var examInfo = await context.GeneratedExams

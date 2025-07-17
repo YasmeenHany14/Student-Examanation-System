@@ -86,4 +86,11 @@ public class StudentRepository(DataContext context)
             .AsNoTracking()
             .AnyAsync(ss => ss.StudentId == userId && ss.SubjectId == subjectId);
     }
+    
+    public async Task<int> GetTotalStudentsCountAsync()
+    {
+        return await context.Students
+            .AsNoTracking()
+            .CountAsync();
+    }
 }
