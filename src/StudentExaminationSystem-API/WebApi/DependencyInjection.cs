@@ -31,6 +31,7 @@ public static class DependencyInjection
         services.AddScoped<IPaginationHelper<GetExamHistoryAppDto, ExamHistoryResourceParameters>
             , PaginationHelper<GetExamHistoryAppDto, ExamHistoryResourceParameters>>();
         
+        services.AddProblemDetails();
         services.AddExceptionHandler<GlobalExceptionHandler>();
         
         #region Configure JWT Authentication

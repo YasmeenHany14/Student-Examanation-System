@@ -28,7 +28,7 @@ public class ExamController(
         paginationHelper
             .CreateMetaDataHeader(
                 exams.Value, resourceParameters, Response.Headers, Url, "GetAllExams");
-        
+
         return exams.ToActionResult();
     }
     
@@ -66,3 +66,5 @@ public class ExamController(
         return result.ToActionResult();
     }
 }
+
+

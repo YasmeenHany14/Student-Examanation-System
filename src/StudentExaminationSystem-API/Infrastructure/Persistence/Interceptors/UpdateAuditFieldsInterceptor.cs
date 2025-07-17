@@ -58,13 +58,12 @@ public sealed class UpdateAuditFieldsInterceptor(IUserContext userContext) : Sav
             entityEntry.Property(e => e.CreatedBy).IsModified = false;
             entityEntry.Property(e => e.UpdatedBy).CurrentValue = currentUserId;
         }
-        //TODO: ASK HOW TO HANDLE SOFT DELETE
-        // if (entityEntry.State == EntityState.Deleted)
-        // {
-        //     entityEntry.Property(e => e.IsDeleted).CurrentValue = true;
-        //     entityEntry.State = EntityState.Modified;
-        //     entityEntry.Property(e => e.UpdatedAt).CurrentValue = DateTime.Now;
-        //     entityEntry.Property(e => e.DeletedBy).CurrentValue = currentUserId;
-        // }
+        if (entityEntry.State == EntityState.Deleted && entityEntry is not IHardDelete)
+        {
+            entityEntry.Property(e => e.IsDeleted).CurrentValue = true;
+            entityEntry.State = EntityState.Modified;
+            entityEntry.Property(e => e.UpdatedAt).CurrentValue = DateTime.Now;
+            entityEntry.Property(e => e.DeletedBy).CurrentValue = currentUserId;
+        }
     }
 }

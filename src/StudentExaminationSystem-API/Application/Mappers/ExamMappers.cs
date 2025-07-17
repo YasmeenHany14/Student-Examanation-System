@@ -11,16 +11,9 @@ public static class ExamMappers
 {
     public static PagedList<GetExamHistoryAppDto> ToListDto(this PagedList<GetAllExamsInfraDto> exams)
     {
-        var count = exams.TotalCount;
-        var pageNumber = exams.CurrentPage;
-        var pageSize = exams.PageSize;
-        var totalPages = exams.TotalPages;
         return new PagedList<GetExamHistoryAppDto>(
-            exams.Select(s => s.MapTo<GetAllExamsInfraDto, GetExamHistoryAppDto>()).ToList(),
-            count,
-            pageNumber,
-            pageSize,
-            totalPages
+            exams.Pagination,
+            exams.Data.Select(s => s.MapTo<GetAllExamsInfraDto, GetExamHistoryAppDto>()).ToList()
         );
     }
 

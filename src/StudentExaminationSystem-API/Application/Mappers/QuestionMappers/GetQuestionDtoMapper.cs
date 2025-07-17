@@ -30,17 +30,9 @@ public static class GetQuestionDtoMapper
     public static PagedList<GetQuestionAppDto> ToListDto(
         this PagedList<GetQuestionInfraDto> questions)
     {
-        var count = questions.TotalCount;
-        var pageNumber = questions.CurrentPage;
-        var pageSize = questions.PageSize;
-        var totalPages = questions.TotalPages;
-        return new PagedList<GetQuestionAppDto>(
-            questions.Select(s => ToGetQuestionAppDto(s)).ToList(),
-            count,
-            pageNumber,
-            pageSize,
-            totalPages
-        );
+        return new PagedList<GetQuestionAppDto> (
+            questions.Pagination,
+            questions.Data.Select(s => ToGetQuestionAppDto(s)).ToList());
     }
     
     public static IEnumerable<LoadExamQuestionAppDto> ToLoadExamQuestionAppDto(

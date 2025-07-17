@@ -22,9 +22,9 @@ public class BaseRepository<TEntity>(DataContext context) : IBaseRepository<TEnt
 
     public void DeleteAsync(TEntity entity)
     {
-        entity.IsDeleted = true;
-        context.Entry(entity).State = EntityState.Modified;
-        // context.Set<TEntity>().Remove(entity);
+        // entity.IsDeleted = true;
+        // context.Entry(entity).State = EntityState.Modified;
+        context.Set<TEntity>().Remove(entity);
     }
 
     protected static async Task<PagedList<T>> CreateAsync<T>(

@@ -36,6 +36,7 @@ public static class ResultExtension
             nameof(CommonErrors.WrongCredentials) or "WrongCredentials" => new UnauthorizedObjectResult(error),
             nameof(CommonErrors.CannotGenerateToken) or "CannotGenerateToken" => new ObjectResult(error) { StatusCode = 500 },
             nameof(CommonErrors.InvalidRefreshToken) or "InvalidRefreshToken" => new UnauthorizedObjectResult(error),
+            nameof(AuthErrors.Forbidden) or "Forbidden" => new ForbidResult(),
             _ => new ObjectResult(error) { StatusCode = 500 }
         };
     }

@@ -28,7 +28,7 @@ public class DifficultyProfileService(
         DifficultyProfileResourceParameters resourceParameters)
     {
         var pagedProfiles = await unitOfWork.DifficultyProfileRepository.GetAllAsync(resourceParameters);
-        var mappedProfiles = pagedProfiles.Select(p => 
+        var mappedProfiles = pagedProfiles.Data.Select(p => 
             p.MapTo<GetDifficultyProfileInfraDto, GetDifficultyProfileAppDto>());
         return Result<PagedList<GetDifficultyProfileAppDto>>.Success(pagedProfiles.ToListDto());
     }

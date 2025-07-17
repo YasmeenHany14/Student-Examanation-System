@@ -46,15 +46,51 @@ public class QuestionRepository(DataContext context) : BaseRepository<Question>(
             resourceParameters.PageNumber,
             resourceParameters.PageSize);
     }
+    
+    // public async Task<IEnumerable<LoadExamQuestionInfraDto>> GetQuestionsForExamAsync(
+    //     GenerateExamConfigDto generateExamConfig)
+    // {
+    //     var allQuestions = new List<LoadExamQuestionInfraDto>();
+    //     foreach (var difficulty in generateExamConfig.QuestionCounts)
+    //     {
+    //         var questions = await GetQuestionsByDifficultyAsync(
+    //             (Difficulty)difficulty.Key, difficulty.Value);
+    //         allQuestions.AddRange(questions);
+    //     }
+    //     return allQuestions.OrderBy(_ => Guid.NewGuid()).ToList();
+    // }
 
     public async Task<IEnumerable<LoadExamQuestionInfraDto>> GetQuestionsForExamAsync(
         GenerateExamConfigDto generateExamConfig)
     {
         var allQuestions = new List<LoadExamQuestionInfraDto>();
+        var maxQuestionsCount = generateExamConfig.QuestionCounts.Values.Max();
+        var dbQuestions = await context.Questions
+            .AsNoTracking()
+            .Where(q => q.IsActive)
+            .Include(q => q.Choices)
+            .OrderBy(q => Guid.NewGuid()) // Random ordering
+            .Take(maxQuestionsCount)
+            .Select(q => new LoadExamQuestionInfraDto
+            {
+                QuestionId = q.Id,
+                QuestionText = q.Content,
+                Difficulty = q.Difficulty,
+                Choices = q.Choices!.Select(c => new LoadExamChoiceInfraDto
+                {
+                    ChoiceId = c.Id,
+                    ChoiceText = c.Content,
+                    IsSelected = false
+                }).ToList()
+            })
+            .GroupBy(q => q.Difficulty)
+            .ToListAsync();
+        
         foreach (var difficulty in generateExamConfig.QuestionCounts)
         {
-            var questions = await GetQuestionsByDifficultyAsync(
-                (Difficulty)difficulty.Key, difficulty.Value);
+            var questions = dbQuestions
+                .FirstOrDefault(g => (int)g.Key == difficulty.Key)?
+                .Take(difficulty.Value) ?? new List<LoadExamQuestionInfraDto>();
             allQuestions.AddRange(questions);
         }
         return allQuestions.OrderBy(_ => Guid.NewGuid()).ToList();

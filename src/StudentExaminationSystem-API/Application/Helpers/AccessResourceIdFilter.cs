@@ -21,11 +21,6 @@ public static class AccessResourceIdFilter
 
     public static bool IsAdminOrCanAccess(string userId, IUserContext userContext)
     {
-        //TODO: REMOVE THE IS AUTHENTICATED CHECK LATER
-        var isAuthenticated = userContext.IsAuthenticated;
-        if (!isAuthenticated)
-            return true;
-
         var isAdmin = userContext.IsAdmin;
         if (isAdmin)
             return true;

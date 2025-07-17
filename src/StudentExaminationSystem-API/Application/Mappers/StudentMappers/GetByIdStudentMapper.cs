@@ -35,16 +35,10 @@ public static class GetByIdStudentMapper
     
     public static PagedList<GetStudentByIdAppDto> ToListDto(this PagedList<GetStudentByIdInfraDto> students)
     {
-        var count = students.TotalCount;
-        var pageNumber = students.CurrentPage;
-        var pageSize = students.PageSize;
-        var totalPages = students.TotalPages;
+
         return new PagedList<GetStudentByIdAppDto>(
-            students.Select(s => ToListDto(s)).ToList(),
-            count,
-            pageNumber,
-            pageSize,
-            totalPages
+            students.Pagination,
+            students.Data.Select(s => ToListDto(s)).ToList()
         );
     }
 }

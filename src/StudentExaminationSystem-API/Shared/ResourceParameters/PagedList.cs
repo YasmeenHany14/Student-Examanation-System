@@ -1,35 +1,20 @@
 ﻿namespace Shared.ResourceParameters;
 
-public class PagedList<TEntity> : List<TEntity>
+public class PagedList<TEntity>
 {
-    public int CurrentPage { get; private set; }
-    public int TotalPages { get; private set; }
-    public int PageSize { get; private set; }
-    public int TotalCount { get; private set; }
-
-    public bool HasPrevious => (CurrentPage > 1);
-    public bool HasNext => (CurrentPage < TotalPages);
-
+    public PaginationMetaData Pagination { get; set; }
+    public List<TEntity> Data { get; set; }
+    
     public PagedList(List<TEntity> items, int count, int pageNumber, int pageSize)
     {
-        TotalCount = count;
-        PageSize = pageSize;
-        CurrentPage = pageNumber;
-        TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-        AddRange(items);
+        var totalPages = (int)Math.Ceiling(count / (double)pageSize);
+        Pagination = new PaginationMetaData(pageNumber, totalPages, pageSize, count);
+        Data = items;
     }
-    public PagedList(List<TEntity> items, int count, int pageNumber, int pageSize, int totalPages)
+    
+    public PagedList(PaginationMetaData pagination, List<TEntity> items)
     {
-        TotalCount = count;
-        PageSize = pageSize;
-        CurrentPage = pageNumber;
-        TotalPages = totalPages;
-        AddRange(items);
-    }
-
-    public static PagedList<TEntity> ToPagedList(IEnumerable<TEntity> items, int count, int pageNumber, int pageSize)
-    {
-        var pagedList = new PagedList<TEntity>(items.ToList(), count, pageNumber, pageSize);
-        return pagedList;
+        Pagination = pagination;
+        Data = items;
     }
 }

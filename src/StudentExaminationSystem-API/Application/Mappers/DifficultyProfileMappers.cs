@@ -28,17 +28,9 @@ public static class DifficultyProfileMappers
 
     public static PagedList<GetDifficultyProfileAppDto> ToListDto(this PagedList<GetDifficultyProfileInfraDto> subjects)
     {
-        var count = subjects.TotalCount;
-        var pageNumber = subjects.CurrentPage;
-        var pageSize = subjects.PageSize;
-        var totalPages = subjects.TotalPages;
         return new PagedList<GetDifficultyProfileAppDto>(
-            subjects.Select(s => s.MapTo<GetDifficultyProfileInfraDto, GetDifficultyProfileAppDto>()).ToList(),
-            count,
-            pageNumber,
-            pageSize,
-            totalPages
+            subjects.Pagination,
+            subjects.Data.Select(s => s.MapTo<GetDifficultyProfileInfraDto, GetDifficultyProfileAppDto>()).ToList()
         );
     }
 }
-

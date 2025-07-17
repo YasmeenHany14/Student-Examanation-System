@@ -13,23 +13,13 @@ public class PaginationHelper<TDto, TResourceParameters> : IPaginationHelper<TDt
         IUrlHelper urlHelper,
         string routeName)
     {
-        var previousPageLink = items.HasPrevious ?
+        var previousPageLink = items.Pagination.HasPrevious ?
             CreateResourceUri(resourceParameters, routeName, ResourceUriType.PreviousPage, urlHelper) : null;
 
-        var nextPageLink = items.HasNext ?
+        var nextPageLink = items.Pagination.HasNext ?
             CreateResourceUri(resourceParameters, routeName, ResourceUriType.NextPage, urlHelper) : null;
-
-        var paginationMetadata = new
-        {
-            totalCount = items.TotalCount,
-            pageSize = items.PageSize,
-            currentPage = items.CurrentPage,
-            totalPages = items.TotalPages,
-            previousPageLink,
-            nextPageLink
-        };
-        responseHeaders.Append("X-Pagination",
-            JsonHelper.SerializeWithCustomOptions(paginationMetadata));
+        
+        items.Pagination.Links = new PaginationLinks(previousPageLink, nextPageLink);
     }
 
 
@@ -67,5 +57,4 @@ public class PaginationHelper<TDto, TResourceParameters> : IPaginationHelper<TDt
 
         return urlHelper?.Link(routeName, queryParameters);
     }
-
 }
