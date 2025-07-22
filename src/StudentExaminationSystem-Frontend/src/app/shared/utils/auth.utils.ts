@@ -4,7 +4,9 @@ export function isNotAuthRequest(req: any): boolean {
   const authUrls = [
     routes.authRefresh,
     routes.authLogin,
-    routes.authLogout
+    routes.authLogout,
+    routes.authRegisterStudent,
+    routes.subjectsDropdown,
   ];
   return authUrls.some(url => req.url.includes(url));
 }

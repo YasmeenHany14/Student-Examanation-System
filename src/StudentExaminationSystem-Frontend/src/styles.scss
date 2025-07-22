@@ -6,3 +6,23 @@
 @tailwind components;
 @tailwind utilities;
 @plugin "tailwindcss-primeui";
+
+html, body {
+  font-family: 'Poppins', sans-serif;
+}
+
+.body_background {
+  background-color: #fff;
+}
+
+body {
+  margin: 0 auto;
+  padding: 0;
+  width: 85%;
+}
+
+@media (min-width: 768px) {
+  body {
+    width: 92%;
+  }
+}

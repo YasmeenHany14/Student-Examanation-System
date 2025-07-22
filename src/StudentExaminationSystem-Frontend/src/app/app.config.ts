@@ -22,7 +22,7 @@ export const appConfig: ApplicationConfig = {
         options: {
           cssLayer: {
             name: 'primeng',
-            order: 'theme, base, primeng'
+            order: 'theme, base, primeng, tailwind'
           },
           darkModeSelector: 'none'
         }

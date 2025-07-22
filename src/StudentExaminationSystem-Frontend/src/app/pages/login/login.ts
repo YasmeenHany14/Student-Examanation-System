@@ -7,6 +7,7 @@ import {LoginRequest} from '../../core/models/user.model';
 import {Message} from 'primeng/message';
 import {getErrorMessages, isInvalid} from '../../shared/utils/form.utlis';
 import {IftaLabel} from 'primeng/iftalabel';
+import {MessageService} from 'primeng/api';
 
 @Component({
   selector: 'app-login',
@@ -23,6 +24,7 @@ import {IftaLabel} from 'primeng/iftalabel';
   styleUrl: './login.scss'
 })
 export class Login {
+  private readonly messageService = inject(MessageService);
   private authService = inject(AuthService);
 
   loginDetails: LoginRequest = {
@@ -51,8 +53,13 @@ export class Login {
   onSubmit() {
     this.authService.login(this.loginDetails).subscribe({
       next: (response) => {
-        console.log('Login successful', response);
-        // Handle successful login, e.g., redirect to dashboard
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Login Successful',
+          detail: 'You have successfully logged in.',
+          life: 3000,
+          closable: true
+        })
       },
     });
   }

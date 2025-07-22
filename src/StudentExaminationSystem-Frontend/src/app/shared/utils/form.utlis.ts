@@ -12,6 +12,9 @@ export function getErrorMessages(form: FormGroup, controlName: string): string[]
       case 'maxlength': return `Maximum length is ${error.requiredLength}`;
       case 'email': return 'Please enter a valid email address';
       case 'pattern': return 'Invalid format';
+      case 'weakPassword': return 'Password should contain at least 1 Uppercase, 1 Lowercase, 1 Number and 1 Special Character';
+      case 'passwordMismatch': return 'Passwords do not match';
+      case 'invalidBirthdate': return 'Birthdate cannot be in the future or invalid';
       default: return 'Invalid value';
     }
   });

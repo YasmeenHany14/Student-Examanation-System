@@ -1,0 +1,20 @@
+.flex-form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+
+  .flex-form-label {
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}
+
+.flex-form-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

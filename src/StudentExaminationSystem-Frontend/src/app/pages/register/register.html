@@ -1,0 +1,107 @@
+<section class="register-page">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <h2 class="text-center mb-4">Register</h2>
+        <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+          <div class="flex-form-row">
+            <p-iftalabel class="flex-form-label">
+              <input pInputText psize="large" type="text" id="first-name" placeholder="First Name"
+                     formControlName="FirstName" [invalid]="isInvalid(signUpForm, 'FirstName')"/>
+              <label for="first-name">First Name</label>
+              @if (isInvalid(signUpForm, 'FirstName')) {
+                @for (errorMsg of getErrorMessages(signUpForm, 'FirstName'); track errorMsg) {
+                  <p-message severity="error" size="small" variant="simple">{{ errorMsg }}</p-message>
+                }
+              }
+            </p-iftalabel>
+
+            <p-iftalabel class="flex-form-label">
+              <input pInputText psize="large" type="text" id="last-name" placeholder="Last Name" formControlName="LastName" [invalid]="isInvalid(signUpForm, 'LastName')" />
+              <label for="last-name">Last Name</label>
+              @if (isInvalid(signUpForm, 'LastName')) {
+                @for (errorMsg of getErrorMessages(signUpForm, 'LastName'); track errorMsg) {
+                  <p-message severity="error" size="small" variant="simple">{{ errorMsg }}</p-message>
+                }
+              }
+            </p-iftalabel>
+          </div>
+
+          <div class="flex-form-row">
+            <p-iftalabel class="flex-form-label">
+              <input pInputText psize="large" type="email" id="email" placeholder="Email" formControlName="email" [invalid]="isInvalid(signUpForm, 'email')" />
+              <label for="email">Email</label>
+              @if (isInvalid(signUpForm, 'email')) {
+                @for (errorMsg of getErrorMessages(signUpForm, 'email'); track errorMsg) {
+                  <p-message severity="error" size="small" variant="simple">{{ errorMsg }}</p-message>
+                }
+              }
+            </p-iftalabel>
+            <p-iftalabel class="flex-form-label">
+              <p-multiSelect
+                [options]="courses"
+                optionLabel="name"
+                placeholder="Select Courses"
+                formControlName="courses"
+              />
+            </p-iftalabel>
+
+          </div>
+
+
+          <div class="flex-form-row">
+            <p-iftalabel class="flex-form-label">
+              <p-password psize="large" type="password" id="password" placeholder="Password" [toggleMask]="true" formControlName="password" [invalid]="isInvalid(signUpForm, 'password')" />
+              <label for="password">Password</label>
+              @if (isInvalid(signUpForm, 'password')) {
+                @for (errorMsg of getErrorMessages(signUpForm, 'password'); track errorMsg) {
+                  <p-message severity="error" size="small" variant="simple">{{ errorMsg }}</p-message>
+                }
+              }
+            </p-iftalabel>
+            <p-iftalabel class="flex-form-label">
+              <input pInputText psize="large" type="password" id="confirm-password" placeholder="Confirm Password" formControlName="confirmPassword" [invalid]="isInvalid(signUpForm, 'confirmPassword')" />
+              <label for="confirm-password">Confirm Password</label>
+              @if (isInvalid(signUpForm, 'confirmPassword')) {
+                @for (errorMsg of getErrorMessages(signUpForm, 'confirmPassword'); track errorMsg) {
+                  <p-message severity="error" size="small" variant="simple">{{ errorMsg }}</p-message>
+                }
+              }
+            </p-iftalabel>
+          </div>
+
+          <div class="flex-form-row">
+            <p-iftalabel class="flex-form-label">
+              <p-datepicker type="date" id="birthdate" placeholder="Birthdate" formControlName="birthdate" [invalid]="isInvalid(signUpForm, 'birthdate')" />
+              <label for="birthdate">Birthdate</label>
+              @if (isInvalid(signUpForm, 'birthdate')) {
+                @for (errorMsg of getErrorMessages(signUpForm, 'birthdate'); track errorMsg) {
+                  <p-message severity="error" size="small" variant="simple">{{ errorMsg }}</p-message>
+                }
+              }
+            </p-iftalabel>
+
+            <p-iftalabel class="flex-form-label">
+              <p-select id="gender" formControlName="gender" [options]="genders" optionLabel="label" placeholder="Select a Gender" >
+              </p-select>
+              <label for="gender">Gender</label>
+              @if (isInvalid(signUpForm, 'gender')) {
+                @for (errorMsg of getErrorMessages(signUpForm, 'gender'); track errorMsg) {
+                  <p-message severity="error" size="small" variant="simple">{{ errorMsg }}</p-message>
+                }
+              }
+            </p-iftalabel>
+          </div>
+
+          <div class="flex-form-row justify-center">
+            <button pButton type="submit" class="btn btn-primary" [disabled]="signUpForm.invalid">Register</button>
+          </div>
+        </form>
+
+        <p class="mt-3 text-center">
+          Already have an account? <a routerLink="account/login" class="text-primary hover:underline cursor-pointer">Login here</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

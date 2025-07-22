@@ -41,8 +41,6 @@ public class SubjectController(
     // GET ALL ASYNC WITHOUT PAGINATION
     [HttpGet("all", Name = "GetAllSubjectsDropdown")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    [Authorize(AuthenticationSchemes = "Bearer")]
-    // [TypeFilter(typeof(CanAccessResourceFilter), Arguments = [false])]
     public async Task<IActionResult> GetAllAsync()
     {
         var subjects = await subjectService.GetAllAsync();

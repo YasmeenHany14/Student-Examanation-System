@@ -6,6 +6,8 @@ export interface RegisterStudentRequest {
   firstName: string;
   lastName: string;
   confirmPassword: string;
-  birthdate: string; // ISO date string
-  gender: gender
+  birthdate: Date; // ISO date string
+  gender: gender,
+  joinDate: Date,
+  courseIds: number[]
 }
