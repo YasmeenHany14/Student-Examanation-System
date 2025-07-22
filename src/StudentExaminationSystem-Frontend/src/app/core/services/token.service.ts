@@ -59,6 +59,12 @@ export class TokenService {
     return expiry.getTime() <= Date.now();
   }
 
+  isAccessTokenExpired(): boolean {
+    const expiry = this.getTokenExpiry();
+    if (!expiry) return true;
+    return expiry.getTime() <= Date.now();
+  }
+
   getTokenExpiry(): Date | null {
     const expiry = localStorage.getItem(this.ACCESS_TOKEN_EXPIRY);
     return expiry ? new Date(expiry) : null;
