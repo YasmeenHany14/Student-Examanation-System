@@ -43,8 +43,6 @@ export class ErrorService {
       return {
         code: httpError.error.code,
         description: httpError.error.description,
-        message: httpError.error.message,
-        details: httpError.error.details
       };
     }
 
@@ -54,8 +52,6 @@ export class ErrorService {
     return {
       code: errorCode,
       description: httpError.error?.description || httpError.statusText,
-      message: httpError.error?.message || httpError.message,
-      details: this.extractValidationDetails(httpError)
     };
   }
 

@@ -7,12 +7,27 @@ import {tokenInterceptor} from './core/interceptors/token.interceptor';
 import {refreshTokenInterceptor} from './core/interceptors/refresh-token.interceptor';
 import {errorInterceptor} from './core/interceptors/error.interceptor';
 import {MessageService} from 'primeng/api';
+import {providePrimeNG} from 'primeng/config';
+import Lara from '@primeuix/themes/lara';
+import Aura from '@primeuix/themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideAnimationsAsync(),
+    providePrimeNG({
+      theme: {
+        preset: Aura,
+        options: {
+          cssLayer: {
+            name: 'primeng',
+            order: 'theme, base, primeng'
+          },
+          darkModeSelector: 'none'
+        }
+      }
+    }),
     provideHttpClient(
       withInterceptors([
         refreshTokenInterceptor,

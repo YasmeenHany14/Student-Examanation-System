@@ -1,14 +1,23 @@
 import {Component, inject} from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
-import {FormsModule} from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {AuthService} from '../../core/services/auth.service';
 import {LoginRequest} from '../../core/models/user.model';
+import {Message} from 'primeng/message';
+import {getErrorMessages, isInvalid} from '../../shared/utils/form.utlis';
+import {IftaLabel} from 'primeng/iftalabel';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    InputTextModule,
+    ReactiveFormsModule,
+    Message,
+    ButtonModule,
+    IftaLabel
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss'
@@ -21,13 +30,30 @@ export class Login {
     password: ''
   }
 
-  onLogin() {
+  loginForm = new FormGroup({
+    email: new FormControl('', {
+      validators: [Validators.required, Validators.email, Validators.minLength(6)],
+      updateOn: 'blur'
+    }),
+    password: new FormControl('', {
+      validators: [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.maxLength(20)
+      ],
+      updateOn: 'blur'
+    })
+  })
+
+  getErrorMessages = getErrorMessages;
+  isInvalid = isInvalid;
+
+  onSubmit() {
     this.authService.login(this.loginDetails).subscribe({
       next: (response) => {
         console.log('Login successful', response);
         // Handle successful login, e.g., redirect to dashboard
-      }
+      },
     });
   }
-
 }
