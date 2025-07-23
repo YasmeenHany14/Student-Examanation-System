@@ -1,26 +1,26 @@
-<section class="register-page">
+<section class="register-page mx-auto my-8 p-4 bg-white shadow-md rounded-lg mt-10">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        <h2 class="text-center mb-4">Register</h2>
+        <h2 class="text-center mb-4 text-5xl ">Register</h2>
         <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
           <div class="flex-form-row">
             <p-iftalabel class="flex-form-label">
               <input pInputText psize="large" type="text" id="first-name" placeholder="First Name"
-                     formControlName="FirstName" [invalid]="isInvalid(signUpForm, 'FirstName')"/>
+                     formControlName="firstName" [invalid]="isInvalid(signUpForm, 'firstName')"/>
               <label for="first-name">First Name</label>
               @if (isInvalid(signUpForm, 'FirstName')) {
-                @for (errorMsg of getErrorMessages(signUpForm, 'FirstName'); track errorMsg) {
+                @for (errorMsg of getErrorMessages(signUpForm, 'firstName'); track errorMsg) {
                   <p-message severity="error" size="small" variant="simple">{{ errorMsg }}</p-message>
                 }
               }
             </p-iftalabel>
 
             <p-iftalabel class="flex-form-label">
-              <input pInputText psize="large" type="text" id="last-name" placeholder="Last Name" formControlName="LastName" [invalid]="isInvalid(signUpForm, 'LastName')" />
+              <input pInputText psize="large" type="text" id="last-name" placeholder="Last Name" formControlName="lastName" [invalid]="isInvalid(signUpForm, 'lastName')" />
               <label for="last-name">Last Name</label>
-              @if (isInvalid(signUpForm, 'LastName')) {
-                @for (errorMsg of getErrorMessages(signUpForm, 'LastName'); track errorMsg) {
+              @if (isInvalid(signUpForm, 'lastName')) {
+                @for (errorMsg of getErrorMessages(signUpForm, 'lastName'); track errorMsg) {
                   <p-message severity="error" size="small" variant="simple">{{ errorMsg }}</p-message>
                 }
               }
@@ -37,13 +37,16 @@
                 }
               }
             </p-iftalabel>
-            <p-iftalabel class="flex-form-label">
+            <p-iftalabel id="courses" class="flex-form-label">
               <p-multiSelect
-                [options]="courses"
+                [options]="courses()"
+                [loading]="loading()"
+                optionValue="id"
                 optionLabel="name"
                 placeholder="Select Courses"
-                formControlName="courses"
+                formControlName="courseIds"
               />
+              <label for="courses">Courses</label>
             </p-iftalabel>
 
           </div>
@@ -93,13 +96,25 @@
             </p-iftalabel>
           </div>
 
+          <div class="flex">
+            <p-iftalabel class="flex-form-label">
+              <p-datepicker type="date" id="joinDate" placeholder="Join Date" formControlName="joinDate" [invalid]="isInvalid(signUpForm, 'joinDate')" />
+              <label for="joinDate">join Date</label>
+              @if (isInvalid(signUpForm, 'joinDate')) {
+                @for (errorMsg of getErrorMessages(signUpForm, 'joinDate'); track errorMsg) {
+                  <p-message severity="error" size="small" variant="simple">{{ errorMsg }}</p-message>
+                }
+              }
+            </p-iftalabel>
+          </div>
+
           <div class="flex-form-row justify-center">
             <button pButton type="submit" class="btn btn-primary" [disabled]="signUpForm.invalid">Register</button>
           </div>
         </form>
 
         <p class="mt-3 text-center">
-          Already have an account? <a routerLink="account/login" class="text-primary hover:underline cursor-pointer">Login here</a>
+          Already have an account? <a routerLink="/account/login" class="text-primary hover:underline cursor-pointer">Login here</a>
         </p>
       </div>
     </div>

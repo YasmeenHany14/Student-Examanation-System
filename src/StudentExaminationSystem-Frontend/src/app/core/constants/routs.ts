@@ -7,4 +7,5 @@
   public static readonly subjectsDropdown = '/subject/all';
   public static readonly studentSubjectDropdown = '/subject/all';
   public static readonly subjects = '/subject';
+  public static readonly adminDashboard = '/home/dashboard';
 }

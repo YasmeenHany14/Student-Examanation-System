@@ -8,6 +8,7 @@ import {Message} from 'primeng/message';
 import {getErrorMessages, isInvalid} from '../../shared/utils/form.utlis';
 import {IftaLabel} from 'primeng/iftalabel';
 import {MessageService} from 'primeng/api';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +19,8 @@ import {MessageService} from 'primeng/api';
     ReactiveFormsModule,
     Message,
     ButtonModule,
-    IftaLabel
+    IftaLabel,
+    RouterLink
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss'

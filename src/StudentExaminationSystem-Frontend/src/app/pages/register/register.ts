@@ -1,4 +1,4 @@
-import {Component, inject, OnInit} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {RegisterStudentRequest} from '../../core/models/student.model';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
 import {getErrorMessages, isInvalid} from '../../shared/utils/form.utlis';
@@ -16,6 +16,8 @@ import {gender} from '../../core/enums/gender';
 import {MultiSelect} from 'primeng/multiselect';
 import {SubjectService} from '../../core/services/subject.service';
 import {DropdownModel} from '../../core/models/common.model';
+import {routes} from '../../core/constants/routs';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -29,7 +31,8 @@ import {DropdownModel} from '../../core/models/common.model';
     Password,
     DatePickerModule,
     Select,
-    MultiSelect
+    MultiSelect,
+    RouterLink
   ],
   templateUrl: './register.html',
   styleUrl: './register.scss'
@@ -38,11 +41,14 @@ export class Register implements OnInit {
   private readonly messageService = inject(MessageService);
   private authService = inject(AuthService);
   private subjectService = inject(SubjectService);
-  courses: any
+  courses = signal<DropdownModel[]>([]);
+  loading = signal(true);
+
   ngOnInit(): void {
     const subscription = this.subjectService.getSubjectsDropdown().subscribe({
       next: (subjects) => {
-        this.courses = subjects.map(subject => subject.id);
+        this.courses.set(subjects);
+        this.loading.set(false);
         subscription.unsubscribe();
       },
       error: (error) => {
@@ -68,24 +74,24 @@ export class Register implements OnInit {
     firstName: '',
     lastName: '',
     confirmPassword: '',
-    birthdate: new Date(),
+    birthdate: (new Date()).toISOString(),
     gender: 0,
-    joinDate: new Date(),
+    joinDate: (new Date()).toISOString(),
     courseIds: []
   }
 
   // create birthdate and password validators
 
   signUpForm = new FormGroup({
-    email: new FormControl(this.registerDetails.email, {
+    email: new FormControl<string>(this.registerDetails.email, {
       validators: [Validators.required, Validators.email, Validators.minLength(6)],
       updateOn: 'blur',
     }),
-    FirstName: new FormControl(this.registerDetails.firstName, {
+    firstName: new FormControl(this.registerDetails.firstName, {
       validators: [Validators.required, Validators.minLength(2), Validators.maxLength(20)],
       updateOn: 'blur',
     }),
-    LastName: new FormControl(this.registerDetails.lastName, {
+    lastName: new FormControl(this.registerDetails.lastName, {
       validators: [Validators.required, Validators.minLength(2), Validators.maxLength(20)],
       updateOn: 'blur',
     }),
@@ -100,13 +106,13 @@ export class Register implements OnInit {
     birthdate: new FormControl(this.registerDetails.birthdate, {
       validators: [Validators.required, birthdateValidator],
     }),
-    gender: new FormControl(this.registerDetails.gender, {
+    gender: new FormControl(0, {
       validators: [Validators.required],
     }),
-    joindate: new FormControl(this.registerDetails.joinDate, {
+    joinDate: new FormControl(this.registerDetails.joinDate, {
       validators: [Validators.required],
     }),
-    courses: new FormControl(this.registerDetails.courseIds, {
+    courseIds: new FormControl(this.registerDetails.courseIds, {
       validators: [Validators.required],
     })
   })
@@ -127,6 +133,7 @@ export class Register implements OnInit {
     }
 
     this.fillFromForm();
+    // this.registerDetails = this.signUpForm.value
     const subscription = this.authService.registerStudent(this.registerDetails).subscribe({
       next: (response) => {
         this.messageService.add({
@@ -137,9 +144,9 @@ export class Register implements OnInit {
           closable: true
         });
         subscription.unsubscribe();
-        // setTimeout(() => {
-        //   window.location.href = routes.authLogin;
-        // }, 5000);
+        setTimeout(() => {
+          window.location.href = routes.authLogin;
+        }, 5000);
       }
     })
   }
@@ -147,13 +154,13 @@ export class Register implements OnInit {
 
   private fillFromForm() {
     this.registerDetails.email = this.signUpForm.value.email!;
-    this.registerDetails.firstName = this.signUpForm.value.FirstName!;
-    this.registerDetails.lastName = this.signUpForm.value.LastName!;
+    this.registerDetails.firstName = this.signUpForm.value.firstName!;
+    this.registerDetails.lastName = this.signUpForm.value.lastName!;
     this.registerDetails.password = this.signUpForm.value.password!;
     this.registerDetails.confirmPassword = this.signUpForm.value.confirmPassword!;
-    this.registerDetails.birthdate = this.registerDetails.birthdate = this.signUpForm.value.birthdate!;
-    this.registerDetails.gender = this.signUpForm.value.gender!;
-    this.registerDetails.joinDate = this.signUpForm.value.joindate!;
-    this.registerDetails.courseIds = this.signUpForm.value.courses || [];
+    this.registerDetails.gender = (this.signUpForm.value.gender! as any).id;
+    this.registerDetails.courseIds = this.signUpForm.value.courseIds!;
+    this.registerDetails.birthdate = (this.signUpForm.value.birthdate! as unknown as Date).toISOString().split('T')[0];
+    this.registerDetails.joinDate = (this.signUpForm.value.joinDate! as unknown as Date).toISOString();
   }
 }

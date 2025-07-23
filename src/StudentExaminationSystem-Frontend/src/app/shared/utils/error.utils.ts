@@ -10,7 +10,9 @@ export function toFrontendError(apiError: ApiError): FrontendError {
   const { defaultMessage, ...toastConfig } = config;
 
   // Determine display message (user-provided > backend message > default)
-  const message = apiError.message || defaultMessage;
+  let message = apiError.message || defaultMessage;
+  if(apiError.code === "ValidationError")
+    message = apiError.message!;
 
   return {
     ...apiError,

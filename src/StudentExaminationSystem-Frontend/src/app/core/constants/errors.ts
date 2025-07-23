@@ -21,9 +21,10 @@ export const ERROR_CONFIG: Record<string, ErrorConfig> = {
   },
   ValidationError: {
     defaultMessage: 'Please fix the form errors',
-    severity: 'warn',
+    severity: 'error',
     life: 6000,
-    closable: true
+    closable: true,
+    useDescription: true
   },
   WrongCredentials: {
     defaultMessage: 'Invalid username or password',

@@ -32,12 +32,7 @@ export class AuthService {
   }
 
   registerStudent(userData: RegisterStudentRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.API_URL + routes.authRegisterStudent, userData)
-      .pipe(
-        tap(response => {
-          this.setSession(response);
-        })
-      );
+    return this.http.post<LoginResponse>(this.API_URL + routes.authRegisterStudent, userData);
   }
 
   logout(): void {
