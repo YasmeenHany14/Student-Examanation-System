@@ -1,4 +1,4 @@
-import {ToastConfig} from '../models/errors.model';
+import {ToastConfig} from '../models/common/errors.model';
 import {routes} from './routs';
 
 type ErrorConfig = ToastConfig & {

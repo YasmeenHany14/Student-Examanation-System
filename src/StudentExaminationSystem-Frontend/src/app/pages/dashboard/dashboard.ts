@@ -1,11 +1,35 @@
-import { Component } from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
+import { DashboardService } from '../../core/services/dashboard.service';
+import { AdminDashboardResponse } from '../../core/models/dashboard.model';
+import {ProgressSpinner} from 'primeng/progressspinner';
+import {Card} from 'primeng/card';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.scss'
+  imports: [
+    ProgressSpinner,
+    Card
+  ],
+  styleUrls: ['./dashboard.scss']
 })
-export class Dashboard {
+export class Dashboard implements OnInit {
+  dashboardData = signal<AdminDashboardResponse | null>(null);
+  loading = signal(true);
+  error = signal<string | null>(null);
 
+  constructor(private dashboardService: DashboardService) {}
+
+  ngOnInit() {
+    this.dashboardService.getAdminDashboardData().subscribe({
+      next: (data) => {
+        this.dashboardData.set(data);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.error.set('Failed to load dashboard data.');
+        this.loading.set(false);
+      }
+    });
+  }
 }

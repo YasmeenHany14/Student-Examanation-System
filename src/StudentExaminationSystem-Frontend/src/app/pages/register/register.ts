@@ -15,7 +15,7 @@ import {Select} from 'primeng/select';
 import {gender} from '../../core/enums/gender';
 import {MultiSelect} from 'primeng/multiselect';
 import {SubjectService} from '../../core/services/subject.service';
-import {DropdownModel} from '../../core/models/common.model';
+import {DropdownModel} from '../../core/models/common/common.model';
 import {routes} from '../../core/constants/routs';
 import {RouterLink} from '@angular/router';
 
@@ -158,7 +158,7 @@ export class Register implements OnInit {
     this.registerDetails.lastName = this.signUpForm.value.lastName!;
     this.registerDetails.password = this.signUpForm.value.password!;
     this.registerDetails.confirmPassword = this.signUpForm.value.confirmPassword!;
-    this.registerDetails.gender = (this.signUpForm.value.gender! as any).id;
+    this.registerDetails.gender = this.signUpForm.value.gender!;
     this.registerDetails.courseIds = this.signUpForm.value.courseIds!;
     this.registerDetails.birthdate = (this.signUpForm.value.birthdate! as unknown as Date).toISOString().split('T')[0];
     this.registerDetails.joinDate = (this.signUpForm.value.joinDate! as unknown as Date).toISOString();

@@ -23,10 +23,10 @@ export class TokenService {
     return localStorage.getItem(this.ACCESS_TOKEN_KEY);
   }
 
-  setRefreshToken(refreshToken: string, expiryDate?: Date): void {
+  setRefreshToken(refreshToken: string, expiryDate?: string): void {
     localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
     if (expiryDate) {
-      localStorage.setItem(this.REFRESH_TOKEN_EXPIRY_KEY, expiryDate.toISOString());
+      localStorage.setItem(this.REFRESH_TOKEN_EXPIRY_KEY, expiryDate);
     }
   }
 
@@ -37,6 +37,8 @@ export class TokenService {
       return null;
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
+      console.log(typeof payload)
+      payload.sub
       return payload as TokenPayload;
     } catch (error) {
       console.error('Failed to decode token:', error);

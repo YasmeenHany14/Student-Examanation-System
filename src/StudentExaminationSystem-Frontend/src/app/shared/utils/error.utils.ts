@@ -1,4 +1,4 @@
-import {ApiError, FrontendError, ToastConfig} from '../../core/models/errors.model';
+import {ApiError, FrontendError, ToastConfig} from '../../core/models/common/errors.model';
 import {ERROR_CONFIG} from '../../core/constants/errors';
 
 

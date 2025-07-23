@@ -53,15 +53,20 @@ export class Login {
   isInvalid = isInvalid;
 
   onSubmit() {
+    this.loginDetails.email = this.loginForm.value.email!;
+    this.loginDetails.password = this.loginForm.value.password!;
+
     this.authService.login(this.loginDetails).subscribe({
       next: (response) => {
         this.messageService.add({
           severity: 'success',
           summary: 'Login Successful',
-          detail: 'You have successfully logged in.',
+          detail: 'You have successfully logged in, welcome back!',
           life: 3000,
           closable: true
         })
+        // Redirect to the home page or dashboard
+        this.authService.redirectAfterLogin();
       },
     });
   }

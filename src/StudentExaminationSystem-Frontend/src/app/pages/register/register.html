@@ -85,7 +85,7 @@
             </p-iftalabel>
 
             <p-iftalabel class="flex-form-label">
-              <p-select id="gender" formControlName="gender" [options]="genders" optionLabel="label" placeholder="Select a Gender" >
+              <p-select id="gender" formControlName="gender" optionValue="id" [options]="genders" optionLabel="label" placeholder="Select a Gender" >
               </p-select>
               <label for="gender">Gender</label>
               @if (isInvalid(signUpForm, 'gender')) {

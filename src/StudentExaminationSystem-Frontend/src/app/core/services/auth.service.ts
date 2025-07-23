@@ -68,6 +68,14 @@ export class AuthService {
     return false;
   }
 
+  redirectAfterLogin() {
+    if (this.isAdmin()) {
+      window.location.href = routes.adminHomePage;
+    } else {
+      window.location.href = routes.studentHomePage;
+    }
+  }
+
   hasRole(role: UserRole): boolean {
      const currentUser = this.currentUserSubject.value;
     if (!currentUser) {
@@ -95,9 +103,29 @@ export class AuthService {
 
   private setSession(response: LoginResponse): void {
     this.tokenService.setToken(response.accessToken);
-    this.tokenService.setRefreshToken(response.refreshToken);
+    this.tokenService.setRefreshToken(response.refreshToken, response.refreshExpiresAt);
 
-    this.loadUserFromToken();
+    this.SetUserFromToken();
+  }
+
+  private SetUserFromToken() {
+    // {
+    //   "aud": "PokemonAppClient",
+    //   "iss": "PokemonAppApi",
+    //   "exp": 1753274044,
+    //   "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier": "46f47898-28a4-49d1-99ab-aa246fdb244a",
+    //   "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Student",
+    //   "iat": 1753270444,
+    //   "nbf": 1753270444
+    // }
+    const tokenPayload = this.tokenService.decodeToken();
+    console.log(tokenPayload);
+    const user: User = {
+      id: (tokenPayload as any)["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || '',
+      role: (tokenPayload as any)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || ''
+    }
+    console.log(user)
+    this.currentUserSubject.next(user);
   }
 
   private loadUserFromToken(): void {

@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ApiError, FrontendError } from '../models/errors.model';
+import { ApiError, FrontendError } from '../models/common/errors.model';
 import { toFrontendError } from '../../shared/utils/error.utils';
 import { HTTP_STATUS_ERROR_MAP } from '../constants/errors';
 

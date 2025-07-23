@@ -7,5 +7,7 @@
   public static readonly subjectsDropdown = '/subject/all';
   public static readonly studentSubjectDropdown = '/subject/all';
   public static readonly subjects = '/subject';
-  public static readonly adminDashboard = '/home/dashboard';
+  public static readonly dashboard = '/home/dashboard';
+  public static readonly adminHomePage = routes.dashboard;
+  public static readonly studentHomePage = '/home';
 }
