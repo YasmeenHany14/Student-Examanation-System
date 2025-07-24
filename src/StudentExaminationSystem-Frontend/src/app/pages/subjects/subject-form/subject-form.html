@@ -1,0 +1,39 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [closable]="true"
+  [style]="{ width: '50vw' }"
+  [header]="mode === 'create' ? 'Add Subject' : 'Edit Subject'"
+  [footerTemplate] = "footer"
+  (onHide)="onClose()">
+<!--  maskStyleClass="backdrop-blur-sm"-->
+<!--  styleClass="!border-0 !bg-transparent"-->
+
+  <ng-template #header>
+    <h2>{{ mode === 'create' ? 'Add Subject' : 'Edit Subject' }}</h2>
+  </ng-template>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="flex flex-row gap-2 items-center">
+        <label for="name">Name</label>
+        <div class=input-error-wrapper>
+          <input pInputText type="text" formControlName="name" id="name"
+                 [invalid]="isInvalid(form, 'name')" [appAutoFormError]="form" />
+        </div>
+      </div>
+
+      <div class="flex flex-row gap-2 items-center">
+        <label for="code">Code  </label>
+        <div class=input-error-wrapper>
+          <input pInputText type="text" formControlName="code" id="code"
+                 [invalid]="isInvalid(form, 'code')" [appAutoFormError]="form" />
+        </div>
+      </div>
+
+      <ng-template class="flex flex-row justify-between gap-2" #footer >
+        <div class="w-full flex flex-row justify-between gap-2">
+          <p-button label="Cancel" icon="pi pi-times" iconPos="left" severity="danger" type="button" (click)="onClose()"></p-button>
+          <p-button label="{{ mode === 'create' ? 'Create' : 'Save' }}" icon="pi pi-check" iconPos="left" type="submit" (click)="onSubmit()" ></p-button>
+        </div>
+      </ng-template>
+    </form>
+</p-dialog>

@@ -60,8 +60,8 @@ export class AuthService {
       return false;
     }
 
-    const refreshTokenExpiry = Number(this.tokenService.getRefreshToken());
-    if (!isNaN(refreshTokenExpiry) && refreshTokenExpiry > new Date().getTime()) {
+    const refreshToken = this.tokenService.getRefreshToken();
+    if (refreshToken && !this.tokenService.isRefreshTokenExpired()) {
       return true;
     }
 
@@ -108,23 +108,16 @@ export class AuthService {
     this.SetUserFromToken();
   }
 
-  private SetUserFromToken() {
-    // {
-    //   "aud": "PokemonAppClient",
-    //   "iss": "PokemonAppApi",
-    //   "exp": 1753274044,
-    //   "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier": "46f47898-28a4-49d1-99ab-aa246fdb244a",
-    //   "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": "Student",
-    //   "iat": 1753270444,
-    //   "nbf": 1753270444
-    // }
-    const tokenPayload = this.tokenService.decodeToken();
-    console.log(tokenPayload);
-    const user: User = {
+  private extractUserFromTokenPayload(tokenPayload: any): User {
+    return {
       id: (tokenPayload as any)["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || '',
       role: (tokenPayload as any)["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] || ''
-    }
-    console.log(user)
+    };
+  }
+
+  private SetUserFromToken() {
+    const tokenPayload = this.tokenService.decodeToken();
+    const user = this.extractUserFromTokenPayload(tokenPayload);
     this.currentUserSubject.next(user);
   }
 
@@ -133,18 +126,13 @@ export class AuthService {
       if (this.currentUserSubject.value) {
         return;
       }
-
       const tokenPayload = this.tokenService.decodeToken();
       if (!tokenPayload) {
         this.clearSession();
         return;
       }
 
-      const user: User = {
-        id: tokenPayload.sub,
-        role: tokenPayload.role as UserRole
-      }
-
+      const user = this.extractUserFromTokenPayload(tokenPayload);
       this.currentUserSubject.next(user);
     }
   }

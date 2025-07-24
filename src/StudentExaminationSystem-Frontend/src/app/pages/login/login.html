@@ -8,26 +8,18 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 w-full sm:w-56">
       <div class="flex flex-col gap-1">
         <p-iftalabel>
-          <input pInputText psize="large" type="email" id="email" placeholder="Email" formControlName="email" [invalid]="isInvalid(loginForm, 'email')" />
+          <input pInputText psize="large" type="email" id="email" placeholder="Email"
+                 formControlName="email" [invalid]="isInvalid(loginForm, 'email')" [appAutoFormError]="loginForm" />
           <label for="email">Email</label>
         </p-iftalabel>
-        @if (isInvalid(loginForm, 'email')) {
-          @for (errorMsg of getErrorMessages(loginForm, 'email'); track errorMsg) {
-            <p-message severity="error" size="small" variant="simple">{{ errorMsg }}</p-message>
-          }
-        }
       </div>
 
       <div class="flex flex-col gap-1">
         <p-ifta-label>
-          <input pInputText psize="large" type="password" id="password" placeholder="Password" formControlName="password" [invalid]="isInvalid(loginForm, 'password')" />
+          <input pInputText psize="large" type="password" id="password" placeholder="Password"
+                 formControlName="password" [invalid]="isInvalid(loginForm, 'password')" [appAutoFormError]="loginForm" />
           <label for="password">Password</label>
         </p-ifta-label>
-        @if (isInvalid(loginForm, 'password')) {
-          @for (errorMsg of getErrorMessages(loginForm, 'password'); track errorMsg) {
-            <p-message severity="error" size="small" variant="simple">{{ errorMsg }}</p-message>
-          }
-        }
       </div>
       <button pButton severity="secondary" type="submit" [disabled]="loginForm.invalid" ><span pButtonLabel>Login</span></button>
     </form>

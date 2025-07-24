@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -9,6 +9,7 @@ import {getErrorMessages, isInvalid} from '../../shared/utils/form.utlis';
 import {IftaLabel} from 'primeng/iftalabel';
 import {MessageService} from 'primeng/api';
 import {RouterLink} from '@angular/router';
+import {AutoFormErrorDirective} from '../../shared/directives/auto-form-error.directive';
 
 @Component({
   selector: 'app-login',
@@ -20,12 +21,19 @@ import {RouterLink} from '@angular/router';
     Message,
     ButtonModule,
     IftaLabel,
-    RouterLink
+    RouterLink,
+    AutoFormErrorDirective
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
-export class Login {
+export class Login implements OnInit {
+  ngOnInit(): void {
+      if (this.authService.isAuthenticated()) {
+        this.authService.redirectAfterLogin();
+      }
+  }
+
   private readonly messageService = inject(MessageService);
   private authService = inject(AuthService);
 

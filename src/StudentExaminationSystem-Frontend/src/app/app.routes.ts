@@ -17,6 +17,11 @@ export const routes: Routes = [
       .then(m => m.Dashboard),
   },
   {
+    path: 'home/subjects',
+    loadComponent: () => import('./pages/subjects/subjects-page')
+      .then(m => m.SubjectsPage),
+  },
+  {
     path: '',
     redirectTo: 'account/login',
     pathMatch: 'full'

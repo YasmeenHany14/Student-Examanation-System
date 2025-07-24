@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../core/services/auth.service';
 import {User} from '../../core/models/user.model';
 import {UserRole} from '../../core/enums/user-role';
@@ -8,7 +8,8 @@ import {Menubar} from 'primeng/menubar';
 @Component({
   selector: 'app-header',
   imports: [
-    Menubar
+    Menubar,
+    RouterLink
   ],
   templateUrl: './header.html',
   styleUrl: './header.scss'
@@ -31,7 +32,7 @@ export class Header {
     }
     if (this.user.role === UserRole.ADMIN) {
       this.navLinks = [
-        { label: 'Home', route: '/home', icon: 'pi pi-home' },
+        { label: 'Home', route: '/home/dashboard', icon: 'pi pi-home' },
         { label: 'Subjects', route: '/subjects', icon: 'pi pi-book' },
         { label: 'Questions', route: '/questions', icon: 'pi pi-question' },
         { label: 'Students', route: '/students', icon: 'pi pi-users' },

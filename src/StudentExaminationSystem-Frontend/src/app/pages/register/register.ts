@@ -18,6 +18,8 @@ import {SubjectService} from '../../core/services/subject.service';
 import {DropdownModel} from '../../core/models/common/common.model';
 import {routes} from '../../core/constants/routs';
 import {RouterLink} from '@angular/router';
+import {FormErrorComponent} from '../../shared/components/form-error/form-error';
+import {AutoFormErrorDirective} from '../../shared/directives/auto-form-error.directive';
 
 @Component({
   selector: 'app-register',
@@ -32,7 +34,9 @@ import {RouterLink} from '@angular/router';
     DatePickerModule,
     Select,
     MultiSelect,
-    RouterLink
+    RouterLink,
+    FormErrorComponent,
+    AutoFormErrorDirective
   ],
   templateUrl: './register.html',
   styleUrl: './register.scss'
@@ -43,6 +47,10 @@ export class Register implements OnInit {
   private subjectService = inject(SubjectService);
   courses = signal<DropdownModel[]>([]);
   loading = signal(true);
+
+  // Make utility functions available to template
+  isInvalid = isInvalid;
+  getErrorMessages = getErrorMessages;
 
   ngOnInit(): void {
     const subscription = this.subjectService.getSubjectsDropdown().subscribe({
@@ -116,9 +124,6 @@ export class Register implements OnInit {
       validators: [Validators.required],
     })
   })
-
-  getErrorMessages = getErrorMessages;
-  isInvalid = isInvalid;
 
   onSubmit() {
     if (this.signUpForm.invalid) {

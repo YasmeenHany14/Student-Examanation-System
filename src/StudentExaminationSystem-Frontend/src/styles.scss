@@ -26,3 +26,13 @@ body {
     width: 92%;
   }
 }
+
+.input-error-wrapper {
+  display: flex;
+  flex-direction: column;
+
+  //&:has(> p-message) {
+  //  margin-top: 0.5rem;
+  //}
+}
+

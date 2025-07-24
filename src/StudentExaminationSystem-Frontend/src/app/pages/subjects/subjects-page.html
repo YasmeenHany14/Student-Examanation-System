@@ -1,0 +1,17 @@
+<div class="flex flex-col h-full p-6">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold">Subjects</h2>
+    <button pButton type="button" label="Create" icon="pi pi-plus" class="p-button-success" (click)="openCreate()"></button>
+  </div>
+  <app-subject-list
+    (edit)="openEdit($event)"
+    (delete)="deleteSubject($event)"
+  ></app-subject-list>
+  <app-delete-confirmation-dialog
+    [visible]="deleteDialogVisible"
+    [entityName]="'Subject'"
+    (confirm)="onDeleteConfirm()"
+    (cancel)="onDeleteCancel()">
+  </app-delete-confirmation-dialog>
+  <app-subject-form [visible]="formVisible()" [mode]="formMode()" [subject]="selectedSubject()!" (close)="closeForm()" (saved)="onSaved($event)"></app-subject-form>
+</div>
