@@ -7,6 +7,7 @@ import { DeleteConfirmationDialog } from '../../shared/components/delete-confirm
 import {showDeleteSuccessMessage} from '../../shared/utils/form.utlis';
 import {MessageService} from 'primeng/api';
 import { SubjectList } from './subject-list/subject-list';
+import {Spinner} from '../../shared/components/spinner/spinner';
 
 @Component({
   selector: 'app-subjects-page',
@@ -15,13 +16,12 @@ import { SubjectList } from './subject-list/subject-list';
     ButtonModule,
     SubjectForm,
     DeleteConfirmationDialog,
-    SubjectList
+    SubjectList,
   ],
   styleUrls: ['./subjects-page.scss']
 })
 export class SubjectsPage {
   @ViewChild(SubjectList) subjectList!: SubjectList;
-
   formVisible = signal(false);
   formMode = signal<'create' | 'edit'>('create');
   selectedSubject = signal<GetSubjectModel | null>(null);
@@ -29,6 +29,7 @@ export class SubjectsPage {
   subjectIdToDelete: number | null = null;
   messageService = inject(MessageService);
   subjectService = inject(SubjectService);
+  errorState = signal(false);
 
   openCreate() {
     this.formMode.set('create');

@@ -21,10 +21,7 @@ export class SubjectService {
 
   getSubjectsPaged(queryParams: BaseResourceParametersModel) {
     const params = new HttpParams({fromObject: {...queryParams}});
-    return this.httpClient.get<PagedListModel<GetSubjectModel>>(this.API_URL + routes.subjects, { params })
-      .pipe(
-        tap((response: PagedListModel<GetSubjectModel>) => {console.log(response)}
-      ));
+    return this.httpClient.get<PagedListModel<GetSubjectModel>>(this.API_URL + routes.subjects, { params });
   }
 
 

@@ -1,9 +1,9 @@
 <div class="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
   @if (loading()) {
-    <p-progressSpinner class="mb-6" strokeWidth="4" fill="#eeeeee" animationDuration="1s"/>
+    <app-spinner/>
   }
   @if (error()) {
-    <div class="text-red-500 text-lg mb-4">{{ error() }}</div>
+    <app-no-data-to-show/>
   }
   @if (dashboardData()) {
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-5xl">

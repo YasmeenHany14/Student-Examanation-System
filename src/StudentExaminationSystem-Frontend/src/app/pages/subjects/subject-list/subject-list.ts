@@ -3,6 +3,8 @@ import { GetSubjectModel } from '../../../core/models/subject.model';
 import { SubjectService } from '../../../core/services/subject.service';
 import {TableModule} from 'primeng/table';
 import {ButtonModule} from 'primeng/button';
+import {Spinner} from '../../../shared/components/spinner/spinner';
+import {NoDataToShowComponent} from '../../../shared/components/no-data-to-show/no-data-to-show';
 
 @Component({
   selector: 'app-subject-list',
@@ -10,12 +12,15 @@ import {ButtonModule} from 'primeng/button';
   imports: [
     TableModule,
     ButtonModule,
+    Spinner,
+    NoDataToShowComponent,
   ],
   styleUrls: ['./subject-list.scss']
 })
 export class SubjectList implements OnInit {
   subjects = signal<GetSubjectModel[]>([]);
   loading = signal(false);
+  isError = signal(false);
   totalRecords = signal(0);
   pageSize: number = 5;
   currentPage: number = 1;
@@ -24,7 +29,6 @@ export class SubjectList implements OnInit {
 
   @Output() edit = new EventEmitter<GetSubjectModel>();
   @Output() delete = new EventEmitter<number>();
-  @Output() subjectsLoaded = new EventEmitter<GetSubjectModel[]>();
 
   ngOnInit() {
     this.loadSubjects();
@@ -48,7 +52,11 @@ export class SubjectList implements OnInit {
         this.subjects.set(result.data);
         this.totalRecords.set(result.pagination.totalCount);
         this.loading.set(false);
-        this.subjectsLoaded.emit(result.data);
+        this.isError.set(false);
+      },
+      error: (err) => {
+        this.loading.set(false);
+        this.isError.set(true);
       }
     });
   }

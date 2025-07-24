@@ -3,13 +3,16 @@ import { DashboardService } from '../../core/services/dashboard.service';
 import { AdminDashboardResponse } from '../../core/models/dashboard.model';
 import {ProgressSpinner} from 'primeng/progressspinner';
 import {Card} from 'primeng/card';
+import {Spinner} from '../../shared/components/spinner/spinner';
+import {NoDataToShowComponent} from '../../shared/components/no-data-to-show/no-data-to-show';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.html',
   imports: [
-    ProgressSpinner,
-    Card
+    Card,
+    Spinner,
+    NoDataToShowComponent
   ],
   styleUrls: ['./dashboard.scss']
 })
