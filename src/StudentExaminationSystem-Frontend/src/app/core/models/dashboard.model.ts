@@ -1,4 +1,6 @@
-export interface AdminDashboardResponse {
+import { BaseResponseModel } from './common/base-model';
+
+export interface AdminDashboardResponse extends BaseResponseModel {
   totalUsers: number;
   totalExamsCompleted: number;
   passedExamsCount: number;

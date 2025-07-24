@@ -1,6 +1,6 @@
-﻿import {gender} from '../enums/gender';
+﻿import { BaseRequestModel } from './common/base-model';
 
-export interface RegisterStudentRequest {
+export interface RegisterStudentRequest extends BaseRequestModel {
   email: string;
   password: string;
   firstName: string;

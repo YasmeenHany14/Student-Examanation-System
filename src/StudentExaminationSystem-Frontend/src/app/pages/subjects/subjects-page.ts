@@ -63,7 +63,7 @@ export class SubjectsPage {
 
   onDeleteConfirm() {
     if (this.subjectIdToDelete !== null) {
-      this.subjectService.deleteSubject(this.subjectIdToDelete).subscribe({
+      this.subjectService.deleteModel(this.subjectIdToDelete).subscribe({
         next: () => {
           this.subjectList.refreshData();
           this.deleteDialogVisible = false;

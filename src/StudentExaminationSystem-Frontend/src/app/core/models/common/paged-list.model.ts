@@ -1,6 +1,7 @@
 import {PaginationMetadataModel} from './pagination-metadata.model';
+import { BaseResponseModel } from './base-model';
 
-export interface PagedListModel<Tmodel> {
+export interface PagedListModel<TModel extends BaseResponseModel> extends BaseResponseModel {
   pagination: PaginationMetadataModel,
-  data: Tmodel[];
+  data: TModel[];
 }

@@ -5,6 +5,8 @@ import {TableModule} from 'primeng/table';
 import {ButtonModule} from 'primeng/button';
 import {Spinner} from '../../../shared/components/spinner/spinner';
 import {NoDataToShowComponent} from '../../../shared/components/no-data-to-show/no-data-to-show';
+import {PagedListModel} from '../../../core/models/common/paged-list.model';
+import {BaseResourceParametersModel} from '../../../core/models/common/base-resource-parameters.model';
 
 @Component({
   selector: 'app-subject-list',
@@ -47,7 +49,7 @@ export class SubjectList implements OnInit {
       PageSize: pageSize
     };
 
-    this.subjectService.getSubjectsPaged(queryParams).subscribe({
+    this.subjectService.getAllPaged<BaseResourceParametersModel, GetSubjectModel>(queryParams).subscribe({
       next: (result) => {
         this.subjects.set(result.data);
         this.totalRecords.set(result.pagination.totalCount);

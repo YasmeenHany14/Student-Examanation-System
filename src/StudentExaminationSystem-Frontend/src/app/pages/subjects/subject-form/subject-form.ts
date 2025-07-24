@@ -77,7 +77,7 @@ export class SubjectForm implements OnInit {
       return;
     }
     const patchDoc = GeneratePatchDocument(this.form, this.subject, ["name", "code"]);
-    const subscription = this.subjectService.updateSubject(this.subject.id, patchDoc).subscribe({
+    const subscription = this.subjectService.updateModel(this.subject.id, patchDoc).subscribe({
       next: (result) => {
         showSuccessMessage(this.messageService, this.mode === 'edit' ? 'update' : 'create', 'Subject');
         this.saved.emit({
@@ -96,7 +96,7 @@ export class SubjectForm implements OnInit {
       name: this.form.value.name!,
       code: this.form.value.code!,
     }
-    const subscription = this.subjectService.createSubject(newSubject).subscribe({
+    const subscription = this.subjectService.createModel<CreateSubjectModel>(newSubject).subscribe({
       next: (result) => {
         showSuccessMessage(this.messageService, this.mode === 'edit' ? 'update' : 'create', 'Subject');
         subscription.unsubscribe();
