@@ -53,7 +53,7 @@ export class Register implements OnInit {
   getErrorMessages = getErrorMessages;
 
   ngOnInit(): void {
-    const subscription = this.subjectService.getSubjectsDropdown().subscribe({
+    const subscription = this.subjectService.getDropdownOptions().subscribe({
       next: (subjects) => {
         this.courses.set(subjects);
         this.loading.set(false);

@@ -5,7 +5,8 @@
   [style]="{ width: '50vw' }"
   [header]="getDialogHeader()"
   [footerTemplate]="footer"
-  (onHide)="onClose()">
+  (onHide)="onClose()"
+  #configDialog>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="flex flex-col gap-4">
@@ -39,25 +40,28 @@
         </div>
       </div>
 
-      <div class="flex flex-row gap-2 items-center">
-        <label for="difficultyProfileId" class="w-32">Difficulty Profile ID</label>
-        <div class="input-error-wrapper flex-1">
-          <p-inputNumber
-            formControlName="difficultyProfileId"
-            id="difficultyProfileId"
-            [min]="1"
-            [showButtons]="true"
-            buttonLayout="horizontal"
-            [class.ng-invalid]="isInvalid(form, 'difficultyProfileId')"
-            [appAutoFormError]="form">
-          </p-inputNumber>
+      @if(mode !== 'view'){
+        <div class="flex flex-row gap-2 items-center">
+          <label for="difficultyProfileId" class="w-32">Difficulty Profiles </label>
+          <div class="input-error-wrapper flex-1">
+            <p-select
+              [options]="difficultyProfiles()"
+              [loading]="dropdownLoading()"
+              optionValue="id"
+              optionLabel="name"
+              placeholder="Select Difficulty Profile"
+              [formControl]="form.controls.difficultyProfileId"
+              [appAutoFormError]="form"
+              [appendTo]="configDialog"
+            />
+          </div>
         </div>
-      </div>
+      }
 
       @if (mode === 'view') {
         <div class="flex flex-row gap-2 items-center">
           <label class="w-32">Difficulty Profile</label>
-          <span class="flex-1 text-gray-600">{{ subjectConfigForView.DifficultyProfileSpecifications }}</span>
+          <span class="flex-1 text-gray-600">{{ subjectConfig()!.difficultyProfileSpecifications }}</span>
         </div>
       }
     </div>

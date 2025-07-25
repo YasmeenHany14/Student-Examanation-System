@@ -8,18 +8,21 @@ import {
   validateFormBeforeSubmit
 } from '../../../shared/utils/form.utlis';
 import { DialogModule } from 'primeng/dialog';
-import {InputText} from 'primeng/inputtext';
 import {AutoFormErrorDirective} from '../../../shared/directives/auto-form-error.directive';
 import {MessageService} from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import {SubjectConfigService} from '../../../core/services/subject-config.service';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { SelectModule } from 'primeng/select';
+import {DropdownModel} from '../../../core/models/common/common.model';
+import {DifficultyProfileService} from '../../../core/services/difficulty-profile.service';
+
 
 @Component({
   selector: 'app-subject-config-form',
   templateUrl: './subject-config-form.html',
   styleUrls: ['./subject-config-form.scss'],
-  imports: [ReactiveFormsModule, DialogModule, InputText, AutoFormErrorDirective, ButtonModule, InputNumberModule]
+  imports: [ReactiveFormsModule, DialogModule, AutoFormErrorDirective, ButtonModule, InputNumberModule, SelectModule]
 })
 export class SubjectConfigForm implements OnInit, OnChanges {
   @Input() visible: boolean = false;
@@ -30,19 +33,11 @@ export class SubjectConfigForm implements OnInit, OnChanges {
 
   private messageService = inject(MessageService);
   private subjectConfigService = inject(SubjectConfigService);
+  private difficultyProfileService = inject(DifficultyProfileService);
 
-  subjectConfigForUpdate: UpdateSubjectConfigModel = {
-    TotalQuestions: 0,
-    DurationMinutes: 0,
-    DifficultyProfileId: 0
-  }
-  subjectConfigForView: GetSubjectConfigModel = {
-    Id: 0,
-    TotalQuestions: 0,
-    DurationMinutes: 0,
-    DifficultyProfileId: 0,
-    DifficultyProfileSpecifications: '',
-  }
+  dropdownLoading = signal<boolean>(false);
+  subjectConfig = signal<GetSubjectConfigModel | null>(null);
+  difficultyProfiles = signal<DropdownModel[]>([]);
 
   form = new FormGroup({
     totalQuestions: new FormControl<number>(0, [Validators.required, Validators.min(1)]),
@@ -66,42 +61,55 @@ export class SubjectConfigForm implements OnInit, OnChanges {
       } else {
         this.form.enable();
       }
+
+      if (this.mode !== 'view') {
+        this.dropdownLoading.set(true);
+        this.loadDifficultyProfiles();
+      }
     }
   }
 
   private loadSubjectConfig() {
     this.subjectConfigService.getModelById(this.subjectId).subscribe({
       next: (config) => {
-        if( this.mode === 'view') {
-          this.subjectConfigForView = config;
-        } else {
-          this.subjectConfigForUpdate = config;
+        if( this.mode === 'view' || this.mode === 'edit') {
+          this.subjectConfig.set(config);
         }
         this.setupForm();
       },
     });
   }
 
+  private loadDifficultyProfiles() {
+    const subscription = this.difficultyProfileService.getDropdownOptions<DropdownModel>().subscribe({
+      next: (profiles: DropdownModel[]) => {
+        this.difficultyProfiles.set(profiles);
+        this.dropdownLoading.set(false);
+        if (this.mode === 'edit') {
+          this.form.patchValue({
+            difficultyProfileId: this.subjectConfig()?.difficultyProfileId || 1,
+          });
+          console.log(profiles);
+        }
+        subscription.unsubscribe();
+      }
+    })
+  }
+
   private setupForm() {
-    if ((this.mode === 'edit') && this.subjectConfigForUpdate) {
-      this.form.patchValue({
-        totalQuestions: this.subjectConfigForUpdate.TotalQuestions,
-        durationMinutes: this.subjectConfigForUpdate.DurationMinutes,
-        difficultyProfileId: this.subjectConfigForUpdate.DifficultyProfileId,
-      });
-    } else if (this.mode === 'view' && this.subjectConfigForView) {
-      this.form.patchValue({
-        totalQuestions: this.subjectConfigForView.TotalQuestions,
-        durationMinutes: this.subjectConfigForView.DurationMinutes,
-        difficultyProfileId: this.subjectConfigForView.DifficultyProfileId,
-      });
-    } else {
+    if (this.mode === 'create') {
       this.form.reset({
         totalQuestions: 0,
         durationMinutes: 0,
         difficultyProfileId: 1,
       });
+      return;
     }
+      this.form.patchValue({
+        totalQuestions: this.subjectConfig()?.totalQuestions || 0,
+        durationMinutes: this.subjectConfig()?.durationMinutes || 0,
+        difficultyProfileId: this.subjectConfig()?.difficultyProfileId || 1,
+      })
   }
 
   onSubmit() {
@@ -123,15 +131,15 @@ export class SubjectConfigForm implements OnInit, OnChanges {
 
   private updateSubjectConfig() {
     const updateModel: UpdateSubjectConfigModel = {
-      TotalQuestions: this.form.value.totalQuestions!,
-      DurationMinutes: this.form.value.durationMinutes!,
-      DifficultyProfileId: this.form.value.difficultyProfileId!,
+      totalQuestions: this.subjectConfig()?.totalQuestions,
+      durationMinutes: this.subjectConfig()?.durationMinutes,
+      difficultyProfileId: this.subjectConfig()?.difficultyProfileId,
     };
 
     // Generate patch document for the update
-    const patchDoc = GeneratePatchDocument(this.form, this.subjectConfigForUpdate);
+    const patchDoc = GeneratePatchDocument(this.form, updateModel);
 
-    const subscription = this.subjectConfigService.updateModel(this.subjectId, patchDoc).subscribe({
+    const subscription = this.subjectConfigService.updateSubjectConfig(this.subjectId, patchDoc).subscribe({
       next: (result) => {
         showSuccessMessage(this.messageService, 'update', 'Subject Configuration');
         this.saved.emit(true);
@@ -143,9 +151,9 @@ export class SubjectConfigForm implements OnInit, OnChanges {
 
   private createSubjectConfig() {
     const newSubjectConfig: CreateSubjectConfigModel = {
-      TotalQuestions: this.form.value.totalQuestions!,
-      DurationMinutes: this.form.value.durationMinutes!,
-      DifficultyProfileId: this.form.value.difficultyProfileId!,
+      totalQuestions: this.form.value.totalQuestions!,
+      durationMinutes: this.form.value.durationMinutes!,
+      difficultyProfileId: this.form.value.difficultyProfileId!,
     };
 
     const subscription = this.subjectConfigService.createSubjectConfig(this.subjectId, newSubjectConfig).subscribe({

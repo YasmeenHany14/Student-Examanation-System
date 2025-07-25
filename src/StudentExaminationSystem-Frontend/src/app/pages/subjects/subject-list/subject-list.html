@@ -22,7 +22,8 @@
         <td>{{ subject.code }}</td>
         <td class="relative">
           <span
-            class="cursor-pointer hover:text-blue-600 transition-colors duration-200">
+            class="cursor-pointer hover:text-blue-600 transition-colors duration-200"
+            (click)="op.toggle($event)">
             {{ subject.hasConfiguration ? 'Yes' : 'No' }}
           </span>
           <app-subject-config-popover
@@ -31,6 +32,7 @@
           (createConfig)="onCreateConfig($event)"
           [subjectId]="subject.id"
           [hasConfiguration]="subject.hasConfiguration"
+          #op
           >
           </app-subject-config-popover>
         </td>

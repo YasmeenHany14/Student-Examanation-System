@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { PopoverModule } from 'primeng/popover';
 import { ButtonModule } from 'primeng/button';
+import { Popover } from 'primeng/popover';
 
 @Component({
   selector: 'app-subject-config-popover',
@@ -9,6 +10,7 @@ import { ButtonModule } from 'primeng/button';
   imports: [PopoverModule, ButtonModule]
 })
 export class SubjectConfigPopover {
+  @ViewChild('op') popover!: Popover;
   @Input() hasConfiguration!: Boolean;
   @Input() subjectId!: number;
   @Output() viewConfig = new EventEmitter<number>();
@@ -25,5 +27,9 @@ export class SubjectConfigPopover {
 
   onCreateConfig() {
     this.createConfig.emit(this.subjectId);
+  }
+
+  toggle($event: MouseEvent) {
+    this.popover.toggle($event);
   }
 }

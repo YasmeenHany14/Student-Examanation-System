@@ -1,20 +1,17 @@
 import {Component, signal, inject, ViewChild} from '@angular/core';
 import { SubjectService } from '../../core/services/subject.service';
-import { SubjectConfigService } from '../../core/services/subject-config.service';
 import { GetSubjectModel } from '../../core/models/subject.model';
-import { ButtonModule } from 'primeng/button';
 import { SubjectForm } from './subject-form/subject-form';
 import { SubjectConfigForm } from './subject-config-form/subject-config-form';
-import { DeleteConfirmationDialog } from '../../shared/components/delete-confirmation-dialog/delete-confirmation-dialog';
 import {showDeleteSuccessMessage} from '../../shared/utils/form.utlis';
 import {MessageService} from 'primeng/api';
 import { SubjectList } from './subject-list/subject-list';
+import {DeleteConfirmationDialog} from '../../shared/components/delete-confirmation-dialog/delete-confirmation-dialog';
 
 @Component({
   selector: 'app-subjects-page',
   templateUrl: './subjects-page.html',
   imports: [
-    ButtonModule,
     SubjectForm,
     SubjectConfigForm,
     DeleteConfirmationDialog,
@@ -111,17 +108,5 @@ export class SubjectsPage {
         this.subjectList.updateSubject(subject);
       }
     }
-  }
-
-  openViewConfig($event: number) {
-    this.openConfigForm($event, 'view');
-  }
-
-  openEditConfig($event: number) {
-    this.openConfigForm($event, 'edit');
-  }
-
-  openCreateConfig($event: number) {
-    this.openConfigForm($event, 'create');
   }
 }

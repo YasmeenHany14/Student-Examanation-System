@@ -1,24 +1,20 @@
 import {Injectable} from '@angular/core';
 import {routes} from '../constants/routs';
-import {DropdownModel} from '../models/common/common.model';
-import {BaseService} from './base.service';
+import {DropdownBaseService} from './dropdown-base.service';
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class SubjectService extends BaseService {
+export class SubjectService extends DropdownBaseService {
+  protected override dropdownRoute: string;
   protected override route: string;
 
   constructor() {
     super();
     this.route = routes.subjects;
+    this.dropdownRoute = routes.subjectsDropdown;
   }
-
-  getSubjectsDropdown() {
-    return this.httpClient.get<DropdownModel[]>(this.API_URL + routes.subjectsDropdown);
-  }
-
   getStudentSubjects() {
 
   }

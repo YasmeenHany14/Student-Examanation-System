@@ -1,21 +1,21 @@
 import {BaseRequestModel, BaseResponseModel} from './common/base-model';
 
 export interface GetSubjectConfigModel extends BaseResponseModel{
-  Id: number;
-  TotalQuestions: number;
-  DurationMinutes: number;
-  DifficultyProfileId: number;
-  DifficultyProfileSpecifications: string
+  id: number;
+  totalQuestions: number;
+  durationMinutes: number;
+  difficultyProfileId: number;
+  difficultyProfileSpecifications?: string
 }
 
 export interface CreateSubjectConfigModel extends BaseRequestModel {
-  TotalQuestions: number;
-  DurationMinutes: number;
-  DifficultyProfileId: number;
+  totalQuestions: number;
+  durationMinutes: number;
+  difficultyProfileId: number;
 }
 
 export interface UpdateSubjectConfigModel extends BaseRequestModel {
-  TotalQuestions?: number | null;
-  DurationMinutes?: number | null;
-  DifficultyProfileId?: number | null;
+  totalQuestions?: number | null;
+  durationMinutes?: number | null;
+  difficultyProfileId?: number | null;
 }
