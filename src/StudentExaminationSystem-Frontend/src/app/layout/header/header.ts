@@ -16,7 +16,7 @@ import {Menubar} from 'primeng/menubar';
 })
 export class Header {
   user: User | null = null;
-  navLinks: { label: string, route: string, icon?: string }[] = [];
+  navLinks: { label: string, routerLink: any, icon?: string }[] = [];
 
   constructor(private authService: AuthService, private router: Router) {
     this.authService.currentUser$.subscribe(user => {
@@ -32,18 +32,19 @@ export class Header {
     }
     if (this.user.role === UserRole.ADMIN) {
       this.navLinks = [
-        { label: 'Home', route: '/home/dashboard', icon: 'pi pi-home' },
-        { label: 'Subjects', route: '/subjects', icon: 'pi pi-book' },
-        { label: 'Questions', route: '/questions', icon: 'pi pi-question' },
-        { label: 'Students', route: '/students', icon: 'pi pi-users' },
-        { label: 'Logout', route: '', icon: 'pi pi-sign-out' }
+        { label: 'Home', routerLink: '/home/dashboard', icon: 'pi pi-home' },
+        { label: 'Subjects', routerLink: '/home/subjects', icon: 'pi pi-book' },
+        { label: 'Questions', routerLink: '/home/questions', icon: 'pi pi-question' },
+        { label: 'Difficulty Profiles', routerLink: '/home/difficulty-profiles', icon: 'pi pi-chart-line' },
+        { label: 'Students', routerLink: '/students', icon: 'pi pi-users' },
+        { label: 'Logout', routerLink: '', icon: 'pi pi-sign-out' }
       ];
     } else if (this.user.role === UserRole.STUDENT) {
       this.navLinks = [
-        { label: 'Home', route: '/home', icon: 'pi pi-home' },
-        { label: 'Profile', route: '/profile', icon: 'pi pi-user' },
-        { label: 'Take Exam', route: '/exam', icon: 'pi pi-pencil' },
-        { label: 'Logout', route: '', icon: 'pi pi-sign-out' }
+        { label: 'Home', routerLink: '/home', icon: 'pi pi-home' },
+        { label: 'Profile', routerLink: '/profile', icon: 'pi pi-user' },
+        { label: 'Take Exam', routerLink: '/exam', icon: 'pi pi-pencil' },
+        { label: 'Logout', routerLink: '', icon: 'pi pi-sign-out' }
       ];
     }
   }
