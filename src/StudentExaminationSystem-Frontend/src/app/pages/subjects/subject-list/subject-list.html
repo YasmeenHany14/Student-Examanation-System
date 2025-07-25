@@ -20,7 +20,20 @@
       <tr>
         <td>{{ subject.name }}</td>
         <td>{{ subject.code }}</td>
-        <td>{{ subject.hasConfiguration ? 'Yes' : 'No' }}</td>
+        <td class="relative">
+          <span
+            class="cursor-pointer hover:text-blue-600 transition-colors duration-200">
+            {{ subject.hasConfiguration ? 'Yes' : 'No' }}
+          </span>
+          <app-subject-config-popover
+          (viewConfig)="onViewConfig($event)"
+          (editConfig)="onEditConfig($event)"
+          (createConfig)="onCreateConfig($event)"
+          [subjectId]="subject.id"
+          [hasConfiguration]="subject.hasConfiguration"
+          >
+          </app-subject-config-popover>
+        </td>
         <td class="text-center">
           <button pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-info p-button-sm mr-2" (click)="onEdit(subject)"></button>
           <button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-sm" (click)="onDelete(subject.id)"></button>

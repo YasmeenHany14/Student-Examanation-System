@@ -1,13 +1,14 @@
 import {Component, signal, inject, ViewChild} from '@angular/core';
 import { SubjectService } from '../../core/services/subject.service';
+import { SubjectConfigService } from '../../core/services/subject-config.service';
 import { GetSubjectModel } from '../../core/models/subject.model';
 import { ButtonModule } from 'primeng/button';
 import { SubjectForm } from './subject-form/subject-form';
+import { SubjectConfigForm } from './subject-config-form/subject-config-form';
 import { DeleteConfirmationDialog } from '../../shared/components/delete-confirmation-dialog/delete-confirmation-dialog';
 import {showDeleteSuccessMessage} from '../../shared/utils/form.utlis';
 import {MessageService} from 'primeng/api';
 import { SubjectList } from './subject-list/subject-list';
-import {Spinner} from '../../shared/components/spinner/spinner';
 
 @Component({
   selector: 'app-subjects-page',
@@ -15,6 +16,7 @@ import {Spinner} from '../../shared/components/spinner/spinner';
   imports: [
     ButtonModule,
     SubjectForm,
+    SubjectConfigForm,
     DeleteConfirmationDialog,
     SubjectList,
   ],
@@ -22,14 +24,21 @@ import {Spinner} from '../../shared/components/spinner/spinner';
 })
 export class SubjectsPage {
   @ViewChild(SubjectList) subjectList!: SubjectList;
+
+  // Subject form properties
   formVisible = signal(false);
   formMode = signal<'create' | 'edit'>('create');
   selectedSubject = signal<GetSubjectModel | null>(null);
+
+  // Subject config form properties
+  configFormVisible = signal(false);
+  configFormMode = signal<'create' | 'edit' | 'view'>('create');
+  selectedSubjectId = signal<number | null>(null);
+
   deleteDialogVisible = false;
   subjectIdToDelete: number | null = null;
   messageService = inject(MessageService);
   subjectService = inject(SubjectService);
-  errorState = signal(false);
 
   openCreate() {
     this.formMode.set('create');
@@ -77,5 +86,42 @@ export class SubjectsPage {
   onDeleteCancel() {
     this.deleteDialogVisible = false;
     this.subjectIdToDelete = null;
+  }
+
+  openConfigForm(id: number, mode: 'create' | 'edit' | 'view') {
+    this.selectedSubjectId.set(id);
+    this.configFormMode.set(mode);
+    this.configFormVisible.set(true);
+  }
+
+  closeConfigForm() {
+    this.configFormVisible.set(false);
+    this.selectedSubjectId.set(null);
+  }
+
+  onConfigSaved(success: boolean) {
+    const subjectId = this.selectedSubjectId();
+    this.closeConfigForm();
+    // Update the subject's hasConfiguration property and refresh the list if needed
+    if (success && subjectId != null) {
+      const subjects = this.subjectList.subjects();
+      const subject = subjects.find(s => s.id === subjectId);
+      if (subject) {
+        subject.hasConfiguration = true;
+        this.subjectList.updateSubject(subject);
+      }
+    }
+  }
+
+  openViewConfig($event: number) {
+    this.openConfigForm($event, 'view');
+  }
+
+  openEditConfig($event: number) {
+    this.openConfigForm($event, 'edit');
+  }
+
+  openCreateConfig($event: number) {
+    this.openConfigForm($event, 'create');
   }
 }

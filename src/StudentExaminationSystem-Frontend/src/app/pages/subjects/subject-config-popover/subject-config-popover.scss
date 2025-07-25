@@ -1,0 +1,15 @@
+/* Add any custom styles for the popover here if needed */
+.p-overlaypanel {
+  .p-overlaypanel-content {
+    padding: 1rem;
+  }
+}
+
+h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--text-color);
+}
+
+button {
+  justify-content: flex-start;
+}

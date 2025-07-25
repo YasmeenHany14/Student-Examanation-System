@@ -6,6 +6,9 @@
   <app-subject-list
     (edit)="openEdit($event)"
     (delete)="deleteSubject($event)"
+    (viewConfig)="openConfigForm($event, 'view')"
+    (editConfig)="openConfigForm($event, 'edit')"
+    (createConfig)="openConfigForm($event, 'create')"
   ></app-subject-list>
   <app-delete-confirmation-dialog
     [visible]="deleteDialogVisible"
@@ -13,5 +16,18 @@
     (confirm)="onDeleteConfirm()"
     (cancel)="onDeleteCancel()">
   </app-delete-confirmation-dialog>
-  <app-subject-form [visible]="formVisible()" [mode]="formMode()" [subject]="selectedSubject()!" (close)="closeForm()" (saved)="onSaved($event)"></app-subject-form>
+  <app-subject-form
+    [visible]="formVisible()"
+    [mode]="formMode()"
+    [subject]="selectedSubject()!"
+    (close)="closeForm()"
+    (saved)="onSaved($event)">
+  </app-subject-form>
+  <app-subject-config-form
+    [visible]="configFormVisible()"
+    [mode]="configFormMode()"
+    [subjectId]="selectedSubjectId()!"
+    (close)="closeConfigForm()"
+    (saved)="onConfigSaved($event)">
+  </app-subject-config-form>
 </div>

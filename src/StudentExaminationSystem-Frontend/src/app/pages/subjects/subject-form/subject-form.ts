@@ -53,13 +53,7 @@ export class SubjectForm implements OnInit {
   }
 
   onSubmit() {
-    if (!this.form.valid) {
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Validation Error',
-        detail: 'Please fill in all required fields.',
-      });
-      this.form.markAllAsTouched();
+    if (!validateFormBeforeSubmit(this.messageService, this.form)) {
       return;
     }
 
@@ -73,9 +67,6 @@ export class SubjectForm implements OnInit {
   }
 
   private updateSubject() {
-    if (!validateFormBeforeSubmit(this.messageService, this.form)) {
-      return;
-    }
     const patchDoc = GeneratePatchDocument(this.form, this.subject, ["name", "code"]);
     const subscription = this.subjectService.updateModel(this.subject.id, patchDoc).subscribe({
       next: (result) => {

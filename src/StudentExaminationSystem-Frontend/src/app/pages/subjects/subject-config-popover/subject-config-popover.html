@@ -1,0 +1,33 @@
+<p-popover  #op [style]="{ width: '250px' }">
+  <div class="flex flex-col gap-2">
+    @if (hasConfiguration) {
+      <h4 class="text-sm font-semibold mb-2">Configuration Options</h4>
+      <button
+        pButton
+        type="button"
+        label="View"
+        icon="pi pi-eye"
+        class="p-button-outlined p-button-info w-full"
+        (click)="onViewConfig(); op.hide()">
+      </button>
+      <button
+        pButton
+        type="button"
+        label="Update"
+        icon="pi pi-pencil"
+        class="p-button-outlined p-button-warning w-full"
+        (click)="onEditConfig(); op.hide()">
+      </button>
+    } @else {
+      <h4 class="text-sm font-semibold mb-2">No Configuration</h4>
+      <button
+        pButton
+        type="button"
+        label="Create"
+        icon="pi pi-plus"
+        class="p-button-outlined p-button-success w-full"
+        (click)="onCreateConfig(); op.hide()">
+      </button>
+    }
+  </div>
+</p-popover >

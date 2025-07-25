@@ -1,12 +1,12 @@
 import { Component, Output, EventEmitter, OnInit, signal, inject } from '@angular/core';
 import { GetSubjectModel } from '../../../core/models/subject.model';
 import { SubjectService } from '../../../core/services/subject.service';
-import {TableModule} from 'primeng/table';
-import {ButtonModule} from 'primeng/button';
-import {Spinner} from '../../../shared/components/spinner/spinner';
-import {NoDataToShowComponent} from '../../../shared/components/no-data-to-show/no-data-to-show';
-import {PagedListModel} from '../../../core/models/common/paged-list.model';
-import {BaseResourceParametersModel} from '../../../core/models/common/base-resource-parameters.model';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { Spinner } from '../../../shared/components/spinner/spinner';
+import { NoDataToShowComponent } from '../../../shared/components/no-data-to-show/no-data-to-show';
+import { BaseResourceParametersModel } from '../../../core/models/common/base-resource-parameters.model';
+import { SubjectConfigPopover } from '../subject-config-popover/subject-config-popover';
 
 @Component({
   selector: 'app-subject-list',
@@ -16,6 +16,7 @@ import {BaseResourceParametersModel} from '../../../core/models/common/base-reso
     ButtonModule,
     Spinner,
     NoDataToShowComponent,
+    SubjectConfigPopover,
   ],
   styleUrls: ['./subject-list.scss']
 })
@@ -31,6 +32,9 @@ export class SubjectList implements OnInit {
 
   @Output() edit = new EventEmitter<GetSubjectModel>();
   @Output() delete = new EventEmitter<number>();
+  @Output() viewConfig = new EventEmitter<number>();
+  @Output() editConfig = new EventEmitter<number>();
+  @Output() createConfig = new EventEmitter<number>();
 
   ngOnInit() {
     this.loadSubjects();
@@ -86,5 +90,17 @@ export class SubjectList implements OnInit {
       updatedSubjects[index] = updatedSubject;
       this.subjects.set(updatedSubjects);
     }
+  }
+
+  onViewConfig(id: number) {
+    this.viewConfig.emit(id);
+  }
+
+  onEditConfig(id: number) {
+    this.editConfig.emit(id);
+  }
+
+  onCreateConfig(id: number) {
+    this.createConfig.emit(id);
   }
 }

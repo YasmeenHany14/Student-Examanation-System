@@ -1,0 +1,35 @@
+/* Subject Config Form Styles */
+.input-error-wrapper {
+  width: 100%;
+}
+
+label {
+  font-weight: 500;
+  color: var(--text-color);
+  min-width: 8rem;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.w-32 {
+  width: 8rem;
+}
+
+form {
+  .flex {
+    &.flex-col {
+      gap: 1rem;
+    }
+
+    &.flex-row {
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+}
+
+.text-gray-600 {
+  color: #6b7280;
+}

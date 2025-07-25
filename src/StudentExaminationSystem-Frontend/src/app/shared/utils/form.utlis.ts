@@ -69,14 +69,12 @@ export function showDeleteSuccessMessage(messageService: MessageService, entityN
 export function validateFormBeforeSubmit(messageService: MessageService, form: FormGroup): boolean {
   if (form.invalid) {
     form.markAllAsTouched();
+    messageService.add({
+      severity: 'error',
+      summary: 'Validation Error',
+      detail: 'Please fix all form validation problems first.',
+    });
     return false;
   }
-
-  messageService.add({
-    severity: 'error',
-    summary: 'Validation Error',
-    detail: 'Please fix all form validation problems first.',
-  });
-
   return true;
 }
