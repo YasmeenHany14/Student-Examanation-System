@@ -1,0 +1,16 @@
+// Add any specific styles for difficulty profile form here if needed
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.input-error-wrapper {
+  flex: 1;
+}
+
+label {
+  min-width: 150px;
+  font-weight: 500;
+}

@@ -62,7 +62,7 @@ public class DifficultyProfileController(
     }
 
     // PATCH ASYNC
-    [HttpPatch("/{id}" ,Name = "UpdateDifficultyProfile")]
+    [HttpPatch("{id}" ,Name = "UpdateDifficultyProfile")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -92,7 +92,7 @@ public class DifficultyProfileController(
     }
     
     // DELETE ASYNC
-    [HttpDelete("/{id}", Name = "DeleteDifficultyProfile")]
+    [HttpDelete("{id}", Name = "DeleteDifficultyProfile")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]

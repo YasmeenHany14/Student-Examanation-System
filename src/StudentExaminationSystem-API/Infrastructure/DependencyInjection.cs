@@ -21,6 +21,7 @@ public static class DependencyInjection
         {
             var auditInterceptor = sp.GetRequiredService<UpdateAuditFieldsInterceptor>();
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            options.AddInterceptors(auditInterceptor);
             options.EnableDetailedErrors();
         });
         

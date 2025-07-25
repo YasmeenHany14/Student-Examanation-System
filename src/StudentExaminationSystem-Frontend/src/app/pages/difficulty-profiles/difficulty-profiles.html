@@ -1,0 +1,24 @@
+<div class="flex flex-col h-full p-6">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold">Difficulty Profiles</h2>
+    <p-button type="button" label="Create" icon="pi pi-plus" (click)="openCreate()"></p-button>
+  </div>
+  <app-difficulty-profile-list
+    (edit)="openEdit($event)"
+    (delete)="deleteDifficultyProfile($event)"
+  ></app-difficulty-profile-list>
+  <app-delete-confirmation-dialog
+    [visible]="deleteDialogVisible"
+    [entityName]="'Difficulty Profile'"
+    (confirm)="onDeleteConfirm()"
+    (cancel)="onDeleteCancel()">
+  </app-delete-confirmation-dialog>
+  <app-difficulty-profile-form
+    [visible]="formVisible()"
+    [mode]="formMode()"
+    [difficultyProfile]="selectedDifficultyProfile()!"
+    (close)="closeForm()"
+    (saved)="onSaved($event)">
+  </app-difficulty-profile-form>
+</div>
+

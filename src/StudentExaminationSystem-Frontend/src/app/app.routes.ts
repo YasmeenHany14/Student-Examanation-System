@@ -22,8 +22,13 @@ export const routes: Routes = [
       .then(m => m.SubjectsPage),
   },
   {
+    path: 'home/difficulty-profiles',
+    loadComponent: () => import('./pages/difficulty-profiles/difficulty-profiles')
+      .then(m => m.DifficultyProfilesPage),
+  },
+  {
     path: '',
-    redirectTo: 'account/login',
+    redirectTo: 'home/dashboard',
     pathMatch: 'full'
   }
   ]

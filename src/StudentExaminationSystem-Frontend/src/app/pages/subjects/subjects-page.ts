@@ -7,6 +7,7 @@ import {showDeleteSuccessMessage} from '../../shared/utils/form.utlis';
 import {MessageService} from 'primeng/api';
 import { SubjectList } from './subject-list/subject-list';
 import {DeleteConfirmationDialog} from '../../shared/components/delete-confirmation-dialog/delete-confirmation-dialog';
+import {Button} from 'primeng/button';
 
 @Component({
   selector: 'app-subjects-page',
@@ -16,6 +17,7 @@ import {DeleteConfirmationDialog} from '../../shared/components/delete-confirmat
     SubjectConfigForm,
     DeleteConfirmationDialog,
     SubjectList,
+    Button,
   ],
   styleUrls: ['./subjects-page.scss']
 })

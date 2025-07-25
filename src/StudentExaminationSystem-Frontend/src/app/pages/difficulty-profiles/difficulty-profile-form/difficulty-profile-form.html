@@ -1,0 +1,82 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [closable]="true"
+  [style]="{ width: '50vw' }"
+  [header]="mode === 'create' ? 'Add Difficulty Profile' : 'Edit Difficulty Profile'"
+  [footerTemplate] = "footer"
+  (onHide)="onClose()">
+
+  <ng-template #header>
+    <h2>{{ mode === 'create' ? 'Add Difficulty Profile' : 'Edit Difficulty Profile' }}</h2>
+  </ng-template>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="flex flex-row gap-2 items-center">
+        <label for="name">Name</label>
+        <div class=input-error-wrapper>
+          <input pInputText type="text" formControlName="name" id="name"
+                 [invalid]="isInvalid(form, 'name')" [appAutoFormError]="form" />
+        </div>
+      </div>
+
+      <div formGroupName="percentages" [appFormGroupError]="form.controls.percentages" groupName="percentages"
+      class="flex flex-col gap-4">
+        <div class="flex flex-row gap-2 items-center">
+          <label for="easyQuestionsPercent">Easy Questions %</label>
+          <div class=input-error-wrapper>
+            <p-inputNumber
+              formControlName="easyQuestionsPercent"
+              id="easyQuestionsPercent"
+              [min]="0"
+              [max]="100"
+              suffix="%"
+              [invalid]="isInvalid(form, 'percentages/easyQuestionsPercent')"
+              [appAutoFormError]="form!"
+            ></p-inputNumber>
+          </div>
+        </div>
+
+        <div class="flex flex-row gap-2 items-center">
+          <label for="mediumQuestionsPercent">Medium Questions %</label>
+          <div class=input-error-wrapper>
+            <p-inputNumber
+              formControlName="mediumQuestionsPercent"
+              id="mediumQuestionsPercent"
+              [min]="0"
+              [max]="100"
+              suffix="%"
+              [invalid]="isInvalid(form, 'percentages/mediumQuestionsPercent')"
+              [appAutoFormError]="form!"
+            ></p-inputNumber>
+          </div>
+        </div>
+
+        <div class="flex flex-row gap-2 items-center">
+          <label for="hardQuestionsPercent">Hard Questions %</label>
+          <div class=input-error-wrapper>
+            <p-inputNumber
+              formControlName="hardQuestionsPercent"
+              id="hardQuestionsPercent"
+              [min]="0"
+              [max]="100"
+              suffix="%"
+              [invalid]="isInvalid(form, 'percentages/hardQuestionsPercent')"
+              [appAutoFormError]="form!"
+            ></p-inputNumber>
+          </div>
+        </div>
+      </div>
+      @if(form.controls.percentages.invalid && form.controls.percentages.touched && form.controls.percentages.dirty) {
+        <div class="input-error-wrapper">
+          <p-message severity="error"> Percentages must sum to 100%. </p-message>
+        </div>
+      }
+
+      <ng-template class="flex flex-row justify-between gap-2" #footer >
+        <div class="w-full flex flex-row justify-between gap-2">
+          <p-button label="Cancel" icon="pi pi-times" iconPos="left" severity="danger" type="button" (click)="onClose()"></p-button>
+          <p-button label="{{ mode === 'create' ? 'Create' : 'Save' }}" icon="pi pi-check" iconPos="left" type="submit" (click)="onSubmit()" ></p-button>
+        </div>
+      </ng-template>
+    </form>
+</p-dialog>

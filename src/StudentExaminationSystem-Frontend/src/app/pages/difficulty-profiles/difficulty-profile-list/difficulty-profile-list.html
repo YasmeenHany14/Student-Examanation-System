@@ -1,0 +1,33 @@
+@if(loading()) {
+  <app-spinner/>
+}
+
+@if(isError()) {
+  <app-no-data-to-show/>
+}
+
+@if (difficultyProfiles() && difficultyProfiles().length !== 0) {
+  <p-table [value]="difficultyProfiles()" [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords()" (onLazyLoad)="onLazyLoad($event)" [lazy]="true" [loading]="loading()">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Name</th>
+        <th>Easy %</th>
+        <th>Medium %</th>
+        <th>Hard %</th>
+        <th style="width: 120px;"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-difficultyProfile>
+      <tr>
+        <td>{{ difficultyProfile.name }}</td>
+        <td>{{ difficultyProfile.easyQuestionsPercent }}%</td>
+        <td>{{ difficultyProfile.mediumQuestionsPercent }}%</td>
+        <td>{{ difficultyProfile.hardQuestionsPercent }}%</td>
+        <td class="text-center">
+          <button pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-info p-button-sm mr-2" (click)="onEdit(difficultyProfile)"></button>
+          <button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-danger p-button-sm" (click)="onDelete(difficultyProfile.id)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+}
