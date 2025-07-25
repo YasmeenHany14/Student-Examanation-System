@@ -1,0 +1,33 @@
+<div class="flex flex-col h-full p-6">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold">Students</h2>
+  </div>
+
+  @if(loading()) {
+    <app-spinner/>
+  }
+
+  @if(isError()) {
+    <app-no-data-to-show/>
+  }
+
+  @if (students() && students().length !== 0) {
+    <p-table [value]="students()" [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords()" (onLazyLoad)="onLazyLoad($event)" [lazy]="true" [loading]="loading()">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Name</th>
+          <th>Active Status</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-student>
+        <tr>
+          <td>{{ student.name }}</td>
+          <td>
+            <p-toggleswitch [ngModel]="student.isActive" (onChange)="onToggleStatus(student)" />
+
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  }
+</div>

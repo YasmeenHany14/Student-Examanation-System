@@ -36,7 +36,7 @@ export class Header {
         { label: 'Subjects', routerLink: '/home/subjects', icon: 'pi pi-book' },
         { label: 'Questions', routerLink: '/home/questions', icon: 'pi pi-question' },
         { label: 'Difficulty Profiles', routerLink: '/home/difficulty-profiles', icon: 'pi pi-chart-line' },
-        { label: 'Students', routerLink: '/students', icon: 'pi pi-users' },
+        { label: 'Students', routerLink: '/home/students', icon: 'pi pi-users' },
         { label: 'Logout', routerLink: '', icon: 'pi pi-sign-out' }
       ];
     } else if (this.user.role === UserRole.STUDENT) {

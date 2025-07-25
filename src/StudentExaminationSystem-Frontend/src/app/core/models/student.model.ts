@@ -1,4 +1,4 @@
-﻿import { BaseRequestModel } from './common/base-model';
+﻿import {BaseRequestModel, BaseResponseModel} from './common/base-model';
 
 export interface RegisterStudentRequest extends BaseRequestModel {
   email: string;
@@ -10,4 +10,10 @@ export interface RegisterStudentRequest extends BaseRequestModel {
   gender: number,
   joinDate: string,
   courseIds: number[]
+}
+
+export interface GetStudentListModel extends BaseResponseModel {
+  id: number;
+  name: string;
+  isActive: boolean;
 }

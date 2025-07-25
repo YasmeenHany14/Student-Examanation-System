@@ -5,9 +5,14 @@ export function isNotAuthRequest(req: any): boolean {
     routes.authRefresh,
     routes.authLogin,
     routes.authLogout,
-    routes.authRegisterStudent,
+    // routes.authRegisterStudent,
     routes.subjectsDropdown,
   ];
+
+  if (req.url.includes(routes.authRegisterStudent) && req.method === 'POST') {
+    return true;
+  }
+
   return authUrls.some(url => req.url.includes(url));
 }
 

@@ -13,6 +13,7 @@
   public static readonly subjectConfig = 'subject/${id}/exam-config'
   public static readonly difficultyProfile = '/difficulty-profile';
   public static readonly difficultyProfileDropdown =  routes.difficultyProfile + '/all';
+  public static readonly students = '/student';
 
   public static SetSubjectConfig(id: number | string) {
     return `/subject/${id}/exam-config`;
