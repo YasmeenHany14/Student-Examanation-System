@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
-import { QuestionListModel } from '../../../core/models/question.mode';
+import { QuestionListModel } from '../../../core/models/question.model';
 import { QuestionCardComponent } from '../../../shared/components/question-card/question-card';
 
 @Component({

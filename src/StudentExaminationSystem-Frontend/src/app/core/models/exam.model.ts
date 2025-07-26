@@ -1,5 +1,5 @@
 import {BaseResponseModel} from './common/base-model';
-import {QuestionHistoryModel} from './question.mode';
+import {QuestionHistoryModel} from './question.model';
 
 export interface ExamListModel extends BaseResponseModel {
   id: number;

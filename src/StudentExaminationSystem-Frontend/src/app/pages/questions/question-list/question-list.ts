@@ -1,6 +1,6 @@
 import { Component, Output, EventEmitter, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { QuestionListModel } from '../../../core/models/question.mode';
+import { QuestionListModel } from '../../../core/models/question.model';
 import { GetSubjectModel } from '../../../core/models/subject.model';
 import { QuestionService } from '../../../core/services/question.service';
 import { SubjectService } from '../../../core/services/subject.service';
@@ -44,6 +44,7 @@ export class QuestionList implements OnInit {
   loading = signal(false);
   isError = signal(false);
   totalRecords = signal(0);
+  isSubjectsLoading = signal(true);
   pageSize: number = 10;
   currentPage: number = 1;
 
@@ -75,9 +76,11 @@ export class QuestionList implements OnInit {
   }
 
   loadSubjects() {
+    this.isSubjectsLoading.set(true);
     this.subjectService.getDropdownOptions<GetSubjectModel>().subscribe({
       next: (subjects) => {
         this.subjects.set(subjects);
+        this.isSubjectsLoading.set(false);
       },
       error: (err) => {
         console.error('Error loading subjects:', err);

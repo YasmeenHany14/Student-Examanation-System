@@ -9,6 +9,12 @@
     (delete)="deleteQuestion($event)">
   </app-question-list>
 
+  <app-question-form
+    [visible]="formVisible()"
+    (close)="closeForm()"
+    (saved)="onSaved()">
+  </app-question-form>
+
   <app-delete-confirmation-dialog
     [visible]="deleteDialogVisible"
     itemName="Question"

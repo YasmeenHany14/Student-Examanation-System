@@ -1,4 +1,4 @@
-import {BaseResponseModel} from './common/base-model';
+import {BaseRequestModel, BaseResponseModel} from './common/base-model';
 import {CreateQuestionChoiceModel, QuestionChoiceHistoryModel, QuestionChoiceModel} from './question-choice.model';
 
 export interface QuestionListModel extends BaseResponseModel {
@@ -11,11 +11,11 @@ export interface QuestionListModel extends BaseResponseModel {
   choices: QuestionChoiceModel[];
 }
 
-export interface CreateQuestionModel extends QuestionListModel {
+export interface CreateQuestionModel extends BaseRequestModel {
   subjectId: number;
   difficultyId: number;
   content: string;
-  QuestionChoices: CreateQuestionChoiceModel[];
+  questionChoices: CreateQuestionChoiceModel[];
 }
 
 export interface QuestionHistoryModel extends BaseResponseModel {

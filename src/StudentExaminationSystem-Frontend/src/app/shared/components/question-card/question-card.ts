@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { FormsModule } from '@angular/forms';
-import { QuestionListModel } from '../../../core/models/question.mode';
+import { QuestionListModel } from '../../../core/models/question.model';
 
 interface DifficultyOption {
   label: string;
