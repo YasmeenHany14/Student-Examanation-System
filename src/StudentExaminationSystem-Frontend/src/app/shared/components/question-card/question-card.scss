@@ -1,0 +1,145 @@
+.question-card {
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  .question-details {
+    .question-info {
+      margin-bottom: 1.5rem;
+
+      h4 {
+        margin-bottom: 0.5rem;
+        color: #333;
+        font-size: 1.1rem;
+      }
+
+      .question-text {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+        font-size: 1rem;
+      }
+
+      .question-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        span {
+          font-size: 0.9rem;
+          color: #666;
+        }
+      }
+    }
+
+    .choices-section {
+      h4 {
+        margin-bottom: 1rem;
+        color: #333;
+        font-size: 1.1rem;
+      }
+
+      .choices-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        .choice-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.75rem;
+          border: 1px solid #dee2e6;
+          border-radius: 8px;
+          background: #fff;
+          transition: all 0.2s ease;
+
+          &:hover:not(.correct-choice) {
+            background-color: #f8f9fa;
+            border-color: #adb5bd;
+          }
+
+          &.correct-choice {
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+
+            .choice-text {
+              font-weight: 600;
+              color: #155724;
+            }
+          }
+
+          &.selected-choice:not(.correct-choice) {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+          }
+
+          .choice-content {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            gap: 0.75rem;
+
+            .choice-text {
+              line-height: 1.4;
+              cursor: pointer;
+              margin: 0;
+              flex: 1;
+            }
+
+            p-radioButton {
+              display: flex;
+              align-items: center;
+            }
+          }
+
+          .correct-icon {
+            color: #28a745;
+            font-size: 1.2rem;
+            margin-left: 0.5rem;
+          }
+
+          // Override PrimeNG radio button styles when disabled
+          ::ng-deep {
+            .p-radiobutton.p-disabled .p-radiobutton-box {
+              opacity: 0.6;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .question-card {
+    padding: 1rem;
+
+    .question-details {
+      .question-info {
+        .question-meta {
+          gap: 0.25rem;
+        }
+      }
+
+      .choices-section {
+        .choices-list {
+          gap: 0.5rem;
+
+          .choice-item {
+            padding: 0.5rem;
+
+            .choice-content {
+              gap: 0.5rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}

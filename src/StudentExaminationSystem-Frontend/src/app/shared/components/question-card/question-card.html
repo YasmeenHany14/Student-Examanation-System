@@ -1,0 +1,48 @@
+<div class="question-card">
+  @if(question()) {
+    <div class="question-details">
+      <div class="question-info">
+        <h4>Question:</h4>
+        <p class="question-text">{{ question()!.content }}</p>
+
+        @if(showMetadata()){
+          <div class="question-meta">
+            <span><strong>Subject:</strong> {{ question()!.subjectName }}</span>
+            <span><strong>Difficulty:</strong> {{ getDifficultyName(question()!.difficultyId) }}</span>
+            <span><strong>Status:</strong> {{ question()!.isActive ? 'Active' : 'Inactive' }}</span>
+          </div>
+        }
+      </div>
+
+      <div class="choices-section">
+        <h4>Choices:</h4>
+        <div class="choices-list">
+          @for(choice of question()!.choices; track choice.id) {
+            <div class="choice-item"
+                 [ngClass]="{
+                   'correct-choice': viewMode() && choice.isCorrect,
+                   'selected-choice': selectedChoiceId() === choice.id
+                 }">
+              <div class="choice-content">
+                <p-radioButton
+                  [inputId]="'choice-' + choice.id"
+                  [value]="choice.id"
+                  [ngModel]="selectedChoiceId()"
+                  (ngModelChange)="onChoiceChange($event)"
+                  [disabled]="viewMode()"
+                  name="questionChoice">
+                </p-radioButton>
+                <label [for]="'choice-' + choice.id" class="choice-text">
+                  {{ choice.content }}
+                </label>
+              </div>
+              @if(viewMode() && choice.isCorrect) {
+                <i class="pi pi-check-circle correct-icon"></i>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>
