@@ -1,0 +1,18 @@
+<div class="questions-page">
+  <div class="page-header">
+    <h2>Questions Management</h2>
+    <button pButton type="button" label="Create Question" icon="pi pi-plus"
+            class="p-button-success" (click)="openCreate()"></button>
+  </div>
+
+  <app-question-list
+    (delete)="deleteQuestion($event)">
+  </app-question-list>
+
+  <app-delete-confirmation-dialog
+    [visible]="deleteDialogVisible"
+    itemName="Question"
+    (confirm)="onDeleteConfirm()"
+    (cancel)="onDeleteCancel()">
+  </app-delete-confirmation-dialog>
+</div>

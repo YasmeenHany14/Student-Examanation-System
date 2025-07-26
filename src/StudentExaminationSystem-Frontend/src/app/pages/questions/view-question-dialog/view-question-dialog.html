@@ -1,0 +1,36 @@
+<p-dialog
+  header="Question Details"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{width: '600px'}"
+  (onHide)="onHide()">
+
+  @if(question()) {
+    <div class="question-details">
+      <div class="question-info">
+        <h4>Question:</h4>
+        <p class="question-text">{{ question()!.content }}</p>
+
+        <div class="question-meta">
+          <span><strong>Subject:</strong> {{ question()!.subjectName }}</span>
+          <span><strong>Difficulty:</strong> {{ getDifficultyName(question()!.difficultyId) }}</span>
+          <span><strong>Status:</strong> {{ question()!.isActive ? 'Active' : 'Inactive' }}</span>
+        </div>
+      </div>
+
+      <div class="choices-section">
+        <h4>Choices:</h4>
+        <div class="choices-list">
+          @for(choice of question()!.choices; track choice.id) {
+            <div class="choice-item" [ngClass]="{ 'correct-choice': choice.isCorrect }">
+              <span class="choice-text">{{ choice.content }}</span>
+              @if(choice.isCorrect) {
+                <i class="pi pi-check-circle correct-icon"></i>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</p-dialog>

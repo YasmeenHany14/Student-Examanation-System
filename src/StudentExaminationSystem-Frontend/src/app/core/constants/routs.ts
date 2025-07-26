@@ -15,6 +15,7 @@
   public static readonly difficultyProfileDropdown =  routes.difficultyProfile + '/all';
   public static readonly students = '/student';
   public static readonly exam = '/exam';
+  public static readonly question = '/question';
 
   public static SetSubjectConfig(id: number | string) {
     return `/subject/${id}/exam-config`;

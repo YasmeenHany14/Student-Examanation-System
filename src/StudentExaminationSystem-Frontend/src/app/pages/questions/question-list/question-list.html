@@ -1,0 +1,118 @@
+<div class="question-list">
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filter-group">
+      <label for="subject-filter">Subject *</label>
+      <p-select
+        id="subject-filter"
+        [options]="subjects()"
+        [(ngModel)]="selectedSubject"
+        (onChange)="onSubjectChange($event.value)"
+        optionLabel="name"
+        placeholder="Select a subject"
+        [showClear]="true"
+        class="w-full">
+      </p-select>
+    </div>
+
+    <div class="filter-group">
+      <label for="difficulty-filter">Difficulty</label>
+      <p-select
+        id="difficulty-filter"
+        [options]="difficultyOptions()"
+        [(ngModel)]="selectedDifficulty"
+        (onChange)="onDifficultyChange()"
+        optionLabel="label"
+        placeholder="All difficulties"
+        [showClear]="true"
+        class="w-full">
+      </p-select>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  @if(loading()) {
+    <app-spinner/>
+  }
+
+  <!-- Error State -->
+  @if(isError()) {
+    <app-no-data-to-show/>
+  }
+
+  <!-- No Subject Selected Message -->
+  @if(!selectedSubject() && !loading()) {
+    <div class="no-subject-message">
+      <p>Please select a subject to view questions.</p>
+    </div>
+  }
+
+  <!-- Questions Table -->
+  @if (questions() && questions().length !== 0 && selectedSubject()) {
+    <p-table
+      [value]="questions()"
+      [paginator]="true"
+      [rows]="pageSize"
+      [totalRecords]="totalRecords()"
+      (onLazyLoad)="onLazyLoad($event)"
+      [lazy]="true"
+      [loading]="loading()">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Question Text</th>
+          <th>Difficulty</th>
+          <th>Active</th>
+          <th style="width: 120px;">Actions</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-question>
+        <tr>
+          <td>{{ truncateText(question.content, 15) }}</td>
+          <td>
+            <span class="difficulty-badge" [ngClass]="'difficulty-' + question.difficultyId">
+              {{ getDifficultyName(question.difficultyId) }}
+            </span>
+          </td>
+          <td>
+            <p-toggleswitch [ngModel]="question.isActive" (onChange)="onToggleStatus(question)" />
+          </td>
+          <td class="text-center">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-eye"
+              class="p-button-rounded p-button-info p-button-sm mr-2"
+              (click)="viewQuestion(question)"
+              title="View question details">
+            </button>
+            <button
+              pButton
+              type="button"
+              icon="pi pi-trash"
+              class="p-button-rounded p-button-danger p-button-sm"
+              (click)="onDelete(question.id)"
+              title="Delete question">
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  }
+
+  <!-- No Questions Found -->
+  @if(selectedSubject() && questions().length === 0 && !loading() && !isError()) {
+    <div class="no-questions-message">
+      <p>No questions found for the selected filters.</p>
+    </div>
+  }
+</div>
+
+<!-- Question Details Dialog -->
+<app-view-question-dialog
+  [visible]="viewQuestionDialogVisible"
+  [question]="selectedQuestionForView"
+  (visibleChange)="viewQuestionDialogVisible.set($event)"
+  (hide)="closeViewDialog()">
+</app-view-question-dialog>

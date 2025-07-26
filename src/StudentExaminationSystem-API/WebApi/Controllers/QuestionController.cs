@@ -49,14 +49,14 @@ public class QuestionController(
     }
     
     // MakeQuestionNotActiveAsync
-    [HttpGet("{questionId:int}/not-active", Name = "MakeQuestionNotActive")]
+    [HttpGet("{questionId:int}/toggle-status", Name = "ToggleQuestionStatus")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [Authorize(AuthenticationSchemes = "Bearer", Policy = IdentityData.AdminUserPolicyName)]
-    public async Task<IActionResult> MakeQuestionNotActiveAsync(int questionId)
+    public async Task<IActionResult> ToggleQuestionStatusAsync(int questionId)
     {
-        var result = await questionService.MakeQuestionNotActiveAsync(questionId);
+        var result = await questionService.ToggleQuestionStatusAsync(questionId);
         if (!result.IsSuccess)
             return result.ToActionResult();
 

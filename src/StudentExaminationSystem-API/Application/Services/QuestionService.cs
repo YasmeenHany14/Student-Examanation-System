@@ -41,13 +41,13 @@ public class QuestionService(
         return Result<int>.Success(question.Id);
     }
 
-    public async Task<Result<bool>> MakeQuestionNotActiveAsync(int questionId)
+    public async Task<Result<bool>> ToggleQuestionStatusAsync(int questionId)
     {
         var question = await unitOfWork.QuestionRepository.GetEntityByIdAsync(questionId);
         if (question == null)
             return Result<bool>.Failure(CommonErrors.NotFound());
 
-        question.IsActive = false;
+        question.IsActive = !question.IsActive;
         unitOfWork.QuestionRepository.UpdateAsync(question);
         
         var result = await unitOfWork.SaveChangesAsync();

@@ -49,6 +49,12 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'home/questions',
+    loadComponent: () => import('./pages/questions/questions')
+      .then(m => m.QuestionsPage),
+    canActivate: [AuthGuard, AdminGuard]
+  },
+  {
     path: '',
     redirectTo: 'home/dashboard',
     pathMatch: 'full'
