@@ -4,6 +4,7 @@ import {AuthService} from '../../core/services/auth.service';
 import {User} from '../../core/models/user.model';
 import {UserRole} from '../../core/enums/user-role';
 import {Menubar} from 'primeng/menubar';
+import {routes} from '../../core/constants/routs';
 
 @Component({
   selector: 'app-header',
@@ -16,7 +17,7 @@ import {Menubar} from 'primeng/menubar';
 })
 export class Header {
   user: User | null = null;
-  navLinks: { label: string, routerLink: any, icon?: string }[] = [];
+  navLinks: { label: string, routerLink?: any, icon?: string, command?: () => void }[] = [];
 
   constructor(private authService: AuthService, private router: Router) {
     this.authService.currentUser$.subscribe(user => {
@@ -37,21 +38,21 @@ export class Header {
         { label: 'Questions', routerLink: '/home/questions', icon: 'pi pi-question' },
         { label: 'Difficulty Profiles', routerLink: '/home/difficulty-profiles', icon: 'pi pi-chart-line' },
         { label: 'Students', routerLink: '/home/students', icon: 'pi pi-users' },
-        { label: 'Logout', routerLink: '', icon: 'pi pi-sign-out' }
+        { label: 'Logout', icon: 'pi pi-sign-out', command: () => this.onLogout() }
       ];
     } else if (this.user.role === UserRole.STUDENT) {
       this.navLinks = [
         { label: 'Home', routerLink: '/home', icon: 'pi pi-home' },
         { label: 'Profile', routerLink: '/profile', icon: 'pi pi-user' },
         { label: 'Take Exam', routerLink: '/exam', icon: 'pi pi-pencil' },
-        { label: 'Logout', routerLink: '', icon: 'pi pi-sign-out' }
+        { label: 'Logout', icon: 'pi pi-sign-out', command: () => this.onLogout() }
       ];
     }
   }
 
   onLogout() {
     this.authService.logout();
-    this.router.navigate(['/login']);
+    this.router.navigate([routes.authLogin]);
   }
 
   goToProfile() {

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BaseService} from './base.service';
+import {BaseCrudService} from './base-crud.service';
 import {routes} from '../constants/routs';
 import {Observable} from 'rxjs';
 import {CreateSubjectConfigModel, GetSubjectConfigModel, UpdateSubjectConfigModel} from '../models/subject-config.model';
@@ -11,7 +11,7 @@ import {HttpHeaders} from '@angular/common/http';
   providedIn: 'root'
 })
 
-export class SubjectConfigService extends BaseService {
+export class SubjectConfigService extends BaseCrudService {
   protected override route: string = '';
 
   constructor() {

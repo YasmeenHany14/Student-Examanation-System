@@ -1,0 +1,40 @@
+@if(loading()) {
+  <app-spinner/>
+}
+
+@if(!loading() && (isError() || exams().length === 0)) {
+  <app-no-data-to-show/>
+}
+
+@if (exams() && exams().length !== 0) {
+  <p-table [value]="exams()" [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords()" (onLazyLoad)="onLazyLoad($event)" [lazy]="true" [loading]="loading()">
+    <ng-template pTemplate="header">
+      <tr>
+        @if(isAdmin()) {
+          <th>Student Name</th>
+        }
+        <th>Subject Name</th>
+        <th>Exam Date</th>
+        <th>Final Score</th>
+        <th>Status</th>
+        <th style="width: 80px;"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-exam>
+      <tr>
+        @if(isAdmin()) {
+          <td>{{ exam.studentName }}</td>
+        }
+        <td>{{ exam.subjectName }}</td>
+        <td>{{ exam.examDate | date:'short' }}</td>
+        <td>{{ exam.finalScore }}</td>
+        <td>
+          <p-tag [value]="exam.passed ? 'Passed' : 'Failed'" [severity]="exam.passed ? 'success' : 'danger'"></p-tag>
+        </td>
+        <td class="text-center">
+          <button pButton type="button" icon="pi pi-eye" class="p-button-rounded p-button-info p-button-sm" (click)="onViewDetails(exam)" title="View Details"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+}

@@ -38,6 +38,17 @@ export const routes: Routes = [
     canActivate: [AuthGuard, AdminGuard]
   },
   {
+    path: 'home/exams',
+    loadComponent: () => import('./pages/exam-list/exam-list')
+      .then(m => m.ExamList),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'auth/login',
+    redirectTo: 'account/login',
+    pathMatch: 'full'
+  },
+  {
     path: '',
     redirectTo: 'home/dashboard',
     pathMatch: 'full'
