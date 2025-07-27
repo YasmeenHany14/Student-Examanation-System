@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {routes} from '../constants/routs';
 import {BaseCrudService} from './base-crud.service';
+import {LoadExamModel} from '../models/exam.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,5 +12,9 @@ export class ExamService extends BaseCrudService {
     constructor() {
       super();
       this.route = routes.exam;
+    }
+
+    getExamForSubject(subjectId: number) {
+      return this.httpClient.get<LoadExamModel>(this.API_URL + this.route + '/subject/' + subjectId);
     }
 }

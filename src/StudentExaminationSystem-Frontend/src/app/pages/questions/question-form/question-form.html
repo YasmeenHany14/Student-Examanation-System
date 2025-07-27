@@ -71,7 +71,7 @@
         </button>
       </div>
 
-      <div formArrayName="questionChoices" groupName="questionChoices">
+      <div formArrayName="choices" groupName="choices">
         @for(choiceControl of questionChoicesArray.controls; track choiceControl; let i = $index) {
           <div
             [formGroupName]="i"

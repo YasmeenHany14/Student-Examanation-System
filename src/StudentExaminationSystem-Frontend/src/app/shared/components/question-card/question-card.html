@@ -7,9 +7,9 @@
 
         @if(showMetadata()){
           <div class="question-meta">
-            <span><strong>Subject:</strong> {{ question()!.subjectName }}</span>
-            <span><strong>Difficulty:</strong> {{ getDifficultyName(question()!.difficultyId) }}</span>
-            <span><strong>Status:</strong> {{ question()!.isActive ? 'Active' : 'Inactive' }}</span>
+            <span><strong>Subject:</strong> {{ getMetadata().subjectName }}</span>
+            <span><strong>Difficulty:</strong> {{ getMetadata().difficultyName }}</span>
+            <span><strong>Status:</strong> {{ getMetadata().isActive }}</span>
           </div>
         }
       </div>

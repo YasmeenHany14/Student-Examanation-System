@@ -1,0 +1,65 @@
+.exam-container {
+  .question-navigator {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+
+    .question-box {
+      min-width: 40px;
+      min-height: 40px;
+      border: 2px solid #e2e8f0;
+      background: white;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      // Default state
+      &.unanswered {
+        @apply bg-white text-gray-700 border-gray-300;
+
+        &:hover {
+          @apply bg-gray-50 border-gray-400;
+        }
+      }
+
+      // Answered state
+      &.answered {
+        @apply bg-green-100 text-green-800 border-green-300;
+
+        &:hover {
+          @apply bg-green-200 border-green-400;
+        }
+      }
+
+      // Current question state
+      &.current {
+        @apply bg-blue-500 text-white border-blue-600;
+
+        &:hover {
+          @apply bg-blue-600 border-blue-700;
+        }
+      }
+
+      // Current + answered state
+      &.current.answered {
+        @apply bg-blue-600 text-white border-blue-700;
+      }
+    }
+  }
+
+  .question-content {
+    .navigation-bar {
+      background: #fafafa;
+
+      .p-button {
+        min-width: 100px;
+      }
+    }
+  }
+}
+
+.loading-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+

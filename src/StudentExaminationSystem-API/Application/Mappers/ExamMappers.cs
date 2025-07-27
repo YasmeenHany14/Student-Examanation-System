@@ -44,7 +44,7 @@ public static class ExamMappers
     {
         return new LoadExamAppDto
         {
-            ExamId = examCacheEntry.ExamId,
+            Id = examCacheEntry.ExamId,
             SubjectId = examCacheEntry.SubjectId,
             ExamEndTime = examCacheEntry.ExamEndTime,
             Questions = fullExam.Questions.Select(qh => new LoadExamQuestionAppDto

@@ -1,8 +1,7 @@
 import {BaseRequestModel, BaseResponseModel} from './common/base-model';
 import {
   CreateQuestionChoiceModel,
-  LoadQuestionChoiceModel,
-  QuestionChoiceHistoryModel,
+  QuestionChoiceExamModel,
   QuestionChoiceModel
 } from './question-choice.model';
 
@@ -24,13 +23,11 @@ export interface CreateQuestionModel extends BaseRequestModel {
 }
 
 export interface QuestionHistoryModel extends BaseResponseModel {
-  content: string;
-  choices: QuestionChoiceHistoryModel[];
-}
-
-export interface LoadQuestionModel extends BaseResponseModel {
   id: number;
   content: string;
+  choices: QuestionChoiceExamModel[];
+}
+
+export interface LoadQuestionModel extends QuestionHistoryModel {
   questionOrder: number;
-  choices: LoadQuestionChoiceModel[];
 }

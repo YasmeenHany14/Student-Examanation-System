@@ -52,7 +52,7 @@ export class QuestionForm implements OnChanges, OnInit {
     ]),
     subjectId: new FormControl(0, Validators.required),
     difficultyId: new FormControl(0, Validators.required),
-    questionChoices: new FormArray([], [
+    choices: new FormArray([], [
       Validators.required,
       choicesRangeValidator,
       oneCorrectAnswerValidator
@@ -60,7 +60,7 @@ export class QuestionForm implements OnChanges, OnInit {
   });
 
   get questionChoicesArray() {
-    return this.form.get('questionChoices') as FormArray;
+    return this.form.get('choices') as FormArray;
   }
 
   ngOnInit() {
@@ -134,7 +134,7 @@ export class QuestionForm implements OnChanges, OnInit {
       content: this.form.value.content!,
       subjectId: this.form.value.subjectId!,
       difficultyId: this.form.value.difficultyId!,
-      questionChoices: this.form.value.questionChoices!
+      choices: this.form.value.choices!
     };
 
     const subscription = this.questionService.createModel<CreateQuestionModel>(newQuestion).subscribe({

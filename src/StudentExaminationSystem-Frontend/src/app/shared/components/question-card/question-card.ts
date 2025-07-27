@@ -1,13 +1,18 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import {Component, Input, Output, EventEmitter, signal, computed, input} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { FormsModule } from '@angular/forms';
-import { QuestionListModel } from '../../../core/models/question.model';
+import {QuestionHistoryModel, QuestionListModel} from '../../../core/models/question.model';
+import {DifficultyDropdown} from '../../../core/enums/difficulty';
 
-interface DifficultyOption {
-  label: string;
-  value: number;
+interface Metadata {
+  subjectName: string;
+  difficultyName: string;
+  isActive: boolean;
 }
+
+
+type QuestionModel = QuestionListModel | QuestionHistoryModel;
 
 @Component({
   selector: 'app-question-card',
@@ -20,29 +25,46 @@ interface DifficultyOption {
   styleUrls: ['./question-card.scss']
 })
 export class QuestionCardComponent {
-  @Input() question = signal<QuestionListModel | null>(null);
-  @Input() viewMode = signal<boolean>(true);
-  @Input() showMetadata = signal<boolean>(true);
-  @Input() selectedChoiceId = signal<number | null>(null);
+  question = input<QuestionModel | null>();
+  viewMode = input<boolean>(true);
+  showMetadata = input<boolean>(true);
+  selectedChoiceId = input<number | null>(null);
 
   @Output() choiceSelected = new EventEmitter<number>();
 
   onChoiceChange(choiceId: number) {
     if (!this.viewMode()) {
-      this.selectedChoiceId.set(choiceId);
       this.choiceSelected.emit(choiceId);
     }
   }
 
   getDifficultyName(difficultyId: number): string {
-    const difficultyOptions: DifficultyOption[] = [
-      { label: 'Easy', value: 1 },
-      { label: 'Medium', value: 2 },
-      { label: 'Hard', value: 3 }
-    ];
-    const option = difficultyOptions.find(d => d.value === difficultyId);
-    return option ? option.label : 'Unknown';
+    const difficultyOptions = DifficultyDropdown;
+    const option = difficultyOptions.find(d => d.id === difficultyId);
+    return option ? option.name : 'Unknown';
   }
+
+  getMetadata = computed((): Metadata => {
+    const question = this.question();
+    // Default values
+    let subjectName = 'Unknown Subject';
+    let difficultyName = 'Unknown';
+    let isActive = true;
+
+    if (question) {
+      if ('subjectName' in question && typeof question.subjectName === 'string') {
+        subjectName = question.subjectName;
+      }
+      if ('difficultyId' in question && typeof question.difficultyId === 'number') {
+        difficultyName = this.getDifficultyName(question.difficultyId);
+      }
+      if ('isActive' in question && typeof question.isActive === 'boolean') {
+        isActive = question.isActive;
+      }
+    }
+
+    return { subjectName, difficultyName, isActive };
+  });
 
   isCorrectChoice(choiceId: number): boolean {
     const question = this.question();

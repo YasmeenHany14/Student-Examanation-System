@@ -43,6 +43,18 @@ export const routes: Routes = [
       .then(m => m.ExamList),
     canActivate: [AuthGuard]
   },
+  // {
+  //   path: 'home/exam/:id',
+  //   loadComponent: () => import('./pages/exam/exam')
+  //     .then(m => m.ExamComponent),
+  //   canActivate: [AuthGuard]
+  // },
+  // {
+  //   path: 'home/exam',
+  //   loadComponent: () => import('./pages/exam/exam')
+  //     .then(m => m.ExamComponent),
+  //   canActivate: [AuthGuard]
+  // },
   {
     path: 'auth/login',
     redirectTo: 'account/login',

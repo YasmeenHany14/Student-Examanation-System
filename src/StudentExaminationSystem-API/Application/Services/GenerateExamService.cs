@@ -51,7 +51,7 @@ public class GenerateExamService(
         return Result<LoadExamAppDto>.Success(
             new LoadExamAppDto
             {
-                ExamId = examEntryId,
+                Id = examEntryId,
                 SubjectId = subjectId,
                 Questions = examQuestions,
                 ExamEndTime = DateTime.UtcNow.AddMinutes(examConfig.DurationMinutes)

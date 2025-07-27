@@ -1,4 +1,5 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { ExamListModel } from '../../core/models/exam.model';
 import { ExamService } from '../../core/services/exam.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -33,6 +34,7 @@ export class ExamList implements OnInit {
 
   private examService = inject(ExamService);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   ngOnInit() {
     this.loadExams();
@@ -70,8 +72,9 @@ export class ExamList implements OnInit {
   }
 
   onViewDetails(exam: ExamListModel) {
-    // TODO: Implement view details functionality
-    console.log('View details for exam:', exam);
+    this.router.navigate(['/home/exam', exam.id], {
+      queryParams: { mode: 'history' }
+    });
   }
 
   isAdmin(): boolean {
