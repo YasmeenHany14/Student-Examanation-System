@@ -4,6 +4,7 @@ import {routes} from '../constants/routs';
 import {BaseResourceParametersModel} from '../models/common/base-resource-parameters.model';
 import {PagedListModel} from '../models/common/paged-list.model';
 import {GetStudentListModel} from '../models/student.model';
+import {DropdownModel} from '../models/common/common.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,10 @@ export class StudentService {
 
   toggleStudentStatus(id: number) {
     return this.httpClient.get(this.API_URL + this.route + '/' + id + '/state');
+  }
+
+  getStudentSubjects(id: string) {
+    return this.httpClient.get<DropdownModel[]>(this.API_URL + routes.studentSubjects + '/' + id);
   }
 
 }

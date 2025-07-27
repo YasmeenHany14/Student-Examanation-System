@@ -13,7 +13,7 @@ export function isNotAuthRequest(req: any): boolean {
     return true;
   }
 
-  return authUrls.some(url => req.url.includes(url));
+  return authUrls.some(url => req.url.endsWith(url));
 }
 
 export function addTokenToRequest(req: any, token: string) {

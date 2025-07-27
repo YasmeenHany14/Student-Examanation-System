@@ -1,103 +1,152 @@
-<div class="exam-container h-screen flex flex-col" *ngIf="!isLoading()">
-  <!-- Top third: Question indicator and navigation -->
-  <div class="question-navigator h-1/3 border-b border-gray-200 p-4">
-    <div class="flex flex-col h-full">
-      <!-- Progress bar and info -->
-      <div class="mb-4">
-        <div class="flex justify-between items-center mb-2">
-          <h2 class="text-lg font-semibold">
-            Take Exam
-          </h2>
-          <span class="text-sm text-gray-600">
-            Question {{ currentQuestionIndex() + 1 }} of {{ totalQuestions() }}
-          </span>
-        </div>
-        <p-progressBar
-          [value]="progressPercentage()"
-          [showValue]="false"
-          styleClass="mb-2">
-        </p-progressBar>
-        <div class="text-xs text-gray-500">
-          Progress: {{ progressPercentage() | number:'1.0-0' }}%
-          ({{ answeredQuestions() }}/{{ totalQuestions() }} answered)
-        </div>
-      </div>
+<div class="h-screen flex flex-col bg-gray-50" *ngIf="!isLoading()">
+  <!-- Header with Timer and Progress -->
+  <div class="bg-white shadow-sm border-b px-6 py-4">
+    <div class="flex justify-between items-center mb-3">
+      <h1 class="text-2xl font-bold text-gray-800">Exam in Progress</h1>
 
-      <!-- Question boxes grid -->
-      <div class="flex-1 overflow-auto">
-        <div class="grid grid-cols-8 md:grid-cols-10 lg:grid-cols-12 gap-2">
-          @for(question of exam()?.questions; track question.id; let i = $index) {
-            <button
-              type="button"
-              class="question-box aspect-square flex items-center justify-center text-sm font-medium rounded transition-all duration-200"
-              [class]="getQuestionBoxClass(i)"
-              (click)="goToQuestion(i)">
-              {{ i + 1 }}
-            </button>
-          }
+      <!-- Timer -->
+      <div class="flex items-center space-x-4">
+        <div class="text-right">
+          <div class="text-sm text-gray-600">Time Remaining</div>
+          <div class="text-2xl font-mono font-bold"
+               [class]="isTimeCritical() ? 'text-red-600 animate-pulse' : 'text-blue-600'">
+            {{ formattedTimeRemaining() }}
+          </div>
         </div>
       </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="mb-2">
+      <p-progressBar
+        [value]="progressPercentage()"
+        [showValue]="false"
+        styleClass="h-2">
+      </p-progressBar>
+    </div>
+
+    <div class="flex justify-between text-sm text-gray-600">
+      <span>Question {{ currentQuestionIndex() + 1 }} of {{ totalQuestions() }}</span>
+      <span>{{ answeredQuestions() }} of {{ totalQuestions() }} answered</span>
     </div>
   </div>
 
-  <!-- Bottom two thirds: Question content and navigation -->
-  <div class="question-content flex-1 flex flex-col">
-    <!-- Question card area -->
-    <div class="flex-1 p-6 overflow-auto">
-      @if(currentQuestion()) {
-        <app-question-card
-          [question]="currentQuestion()"
-          [viewMode]="false"
-          [showMetadata]="false"
-          [selectedChoiceId]="getSelectedAnswer(currentQuestionIndex())"
-          (choiceSelected)="onAnswerSelected($event)">
-        </app-question-card>
-      }
+  <!-- Main Content Area -->
+  <div class="flex-1 flex overflow-hidden">
+    <!-- Question Navigator Sidebar -->
+    <div class="w-80 bg-white border-r p-4 overflow-auto">
+      <h3 class="font-semibold text-gray-800 mb-4">Question Navigator</h3>
+      <div class="grid grid-cols-5 gap-2">
+        @for (question of exam()?.questions; track question.id) {
+          <button
+            type="button"
+            class="aspect-square rounded-lg text-sm font-medium transition-all duration-200 border-2"
+            [class]="getQuestionButtonClass($index)"
+            (click)="goToQuestion($index)">
+            {{ $index + 1 }}
+          </button>
+        }
+      </div>
+
+      <!-- Legend -->
+      <div class="mt-6 space-y-2 text-xs">
+        <div class="flex items-center space-x-2">
+          <div class="w-4 h-4 bg-blue-100 border-2 border-blue-500 rounded"></div>
+          <span>Current Question</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <div class="w-4 h-4 bg-green-100 border-2 border-green-500 rounded"></div>
+          <span>Answered</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <div class="w-4 h-4 bg-gray-100 border-2 border-gray-300 rounded"></div>
+          <span>Not Answered</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Navigation buttons -->
-    <div class="navigation-bar border-t border-gray-200 p-4">
-      <div class="flex justify-between items-center">
-        <p-button
-          label="Previous"
-          icon="pi pi-chevron-left"
-          [disabled]="!canGoPrevious()"
-          severity="secondary"
-          size="small"
-          (onClick)="previousQuestion()">
-        </p-button>
+    <!-- Question Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Question Display -->
+      <div class="flex-1 p-6 overflow-auto">
+        @if(currentQuestion())
+        {
+          <div class="max-w-4xl mx-auto">
+            <app-question-card
+              [question]="currentQuestion()!"
+              [viewMode]="false"
+              [showMetadata]="false"
+              [selectedChoiceId]="getSelectedAnswer(currentQuestionIndex())"
+              (choiceSelected)="onAnswerSelected($event)">
+            </app-question-card>
+          </div>
+        }
 
-        <div class="flex gap-2">
+        <div *ngIf="!currentQuestion()" class="text-center text-gray-500 mt-8">
+          <p>No question available</p>
+        </div>
+      </div>
+
+      <!-- Navigation Footer -->
+      <div class="bg-white border-t px-6 py-4">
+        <div class="flex justify-between items-center max-w-4xl mx-auto">
+          <!-- Previous Button -->
           <p-button
-            label="Submit Exam"
-            icon="pi pi-check"
-            severity="success"
-            size="small"
-            (onClick)="submitExam()">
+            label="Previous"
+            icon="pi pi-chevron-left"
+            [disabled]="!canGoPrevious()"
+            severity="secondary"
+            (onClick)="previousQuestion()">
           </p-button>
-        </div>
 
-        <p-button
-          label="Next"
-          icon="pi pi-chevron-right"
-          iconPos="right"
-          [disabled]="!canGoNext()"
-          severity="secondary"
-          size="small"
-          (onClick)="nextQuestion()">
-        </p-button>
+          <!-- Question Info -->
+          <div class="text-center">
+            <div class="text-sm text-gray-600">
+              Question {{ currentQuestionIndex() + 1 }} of {{ totalQuestions() }}
+            </div>
+            @if(isQuestionAnswered(currentQuestionIndex())) {
+              <div class="text-xs text-gray-500 mt-1">
+                ✓ Answered
+              </div>
+            }
+          </div>
+
+          <!-- Next/Submit Button -->
+          <div class="flex space-x-3">
+            @if(canGoNext()) {
+              <p-button
+                label="Next"
+                icon="pi pi-chevron-right"
+                iconPos="right"
+                (onClick)="nextQuestion()">
+              </p-button>
+            }
+
+            @if(!canGoNext()) {
+              <p-button
+                label="Next"
+                icon="pi pi-chevron-right"
+                iconPos="right"
+                severity="secondary"
+                [disabled]="!canGoNext() || isExamSubmitted || isExamExpired"
+                (onClick)="nextQuestion()">
+              </p-button>
+            }
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Loading state -->
-<div class="loading-container flex items-center justify-center h-screen" *ngIf="isLoading()">
-  <div class="text-center">
-    <i class="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></i>
-    <p class="text-lg text-gray-600">Loading exam...</p>
+<!-- Loading State -->
+@if (isLoading()) {
+  <div class="h-screen flex items-center justify-center bg-gray-50">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <p class="text-gray-600">Loading exam...</p>
+    </div>
   </div>
-</div>
-
-<!-- Toast for notifications -->
+}
+<!-- Toast Messages -->
 <p-toast></p-toast>

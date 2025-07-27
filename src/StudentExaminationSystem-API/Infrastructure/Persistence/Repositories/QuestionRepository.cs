@@ -70,7 +70,6 @@ public class QuestionRepository(DataContext context) : BaseRepository<Question>(
             .Where(q => q.IsActive)
             .Include(q => q.Choices)
             .OrderBy(q => Guid.NewGuid()) // Random ordering
-            .Take(maxQuestionsCount)
             .Select(q => new LoadExamQuestionInfraDto
             {
                 QuestionId = q.Id,
@@ -84,6 +83,7 @@ public class QuestionRepository(DataContext context) : BaseRepository<Question>(
                 }).ToList()
             })
             .GroupBy(q => q.Difficulty)
+            // .Take(maxQuestionsCount)
             .ToListAsync();
         
         foreach (var difficulty in generateExamConfig.QuestionCounts)

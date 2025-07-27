@@ -27,9 +27,8 @@ public class SubjectService(
             subjects.ToListDto());
     }
     
-    public async Task<Result<IEnumerable<GetSubjectAppDto>>> GetAllAsync()
+    public async Task<Result<IEnumerable<GetSubjectAppDto>>> GetAllAsync(string? userId)
     {
-        var userId = AccessResourceIdFilter.FilterResourceId<string?>(userContext);
         IEnumerable<GetSubjectInfraDto> subjects;
         if (string.IsNullOrEmpty(userId))
             subjects = await unitOfWork.SubjectRepository.GetAllAsync();

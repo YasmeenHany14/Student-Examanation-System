@@ -42,9 +42,9 @@ export class Header {
       ];
     } else if (this.user.role === UserRole.STUDENT) {
       this.navLinks = [
-        { label: 'Home', routerLink: '/home', icon: 'pi pi-home' },
+        { label: 'Home', routerLink: '/home/exam', icon: 'pi pi-home' },
         { label: 'Profile', routerLink: '/profile', icon: 'pi pi-user' },
-        { label: 'Take Exam', routerLink: '/exam', icon: 'pi pi-pencil' },
+        { label: 'Take Exam', routerLink: '/home/take-exam', icon: 'pi pi-pencil' },
         { label: 'Logout', icon: 'pi pi-sign-out', command: () => this.onLogout() }
       ];
     }

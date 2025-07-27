@@ -1,4 +1,5 @@
-﻿using Application.Contracts;
+﻿using System.Net;
+using Application.Contracts;
 using Application.DTOs.SubjectsDtos;
 using Application.Helpers;
 using Application.Validators.StudentValidators;
@@ -116,5 +117,16 @@ public class SubjectController(
             return result.ToActionResult();
 
         return NoContent();
+    }
+    
+    // GET ALL ASYNC WITHOUT PAGINATION
+    [HttpGet("all/student/{id}", Name = "GetStudentSubjectsDropdown")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ServiceFilter<CanAccessResourceFilter>]
+    [Authorize(AuthenticationSchemes = "Bearer")]
+    public async Task<IActionResult> GetAllStudentSubjectsAsync(string id)
+    {
+        var subjects = await subjectService.GetAllAsync(id);
+        return subjects.ToActionResult();
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Shared.ResourceParameters;
 using WebApi.Helpers.ExceptionHandlers;
+using WebApi.Helpers.Filters;
 using WebApi.Helpers.PaginationHelper;
 
 namespace WebApi;
@@ -32,6 +33,7 @@ public static class DependencyInjection
             , PaginationHelper<GetExamHistoryAppDto, ExamHistoryResourceParameters>>();
         
         services.AddProblemDetails();
+        services.AddScoped<CanAccessResourceFilter>();
         services.AddExceptionHandler<GlobalExceptionHandler>();
         
         #region Configure JWT Authentication

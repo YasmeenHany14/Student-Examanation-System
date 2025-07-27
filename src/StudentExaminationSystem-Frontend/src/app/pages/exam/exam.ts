@@ -1,4 +1,4 @@
-import {Component, OnInit, signal, computed, Input} from '@angular/core';
+import {Component, OnInit, signal, computed, Input, OnDestroy} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,12 +26,17 @@ import { QuestionCardComponent } from '../../shared/components/question-card/que
   ],
   providers: [MessageService]
 })
-export class ExamComponent implements OnInit {
+export class ExamComponent implements OnInit, OnDestroy {
   examForm!: FormGroup;
   currentQuestionIndex = signal<number>(0);
   isLoading = signal<boolean>(true);
-  subjectId: number | null = null;
+  examId: number | null = null;
   exam = signal<LoadExamModel | null>(null);
+
+  // Timer properties
+  timeRemaining = signal<number>(0); // in seconds
+  isExamSubmitted = false;
+  isExamExpired = false;
 
   currentQuestion = computed(() => {
     const examData = this.exam();
@@ -47,6 +52,18 @@ export class ExamComponent implements OnInit {
     const total = this.totalQuestions();
     if (total === 0) return 0;
     return ((this.currentQuestionIndex() + 1) / total) * 100;
+  });
+
+  // Format time remaining as MM:SS
+  formattedTimeRemaining = computed(() => {
+    const timeInSeconds = this.timeRemaining();
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  });
+
+  isTimeCritical = computed(() => {
+    return this.timeRemaining() < 300; // 5 minutes
   });
 
   answeredQuestions = computed(() => {
@@ -65,13 +82,27 @@ export class ExamComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      const subjectId = params.get('subjectId');
-      if (subjectId) {
-        this.subjectId = +subjectId;
-        this.loadExamForSubject(this.subjectId);
-      }
-    });
+    const navigation = this.router.getCurrentNavigation();
+    const examData = navigation?.extras.state?.['examData'] as LoadExamModel;
+
+    if (examData) {
+      this.setupFormForExam(examData);
+    } else {
+      // Fallback: try to get exam ID from route params
+      this.route.paramMap.subscribe(params => {
+        const examId = params.get('id');
+        if (examId) {
+          this.examId = +examId;
+          this.loadExamForSubject(this.examId);
+        } else {
+          this.router.navigate(['/home/take-exam']);
+        }
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    // this.clearTimer();
   }
 
   private initializeForm() {
@@ -96,8 +127,50 @@ export class ExamComponent implements OnInit {
     });
   }
 
+  private startTimer() {
+    const examEndTime = this.exam()?.examEndTime;
+    const endTime = new Date(examEndTime!).getTime();
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const timeLeft = Math.max(0, Math.floor((endTime - now) / 1000));
+      this.timeRemaining.set(timeLeft);
+
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        this.isExamExpired = true;
+        this.submitExam();
+      }
+    }, 1000);
+  }
+
+  submitExam() {
+    if (!this.examForm.valid) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Warning',
+        detail: 'Please answer all questions before submitting'
+      });
+      return;
+    }
+
+    // Implementation for exam submission would go here
+    console.log('Exam submitted:', this.examForm.value);
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'Exam submitted successfully'
+    });
+
+    // Redirect to exam results or dashboard after submission
+    setTimeout(() => {
+      this.router.navigate(['/home/exams']);
+    }, 2000);
+  }
+
   private setupFormForExam(exam: LoadExamModel) {
     this.examForm.patchValue({ examId: exam.id });
+    this.startTimer();
 
     const answersArray = this.examForm.get('answers') as FormArray;
     answersArray.clear();
@@ -138,13 +211,6 @@ export class ExamComponent implements OnInit {
     if (currentAnswer) {
       currentAnswer.patchValue({ selectedChoiceId: choiceId });
     }
-
-    // Auto-advance to next question after selection (optional)
-    setTimeout(() => {
-      if (this.currentQuestionIndex() < this.totalQuestions() - 1) {
-        this.nextQuestion();
-      }
-    }, 500);
   }
 
   getSelectedAnswer(questionIndex: number): number | null {
@@ -157,26 +223,6 @@ export class ExamComponent implements OnInit {
     return this.getSelectedAnswer(index) !== null;
   }
 
-  submitExam() {
-    if (!this.examForm.valid) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Warning',
-        detail: 'Please answer all questions before submitting'
-      });
-      return;
-    }
-
-    // Implementation for exam submission would go here
-    console.log('Exam submitted:', this.examForm.value);
-
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Exam submitted successfully'
-    });
-  }
-
   canGoNext(): boolean {
     return this.currentQuestionIndex() < this.totalQuestions() - 1;
   }
@@ -185,21 +231,15 @@ export class ExamComponent implements OnInit {
     return this.currentQuestionIndex() > 0;
   }
 
-  getQuestionBoxClass(index: number): string {
-    const classes = ['question-box'];
-
-    if (index === this.currentQuestionIndex()) {
-      classes.push('current');
-    }
-
-    if (this.isQuestionAnswered(index)) {
-      classes.push('answered');
-    } else {
-      classes.push('unanswered');
-    }
-
-    return classes.join(' ');
-  }
-
   protected readonly signal = signal;
+
+  getQuestionButtonClass(index: number): string {
+    if (index === this.currentQuestionIndex()) {
+      return 'bg-blue-100 border-blue-500 text-blue-700';
+    }
+    if (this.isQuestionAnswered(index)) {
+      return 'bg-green-100 border-green-500 text-green-700';
+    }
+    return 'bg-gray-100 border-gray-300 text-gray-600 hover:bg-gray-200';
+  }
 }

@@ -16,6 +16,7 @@
   public static readonly students = '/student';
   public static readonly exam = '/exam';
   public static readonly question = '/question';
+  public static readonly studentSubjects = routes.subjects + '/all/student';
 
   public static SetSubjectConfig(id: number | string) {
     return `/subject/${id}/exam-config`;
