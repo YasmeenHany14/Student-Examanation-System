@@ -1,5 +1,5 @@
 import {BaseResponseModel} from './common/base-model';
-import {QuestionHistoryModel} from './question.model';
+import {LoadQuestionModel, QuestionHistoryModel} from './question.model';
 
 export interface ExamListModel extends BaseResponseModel {
   id: number;
@@ -13,5 +13,12 @@ export interface ExamListModel extends BaseResponseModel {
 export interface GetExamHistoryModel extends BaseResponseModel {
   finalScore: number;
   passed: boolean;
-  questionHistory: QuestionHistoryModel[];
+  questions: QuestionHistoryModel[];
+}
+
+export interface LoadExamModel extends BaseResponseModel {
+  id: number;
+  subjectId: number;
+  examEndTime: string; // ISO date string
+  questions: LoadQuestionModel[];
 }

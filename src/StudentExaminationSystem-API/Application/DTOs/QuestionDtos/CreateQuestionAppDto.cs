@@ -8,5 +8,5 @@ public class CreateQuestionAppDto : AppBaseDto
     public int SubjectId { get; set; }
     public string Content { get; set; } = string.Empty;
     public int DifficultyId { get; set; }
-    public ICollection<CreateQuestionChoiceAppDto> QuestionChoices { get; set; } = new List<CreateQuestionChoiceAppDto>();
+    public ICollection<CreateQuestionChoiceAppDto> Choices { get; set; } = new List<CreateQuestionChoiceAppDto>();
 }

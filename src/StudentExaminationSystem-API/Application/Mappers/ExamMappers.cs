@@ -22,7 +22,7 @@ public static class ExamMappers
     {
         return new GetQuestionHistoryAppDto
         {
-            Question = questionHistory.Question,
+            Content = questionHistory.Content,
             Choices = questionHistory.Choices.Select(c =>
                 c.MapTo<GetQuestionChoiceHistoryInfraDto, GetQuestionChoiceHistoryAppDto>())
         };
@@ -34,8 +34,8 @@ public static class ExamMappers
         return new GetFullExamAppDto
         {
             FinalScore = fullExam.FinalScore,
-            Passed = fullExam.FinalScore >= (fullExam.QuestionHistory.Count() / 2),
-            QuestionHistory = fullExam.QuestionHistory.Select(qh => qh.MapToGetQuestionHistoryAppDto())
+            Passed = fullExam.FinalScore >= (fullExam.Questions.Count() / 2),
+            QuestionHistory = fullExam.Questions.Select(qh => qh.MapToGetQuestionHistoryAppDto())
         };
     }
 
@@ -47,10 +47,10 @@ public static class ExamMappers
             ExamId = examCacheEntry.ExamId,
             SubjectId = examCacheEntry.SubjectId,
             ExamEndTime = examCacheEntry.ExamEndTime,
-            Questions = fullExam.QuestionHistory.Select(qh => new LoadExamQuestionAppDto
+            Questions = fullExam.Questions.Select(qh => new LoadExamQuestionAppDto
             {
-                QuestionId = qh.QuestionId,
-                QuestionText = qh.Question,
+                Id = qh.Id,
+                Content = qh.Content,
                 Choices = qh.Choices.Select(c =>
                     c.MapTo<GetQuestionChoiceHistoryInfraDto, LoadExamChoiceAppDto>())
             }).ToList()

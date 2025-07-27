@@ -74,8 +74,8 @@ public class ExamRepository(
                 QuestionContent = ah.Question.Content,
                 QuestionChoices = ah.Question.Choices.Select(c => new GetQuestionChoiceHistoryInfraDto
                 {
-                    ChoiceId = c.Id,
-                    ChoiceText = c.Content,
+                    Id = c.Id,
+                    Content = c.Content,
                     IsCorrect = c.IsCorrect
                 })
             })
@@ -86,8 +86,8 @@ public class ExamRepository(
             .GroupBy(ah => ah.QuestionId)
             .Select(g => new GetQuestionHistoryInfraDto
             {
-                QuestionId = g.Key,
-                Question = g.First().QuestionContent ?? string.Empty,
+                Id = g.Key,
+                Content = g.First().QuestionContent ?? string.Empty,
                 Choices = g.First().QuestionChoices ?? new List<GetQuestionChoiceHistoryInfraDto>(),
             })
             .ToList();
@@ -96,7 +96,7 @@ public class ExamRepository(
         {
             userId = examInfo.UserId,
             FinalScore = examInfo.StudentScore,
-            QuestionHistory = questionHistory
+            Questions = questionHistory
         };
     }
 

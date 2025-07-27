@@ -74,7 +74,7 @@ public class GenerateExamService(
             StudentScore = 0,
             QuestionHistory = questions.Select(q => new AnswerHistory
             {
-                QuestionId = q.QuestionId,
+                QuestionId = q.Id,
                 IsCorrect = false,
                 QuestionChoiceId = null,
                 DisplayOrder = q.QuestionOrder

@@ -15,7 +15,7 @@ public static class CreateQuestionDtoMapper
             SubjectId = createQuestionDto.SubjectId,
             Difficulty = (Difficulty?)createQuestionDto.DifficultyId,
             IsActive = true,
-            Choices = createQuestionDto.QuestionChoices?.Select(c => new QuestionChoice()
+            Choices = createQuestionDto.Choices?.Select(c => new QuestionChoice()
             {
                 Content = c.Content,
                 IsCorrect = c.IsCorrect
