@@ -4,9 +4,12 @@ import { GetStudentListModel } from '../../core/models/student.model';
 import { BaseResourceParametersModel } from '../../core/models/common/base-resource-parameters.model';
 import { TableModule } from 'primeng/table';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 import { FormsModule } from '@angular/forms';
 import { Spinner } from '../../shared/components/spinner/spinner';
 import { NoDataToShowComponent } from '../../shared/components/no-data-to-show/no-data-to-show';
+import {StudentDetailsDialog} from '../../components/student-details-dialog/student-details-dialog';
 
 
 @Component({
@@ -14,9 +17,12 @@ import { NoDataToShowComponent } from '../../shared/components/no-data-to-show/n
   imports: [
     TableModule,
     ToggleSwitchModule,
+    ButtonModule,
+    TooltipModule,
     FormsModule,
     Spinner,
     NoDataToShowComponent,
+    StudentDetailsDialog,
   ],
   templateUrl: './students.html',
   styleUrl: './students.scss'
@@ -28,6 +34,10 @@ export class Students implements OnInit {
   totalRecords = signal(0);
   pageSize: number = 5;
   currentPage: number = 1;
+
+  // student details popup vars
+  visible = signal(false);
+  selectedStudentId = signal<number | null>(null);
 
   private studentService = inject(StudentService);
 
@@ -48,7 +58,7 @@ export class Students implements OnInit {
       PageSize: pageSize
     };
 
-    this.studentService.getAllPaged(queryParams).subscribe({
+    this.studentService.getAllPaged<BaseResourceParametersModel ,GetStudentListModel>(queryParams).subscribe({
       next: (result) => {
         this.students.set(result.data);
         this.totalRecords.set(result.pagination.totalCount);
@@ -82,5 +92,15 @@ export class Students implements OnInit {
         }
       },
     });
+  }
+
+  onViewStudentDetails(studentId: number) {
+    this.selectedStudentId.set(studentId);
+    this.visible.set(true);
+  }
+
+  onCloseDialog() {
+    this.visible.set(false);
+    this.selectedStudentId.set(null);
   }
 }

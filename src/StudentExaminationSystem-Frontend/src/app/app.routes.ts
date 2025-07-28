@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
 import { AdminGuard } from './core/guards/admin.guard';
+import {StudentGuard} from './core/guards/student.guard';
 
 export const routes: Routes = [
   {
@@ -67,8 +68,14 @@ export const routes: Routes = [
     canActivate: [AuthGuard, AdminGuard]
   },
   {
+    path: 'home/profile',
+    loadComponent: () => import('./pages/profile/profile')
+      .then(m => m.Profile),
+    canActivate: [AuthGuard, StudentGuard]
+  },
+  {
     path: '',
-    redirectTo: 'home/dashboard',
+    redirectTo: 'home',
     pathMatch: 'full'
   }
   ]

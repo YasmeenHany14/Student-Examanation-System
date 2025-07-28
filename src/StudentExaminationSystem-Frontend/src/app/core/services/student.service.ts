@@ -5,18 +5,17 @@ import {BaseResourceParametersModel} from '../models/common/base-resource-parame
 import {PagedListModel} from '../models/common/paged-list.model';
 import {GetStudentListModel} from '../models/student.model';
 import {DropdownModel} from '../models/common/common.model';
+import {BaseCrudService} from './base-crud.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class StudentService {
-  httpClient = inject(HttpClient);
-  private readonly API_URL = routes.baseUrl;
-  private readonly route = routes.students;
+export class StudentService extends BaseCrudService {
+  protected override route: string;
 
-  getAllPaged(queryParams: BaseResourceParametersModel) {
-    const params = new HttpParams({ fromObject: { ...queryParams } });
-    return this.httpClient.get<PagedListModel<GetStudentListModel>>(this.API_URL + this.route, { params });
+  constructor() {
+    super();
+    this.route = routes.students;
   }
 
   toggleStudentStatus(id: number) {
@@ -25,6 +24,10 @@ export class StudentService {
 
   getStudentSubjects(id: string) {
     return this.httpClient.get<DropdownModel[]>(this.API_URL + routes.studentSubjects + '/' + id);
+  }
+
+  addStudentSubject(studentId: string, subjectId: number) {
+    return this.httpClient.post(this.API_URL + routes.studentSubjects + '/' + studentId, { subjectId });
   }
 
 }

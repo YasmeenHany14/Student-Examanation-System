@@ -1,0 +1,46 @@
+.student-details-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.info-item {
+  .text-gray-900 {
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+.course-item {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+  }
+}
+
+.header button {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+
+  &:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+}
+
+@media (max-width: 768px) {
+  .student-details-container {
+    padding: 1rem;
+  }
+
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+
+    button {
+      width: 100%;
+    }
+  }
+}

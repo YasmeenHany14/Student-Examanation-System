@@ -1,0 +1,50 @@
+<div class="student-details-container p-6 bg-white rounded-lg shadow-md">
+  <div class="header flex justify-between items-center mb-4">
+<!--    <h2 class="text-2xl font-bold text-gray-800">Student Details</h2>-->
+
+  </div>
+
+  <div class="student-info grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="info-section">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">Personal Information</h3>
+
+<!--      <div class="info-item mb-3">-->
+<!--        <label class="block text-sm font-medium text-gray-600 mb-1">Student ID</label>-->
+<!--        <div class="text-gray-900 bg-gray-50 p-2 rounded border">{{ studentDetails().id }}</div>-->
+<!--      </div>-->
+
+      <div class="info-item mb-3">
+        <label class="block text-sm font-medium text-gray-600 mb-1">Full Name</label>
+        <div class="text-gray-900 bg-gray-50 p-2 rounded border">{{ studentDetails().name }}</div>
+      </div>
+
+      <div class="info-item mb-3">
+        <label class="block text-sm font-medium text-gray-600 mb-1">Age</label>
+        <div class="text-gray-900 bg-gray-50 p-2 rounded border">{{ age() }}</div>
+      </div>
+
+      <div class="info-item mb-3">
+        <label class="block text-sm font-medium text-gray-600 mb-1">Join Date</label>
+        <div class="text-gray-900 bg-gray-50 p-2 rounded border">{{ studentDetails().joinDate | date:'mediumDate' }}</div>
+      </div>
+    </div>
+
+    <div class="courses-section">
+      <h3 class="text-lg font-semibold text-gray-700 mb-4">Enrolled Courses</h3>
+
+      @if(studentDetails().courses && studentDetails().courses.length > 0) {
+        <div class="courses-list">
+          @for(course of studentDetails().courses; track course.id) {
+            <div class="course-item bg-blue-50 border border-blue-200 rounded-md p-3 mb-2">
+              <div class="course-name font-medium text-blue-800">{{ course.name }}</div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="no-courses text-gray-500 italic bg-gray-50 p-4 rounded border text-center">
+          No courses enrolled yet
+        </div>
+      }
+    </div>
+  </div>
+</div>

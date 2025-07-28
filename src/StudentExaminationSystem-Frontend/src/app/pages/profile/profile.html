@@ -1,0 +1,9 @@
+@if(loading()) {
+  <app-spinner/>
+}
+
+@if(!loading() && !error()) {
+  <app-student-details
+    [studentDetails]="studentDetails()!"
+  />
+}

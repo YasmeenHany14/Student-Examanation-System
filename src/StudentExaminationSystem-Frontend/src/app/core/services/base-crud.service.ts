@@ -19,6 +19,10 @@ export abstract class BaseCrudService extends BaseService {
     return this.httpClient.get<TResponseModel>(this.API_URL + this.route + '/' + id);
   }
 
+  getByGuid<TResponseModel extends BaseResponseModel>(id: string) {
+    return this.httpClient.get<TResponseModel>(this.API_URL + this.route + '/' + id);
+  }
+
   createModel<TRequestModel extends BaseRequestModel>(model: TRequestModel) {
     return this.httpClient.post(this.API_URL + this.route, model);
   }
