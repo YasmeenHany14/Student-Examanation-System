@@ -37,7 +37,7 @@ export class Students implements OnInit {
 
   // student details popup vars
   visible = signal(false);
-  selectedStudentId = signal<number | null>(null);
+  selectedStudentId = signal<string | null>(null);
 
   private studentService = inject(StudentService);
 
@@ -94,7 +94,7 @@ export class Students implements OnInit {
     });
   }
 
-  onViewStudentDetails(studentId: number) {
+  onViewStudentDetails(studentId: string) {
     this.selectedStudentId.set(studentId);
     this.visible.set(true);
   }

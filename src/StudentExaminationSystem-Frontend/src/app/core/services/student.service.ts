@@ -27,7 +27,7 @@ export class StudentService extends BaseCrudService {
   }
 
   addStudentSubject(studentId: string, subjectId: number) {
-    return this.httpClient.post(this.API_URL + routes.studentSubjects + '/' + studentId, { subjectId });
+    return this.httpClient.post(this.API_URL + this.route + '/' + studentId, subjectId);
   }
 
 }

@@ -2,14 +2,15 @@
   [visible]="visible()"
   [modal]="true"
   [closable]="true"
-  [resizable]="false"
-  [draggable]="false"
+  [resizable]="true"
   [footerTemplate]="footer"
   styleClass="student-details-dialog"
   header="Student Details"
   [style]="{ width: '90vw', maxWidth: '900px' }"
-  (close)="onClose()"
-  (onHide)="onClose()">
+  (close)="close.emit(true)"
+  (onHide)="onClose()"
+  #studentDialog
+>
 
   <div class="dialog-content">
     @if (loading()) {
@@ -23,7 +24,7 @@
         <div class="text-red-600 mb-4">
           <i class="pi pi-exclamation-triangle text-4xl"></i>
         </div>
-        <p-message class="text-gray-600">Failed to load student details. Please try again.</p-message>
+        <p class="text-gray-600">Failed to load student details. Please try again.</p>
       </div>
     }
 
@@ -32,12 +33,55 @@
     }
   </div>
 
+  <!---- Add course section -->
+  @if(showAddCourse()) {
+    <div class="space-y-4 border-t pt-4">
+      <h4 class="text-md font-semibold text-gray-800">Add New Course</h4>
+
+      <div class="flex gap-3 items-end">
+        <div class="flex-1">
+          <label class="text-sm font-medium text-gray-700 mb-2 block">Select Course</label>
+          <p-select
+            [options]="subjectsToChooseFrom()"
+            optionLabel="name"
+            placeholder="Choose a course"
+            [(ngModel)]="selectedCourseToAdd"
+            [loading]="loadingSubjects()"
+            class="w-full"
+            [appendTo]="studentDialog">
+          </p-select>
+        </div>
+
+        <div class="flex gap-2">
+          <p-button
+            label="Add"
+            icon="pi pi-plus"
+            (onClick)="onConfirmAddCourse()"
+            [disabled]="!selectedCourseToAdd"
+            size="small">
+          </p-button>
+          <p-button
+            label="Cancel"
+            severity="secondary"
+            (onClick)="onCancelAddCourse()"
+            size="small"
+            [text]="true">
+          </p-button>
+        </div>
+      </div>
+    </div>
+  }
+
+
   <ng-template #footer>
-    <p-button
-      type="submit"
-      serverity="primary"
-      label="Add Course"
-      (click)="onAddCourse()">
-    </p-button>
+    @if(!showAddCourse())
+    {
+      <p-button
+        type="submit"
+        serverity="primary"
+        label="Add Course"
+        (click)="onAddCourse()">
+      </p-button>
+    }
   </ng-template>
 </p-dialog>

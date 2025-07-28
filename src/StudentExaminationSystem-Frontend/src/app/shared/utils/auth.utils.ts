@@ -9,7 +9,7 @@ export function isNotAuthRequest(req: any): boolean {
     routes.subjectsDropdown,
   ];
 
-  if (req.url.includes(routes.authRegisterStudent) && req.method === 'POST') {
+  if (req.url.endsWith(routes.authRegisterStudent) && req.method === 'POST') {
     return true;
   }
 
