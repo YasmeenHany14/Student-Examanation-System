@@ -1,5 +1,5 @@
 <p-dialog
-  [visible]="visible()"
+  [(visible)]="visible"
   [modal]="true"
   [closable]="true"
   [resizable]="true"
@@ -7,7 +7,6 @@
   styleClass="student-details-dialog"
   header="Student Details"
   [style]="{ width: '90vw', maxWidth: '900px' }"
-  (close)="close.emit(true)"
   (onHide)="onClose()"
   #studentDialog
 >

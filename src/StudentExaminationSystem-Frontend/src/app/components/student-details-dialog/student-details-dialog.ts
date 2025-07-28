@@ -19,7 +19,7 @@ import {MessageService} from 'primeng/api';
 })
 export class StudentDetailsDialog implements OnInit, OnChanges {
   selectedStudentId = input<string | null>(null);
-  visible = input<boolean>(false);
+  @Input() visible: boolean = false;
   close = output<boolean>();
 
   studentDetails = signal<StudentDetailsModel | null>(null);
@@ -37,22 +37,24 @@ export class StudentDetailsDialog implements OnInit, OnChanges {
   private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    if (this.selectedStudentId() && this.visible()) {
+    if (this.selectedStudentId() && this.visible) {
       this.loadStudentDetails();
     }
   }
 
   ngOnChanges() {
-    if (this.selectedStudentId() && this.visible() && !this.studentDetails()) {
+    if (this.selectedStudentId() && this.visible && !this.studentDetails()) {
       this.loadStudentDetails();
     }
 
-    if (!this.visible()) {
+    if (!this.visible) {
       this.resetDialog();
     }
   }
 
   onClose() {
+    console.log('Dialog closed');
+    this.visible = false;
     this.close.emit(true);
   }
 
