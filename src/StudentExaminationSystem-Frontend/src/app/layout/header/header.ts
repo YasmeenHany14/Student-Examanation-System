@@ -33,7 +33,7 @@ export class Header {
     }
     if (this.user.role === UserRole.ADMIN) {
       this.navLinks = [
-        { label: 'Home', routerLink: '/home/dashboard', icon: 'pi pi-home' },
+        { label: 'Home', routerLink: '/home', icon: 'pi pi-home' },
         { label: 'Subjects', routerLink: '/home/subjects', icon: 'pi pi-book' },
         { label: 'Questions', routerLink: '/home/questions', icon: 'pi pi-question' },
         { label: 'Difficulty Profiles', routerLink: '/home/difficulty-profiles', icon: 'pi pi-chart-line' },
@@ -42,7 +42,7 @@ export class Header {
       ];
     } else if (this.user.role === UserRole.STUDENT) {
       this.navLinks = [
-        { label: 'Home', routerLink: '/home/exam', icon: 'pi pi-home' },
+        { label: 'Home', routerLink: '/home', icon: 'pi pi-home' },
         { label: 'Profile', routerLink: '/profile', icon: 'pi pi-user' },
         { label: 'Take Exam', routerLink: '/home/take-exam', icon: 'pi pi-pencil' },
         { label: 'Logout', icon: 'pi pi-sign-out', command: () => this.onLogout() }

@@ -14,10 +14,10 @@ export const routes: Routes = [
       .then(m => m.Register),
   },
   {
-    path: 'home/dashboard',
-    loadComponent: () => import('./pages/dashboard/dashboard')
-      .then(m => m.Dashboard),
-    canActivate: [AuthGuard, AdminGuard]
+    path: 'home',
+    loadComponent: () => import('./pages/home/home')
+      .then(m => m.Home),
+    canActivate: [AuthGuard]
   },
   {
     path: 'home/subjects',
