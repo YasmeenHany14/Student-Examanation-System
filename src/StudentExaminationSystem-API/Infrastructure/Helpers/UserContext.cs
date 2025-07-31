@@ -11,7 +11,7 @@ public sealed class UserContext(IHttpContextAccessor httpContextAccessor)
             .HttpContext?
             .User
             .GetUserId() ??
-        throw new ApplicationException("User context is unavailable");
+        Guid.Empty;
 
     public bool IsAuthenticated =>
         httpContextAccessor
@@ -19,12 +19,12 @@ public sealed class UserContext(IHttpContextAccessor httpContextAccessor)
             .User
             .Identity?
             .IsAuthenticated ??
-        throw new ApplicationException("User context is unavailable");
+        false;
 
-    public bool IsAdmin => 
+    public bool IsAdmin =>
         httpContextAccessor
             .HttpContext?
             .User
             .IsInRole("Admin") ??
-        throw new ApplicationException("User context is unavailable");
+        false;
 }

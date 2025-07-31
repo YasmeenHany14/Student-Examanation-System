@@ -13,7 +13,7 @@ using Shared.ResourceParameters;
 using WebApi.Helpers.ExceptionHandlers;
 using WebApi.Helpers.Filters;
 using WebApi.Helpers.PaginationHelper;
-using WebApi.Hubs;
+using WebApi.Services;
 
 namespace WebApi;
 
@@ -34,7 +34,7 @@ public static class DependencyInjection
         services.AddScoped<IPaginationHelper<GetExamHistoryAppDto, ExamHistoryResourceParameters>
             , PaginationHelper<GetExamHistoryAppDto, ExamHistoryResourceParameters>>();
         services.AddSignalR();
-        services.AddScoped<INotificationsHub, NotificationsHub>();
+        services.AddScoped<INotificationsHub, NotificationsHubWrapper>();
         
         services.AddProblemDetails();
         services.AddScoped<CanAccessResourceFilter>();
@@ -63,6 +63,17 @@ public static class DependencyInjection
                 };
                 options.Events = new JwtBearerEvents
                 {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        // Check if the request is for your hub
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/notifications"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    },
                     OnAuthenticationFailed = context =>
                     {
                         if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))

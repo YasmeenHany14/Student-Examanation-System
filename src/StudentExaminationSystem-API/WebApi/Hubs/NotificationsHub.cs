@@ -1,36 +1,18 @@
 ﻿using System.Security.Claims;
 using Application.Contracts;
+using Domain.UserContext;
 using Microsoft.AspNetCore.SignalR;
 
 namespace WebApi.Hubs;
 
-public class NotificationsHub : Hub<INotificationsClient>, INotificationsHub
+public class NotificationsHub(IUserContext userContext) : Hub<INotificationsClient>
 {
     private readonly string _adminGroupName = "Admins";
+    
     public override async Task OnConnectedAsync()
     {
-        var isAdmin = Context.User?.Claims.Any(c =>
-            c.Type == ClaimTypes.Role && c.Value == "Admin") ?? false;
-        
-        if (isAdmin)
+        Console.WriteLine("User is authenticated: " + userContext.IsAuthenticated);
+        if (userContext.IsAuthenticated && userContext.IsAdmin)
             await Groups.AddToGroupAsync(Context.ConnectionId, "Admins");
-
-    }
-    
-    public async Task SendEvaluationCompletedAsync(string userId, string message)
-    {
-        if (string.IsNullOrWhiteSpace(message))
-            return;
-
-        await Clients.Groups(_adminGroupName).ReceiveNotification(message);
-        await Clients.User(userId).ReceiveNotification(message);
-    }
-
-    public async Task SendExamStartedAsync(string message)
-    {
-        if (string.IsNullOrWhiteSpace(message))
-            return;
-
-        await Clients.Groups(_adminGroupName).ReceiveNotification(message);
     }
 }

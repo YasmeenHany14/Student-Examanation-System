@@ -5,15 +5,16 @@
     </div>
     <p-menubar [model]="navLinks"
                class="w-auto bg-transparent border-none shadow-none text-gray-700">
+      @if(isLoggedIn()) {
+        <app-notifications class="ml-2"></app-notifications>
+      }
       <ng-template pTemplate="start">
         @if (user) {
           <button (click)="goToProfile()" class="ml-2 p-2 rounded-full hover:bg-blue-100 transition">
             <i class="pi pi-user text-xl"></i>
           </button>
-          <p-overlaybadge [value]="notificationCount()" class="ml-2">
-            <i class="pi pi-bell" style="font-size: 2rem"></i>
-          </p-overlaybadge>
         }
+
       </ng-template>
     </p-menubar>
   </div>

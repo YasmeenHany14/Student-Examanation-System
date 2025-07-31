@@ -16,7 +16,8 @@ namespace Application.Services;
 public class GenerateExamService(
     IUnitOfWork unitOfWork,
     ICacheExamService cacheService,
-    IUserContext userContext
+    IUserContext userContext,
+    INotificationsService notificationsService
     ) : IGenerateExamService
 {
     public async Task<Result<LoadExamAppDto>> GenerateExamAsync(int subjectId, int userId)
@@ -47,6 +48,7 @@ public class GenerateExamService(
         if (!examEntryResult.IsSuccess)
             return Result<LoadExamAppDto>.Failure(examEntryResult.Error);
         var examEntryId = examEntryResult.Value;
+        await notificationsService.NotifyExamStartedAsync(subjectId, userContext.UserId.ToString());
         
         return Result<LoadExamAppDto>.Success(
             new LoadExamAppDto

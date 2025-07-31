@@ -1,0 +1,71 @@
+<div class="notifications-container">
+  <!-- Notification Bell with Badge -->
+  <p-overlayBadge
+    [value]="unreadCount() > 0 ? unreadCount().toString() : ''"
+    [severity]="unreadCount() > 0 ? 'danger' : 'secondary'"
+    class="cursor-pointer">
+    <button
+      #notificationBell
+      class="p-2 rounded-full hover:bg-blue-100 transition-colors duration-200 border-none bg-transparent"
+      (click)="notificationPanel.toggle($event)"
+      [attr.aria-label]="'Notifications (' + unreadCount() + ' unread)'">
+      <i class="pi pi-bell text-xl text-gray-700 hover:text-blue-700"></i>
+    </button>
+  </p-overlayBadge>
+
+  <!-- Notifications Popover -->
+  <p-popover
+    #notificationPanel
+    styleClass="notifications-panel w-80">
+
+    <ng-template pTemplate="content">
+      <div class="notifications-content">
+        <!-- Header -->
+        <div class="flex justify-between items-center p-3 border-b border-gray-200">
+          <h3 class="font-semibold text-lg text-gray-800">Notifications</h3>
+          <div class="flex gap-2">
+            @if (unreadCount() > 0) {
+              <button
+                class="text-sm text-blue-600 hover:text-blue-800 px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+                (click)="markAllAsRead()">
+                Mark all read
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- Notifications List -->
+        <div class="notifications-list">
+          @if (notifications().length === 0) {
+            <div class="text-center py-8 text-gray-500">
+              <i class="pi pi-bell-slash text-3xl mb-2 block"></i>
+              <p>No notifications</p>
+            </div>
+          } @else {
+            <p-scrollPanel [style]="{ width: '100%', height: '300px' }">
+              @for (notification of notifications(); track notification.id) {
+                <div
+                  class="notification-item p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
+                  [class.notification-unread]="!notification.isRead"
+                  (click)="markAsRead(notification.id)">
+
+                  <div class="flex items-start gap-3">
+                    <!-- Notification Content -->
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm text-gray-800 leading-relaxed" [class.font-semibold]="!notification.isRead">
+                        {{ notification.message }}
+                      </p>
+                      <p class="text-xs text-gray-500 mt-1">
+                        {{ formatTimestamp(notification.timestamp) }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              }
+            </p-scrollPanel>
+          }
+        </div>
+      </div>
+    </ng-template>
+  </p-popover>
+</div>

@@ -1,0 +1,99 @@
+.notifications-container {
+  position: relative;
+  display: inline-block;
+}
+
+.notifications-panel {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+
+  .notifications-content {
+    max-height: 400px;
+    overflow: hidden;
+
+    .notifications-list {
+      .notification-item {
+        position: relative;
+
+        &.notification-unread {
+          background-color: #f8fafc;
+          border-left: 3px solid #3b82f6;
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+
+        &:hover {
+          background-color: #f1f5f9;
+        }
+      }
+    }
+  }
+}
+
+// Override PrimeNG badge styles for better appearance
+:host ::ng-deep {
+  .p-badge {
+    min-width: 18px;
+    height: 18px;
+    line-height: 18px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .p-overlaypanel {
+    .p-overlaypanel-content {
+      padding: 0;
+    }
+
+    .p-overlaypanel-close {
+      top: 8px;
+      right: 8px;
+    }
+  }
+
+  .p-scrollpanel {
+    .p-scrollpanel-wrapper {
+      border-right: none;
+    }
+
+    .p-scrollpanel-bar {
+      background-color: #cbd5e1;
+      width: 6px;
+      border-radius: 3px;
+
+      &:hover {
+        background-color: #94a3b8;
+      }
+    }
+  }
+}
+
+// Animation for notification bell
+.notifications-container button {
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+// Pulse animation for new notifications
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.notification-unread {
+  animation: pulse 2s infinite;
+}

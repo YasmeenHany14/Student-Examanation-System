@@ -1,31 +1,25 @@
-import {Component, DestroyRef, inject, OnInit, signal} from '@angular/core';
+import {Component, DestroyRef, inject, OnInit} from '@angular/core';
 import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../core/services/auth.service';
 import {User} from '../../core/models/user.model';
 import {UserRole} from '../../core/enums/user-role';
 import {Menubar} from 'primeng/menubar';
 import {routes} from '../../core/constants/routs';
-import { BadgeModule } from 'primeng/badge';
-import { OverlayBadgeModule } from 'primeng/overlaybadge';
-import {NotificationService} from '../../core/services/notification.service';
+import {Notifications} from '../notifications/notifications';
 
 @Component({
   selector: 'app-header',
   imports: [
     Menubar,
     RouterLink,
-    BadgeModule,
-    OverlayBadgeModule
+    Notifications,
   ],
   templateUrl: './header.html',
   styleUrl: './header.scss'
 })
-export class Header implements OnInit {
+export class Header {
   user: User | null = null;
   navLinks: { label: string, routerLink?: any, icon?: string, command?: () => void }[] = [];
-  notificationCount = signal<number>(0);
-  private notificationService = inject(NotificationService);
-  private destoryRef = inject(DestroyRef);
 
   constructor(private authService: AuthService, private router: Router) {
     this.authService.currentUser$.subscribe(user => {
@@ -34,9 +28,6 @@ export class Header implements OnInit {
     });
   }
 
-  async ngOnInit(): Promise<void> {
-    await this.connectToNotificationService();
-  }
 
   setNavLinks() {
     if (!this.user) {
@@ -76,15 +67,9 @@ export class Header implements OnInit {
     return !(route.startsWith('/login') || route.startsWith('/register'));
   }
 
-  private async connectToNotificationService() {
-    await this.notificationService.connect().then(async () => {
-      await this.notificationService.receiveNotification((message: string) => {
-        console.log('Notification received:', message);
-        this.notificationCount.update(count => count + 1);
-      })
-    })
-    this.destoryRef.onDestroy(() => {
-      this.notificationService.stopConnection();
-    })
+  isLoggedIn(): boolean {
+    return this.authService.getCurrentUser$() !== null;
   }
+
+  protected readonly UserRole = UserRole;
 }

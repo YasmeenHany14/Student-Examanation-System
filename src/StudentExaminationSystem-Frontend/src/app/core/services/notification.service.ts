@@ -1,6 +1,7 @@
-import { Injectable } from "@angular/core";
+import {inject, Injectable} from "@angular/core";
 import {HttpTransportType, HubConnection, HubConnectionBuilder} from '@microsoft/signalr';
 import {routes} from '../constants/routs';
+import {TokenService} from './token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -8,12 +9,17 @@ import {routes} from '../constants/routs';
 
 export class NotificationService {
   private readonly hubConnection: HubConnection;
+  private readonly tokenService = inject(TokenService);
 
   constructor() {
     this.hubConnection = new HubConnectionBuilder()
       .withUrl(routes.notificationHub, {
         skipNegotiation: true,
-        transport: HttpTransportType.WebSockets
+        transport: HttpTransportType.WebSockets,
+        withCredentials: true,
+        accessTokenFactory: () => {
+          return this.tokenService.getToken() ?? '';
+        }
       })
       .withAutomaticReconnect()
       .build();
@@ -32,7 +38,7 @@ export class NotificationService {
     }
   }
 
-  async receiveNotification(callback: (message: string) => void): Promise<void> {
+  receiveNotification(callback: (message: string) => void): void {
     if (this.hubConnection) {
       this.hubConnection.on('ReceiveNotification', (message: string) => {
         console.log('Notification received: ', message);

@@ -14,6 +14,7 @@ public class NotificationsService(
         var subject = await unitOfWork.SubjectRepository.GetByIdAsync(subjectId);
         var student = await unitOfWork.StudentRepository.GetByIdAsync(userId);
         var message = string.Format(Notifications.ExamStarted, student?.Name, subject?.Name);
+        await notificationsHub.SendExamStartedAsync(message);
     }
 
     public async Task NotifyExamEvaluatedAsync(int subjectId, int studentId, int totalScore)
@@ -22,9 +23,10 @@ public class NotificationsService(
         var student = await unitOfWork.StudentRepository.GetByIdAsync(studentId);
         var studentMsg = string.Format(Notifications.ExamEvaluatedStudent, subject?.Name, totalScore);
         var adminMsg = string.Format(Notifications.ExamEvaluatedAdmin, subject?.Name, totalScore,
-            student.User.FirstName + " " + student.User.LastName);
+            student!.User!.FirstName + " " + student.User.LastName);
 
         await notificationsHub.SendEvaluationCompletedAsync(student.UserId, studentMsg);
-        await notificationsHub.SendExamStartedAsync(adminMsg);
+        await notificationsHub.SendEvaluationCompletedAsync("Admins", adminMsg);
+        
     }
 }
