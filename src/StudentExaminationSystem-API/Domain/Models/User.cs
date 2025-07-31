@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Models;
 
-public class User : IdentityUser
+public class User : IdentityUser, IAuditDateOnly
 {
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;

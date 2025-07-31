@@ -3,7 +3,7 @@ using Domain.Models.Common;
 
 namespace Domain.Models;
 
-public class GeneratedExam : PrimaryKeyBaseEntity
+public class GeneratedExam : PrimaryKeyBaseEntity, IAuditDateOnly
 {
     public int StudentId { get; set; } // FK
     public int SubjectId { get; set; } // FK

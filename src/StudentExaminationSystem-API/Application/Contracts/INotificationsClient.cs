@@ -1,9 +1,13 @@
+using Application.DTOs;
+using Shared.ResourceParameters;
+
 namespace Application.Contracts;
 
 public interface INotificationsClient
 {
     Task ReceiveNotification(string message);
-    Task LoadNotifications();
+    Task LoadNotifications(PagedList<NotificationAppDto> notifications);
+    Task MarkNotificationAsRead(int notificationId);
 }
 
 /*

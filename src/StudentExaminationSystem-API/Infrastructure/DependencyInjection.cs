@@ -36,6 +36,7 @@ public static class DependencyInjection
         services.AddScoped<ISubjectExamConfigRepository, SubjectExamConfigRepository>();
         services.AddScoped<IDifficultyProfileRepository, DifficultyProfileRepository>();
         services.AddScoped<IExamRepository, ExamRepository>();
+        services.AddScoped<INotificationsRepository, NotificationsRepository>();
         services.AddScoped<IPublisher, Publisher>();
         
         services.AddSingleton<IUserContext, UserContext>();

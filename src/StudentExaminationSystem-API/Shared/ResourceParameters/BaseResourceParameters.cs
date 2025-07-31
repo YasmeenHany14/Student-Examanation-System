@@ -6,7 +6,7 @@ public abstract class BaseResourceParameters
     // filters
     public int PageNumber { get; set; } = 1;
     private int _pageSize = 5;
-    private const int MaxPageSize = 50;
+    private const int MaxPageSize = 200;
     
     
     // check if the page size is greater than the max page size, if it is, set it to the max page size

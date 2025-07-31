@@ -45,7 +45,7 @@ public sealed class UpdateAuditFieldsInterceptor(IUserContext userContext) : Sav
         {
             entityEntry.Property(e => e.CreatedAt).CurrentValue = DateTime.Now;
             entityEntry.Property(e => e.UpdatedAt).CurrentValue = DateTime.Now;
-            if (!(entityEntry.Entity is User) || !(entityEntry.Entity is GeneratedExam && entityEntry.State == EntityState.Modified))
+            if (entityEntry.Entity is not IAuditDateOnly)
             {
                 entityEntry.Property(e => e.CreatedBy).CurrentValue = currentUserId;
                 entityEntry.Property(e => e.UpdatedBy).CurrentValue = currentUserId;

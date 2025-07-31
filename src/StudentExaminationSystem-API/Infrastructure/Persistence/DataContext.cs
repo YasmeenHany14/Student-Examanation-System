@@ -27,6 +27,7 @@ public class DataContext : IdentityDbContext<User>
         modelBuilder.Entity<Question>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<QuestionChoice>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<DifficultyProfile>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<Notification>().HasQueryFilter(e => !e.IsDeleted);
     }
 
     public DbSet<Student> Students { get; set; }
@@ -39,4 +40,5 @@ public class DataContext : IdentityDbContext<User>
     public DbSet<GeneratedExam> GeneratedExams { get; set; }
     public DbSet<StudentSubject> StudentSubjects { get; set; }
     public DbSet<SubjectExamConfig> SubjectExamConfigs { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 }

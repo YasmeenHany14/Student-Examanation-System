@@ -12,6 +12,7 @@ public interface IUnitOfWork
     ISubjectExamConfigRepository SubjectExamConfigRepository { get; set; }
     IDifficultyProfileRepository DifficultyProfileRepository { get; set; }
     IExamRepository ExamHistoryRepository { get; set; }
+    INotificationsRepository NotificationsRepository { get; }
     Task<int> SaveChangesAsync();
     IBaseRepository<TEntity> GetRepository<TEntity>()
         where TEntity : BaseEntity;
