@@ -1,22 +1,15 @@
-﻿using System.Security.Cryptography;
-using Application.Common.Constants.Errors;
+﻿using Application.Common.Constants.Errors;
 using Application.Common.Constants.ValidationMessages;
 using Application.Common.ErrorAndResults;
 using Application.Contracts;
 using Application.DTOs.ExamDtos;
-using Application.DTOs.QuestionChoiceDtos;
-using Application.DTOs.SubjectExamConfigDtos;
 using Application.Helpers;
 using Application.Mappers;
-using Application.Mappers.QuestionMappers;
-using Domain.DTOs;
 using Domain.DTOs.ExamDtos;
-using Domain.Enums;
-using Domain.Models;
+using Domain.Interfaces;
 using Domain.Repositories;
 using Domain.UserContext;
 using FluentValidation;
-using Microsoft.Extensions.Caching.Memory;
 using Shared.ResourceParameters;
 
 namespace Application.Services;
@@ -26,7 +19,8 @@ public class ExamService(
     IUserContext userContext,
     IValidator<GenerateExamRequestDto> generateValidator,
     IGenerateExamService generateService,
-    ICacheExamService cacheService
+    ICacheExamService cacheService,
+    IPublisher publisher
     ): IExamService
 {
     public async Task<Result<PagedList<GetExamHistoryAppDto>>> GetAllAsync(
@@ -72,7 +66,7 @@ public class ExamService(
         return await generateService.GenerateExamAsync(subjectId, hiddenUserId);
     }
 
-    public async Task<Result<bool>> SubmitExamAsync(SubmitExamAppDto submitExamDto)
+    public async Task<Result<bool>> SubmitExamAsync(LoadExamAppDto ExamDto)
     {
         var userId = userContext.UserId;
         var hiddenUserId = await unitOfWork.StudentRepository.GetHiddenUserIdAsync(userId.ToString());
@@ -81,11 +75,15 @@ public class ExamService(
         if (examEntry.Value is null)
             return Result<bool>.Failure(CommonErrors.BadRequest(ExamValidationErrorMessages.ExamNotFound));
 
-        if (examEntry.Value.SubjectId != submitExamDto.SubjectId)
+        if (examEntry.Value.SubjectId != ExamDto.SubjectId)
             return Result<bool>.Failure(CommonErrors.BadRequest(ExamValidationErrorMessages.ExamSubjectMismatch));
 
-        var examEntity = await unitOfWork.ExamHistoryRepository.GetExamForUpdate(submitExamDto.ExamId);
-        examEntity.MapUpdate(submitExamDto);
+
+        await SendExamToEvaluationService(ExamDto);
+        
+        var examEntity = await unitOfWork.ExamHistoryRepository.GetExamForUpdate(ExamDto.Id);
+        examEntity.SubmittedAt = DateTime.UtcNow;
+        // examEntity.MapUpdate(submitExamDto);
         
         unitOfWork.ExamHistoryRepository.UpdateAsync(examEntity);
         var result = await unitOfWork.SaveChangesAsync();
@@ -93,6 +91,19 @@ public class ExamService(
             return Result<bool>.Failure(CommonErrors.InternalServerError());
         
         cacheService.RemoveExamEntry(userId.ToString());
+        return Result<bool>.Success(true);
+    }
+
+    private async Task<Result<bool>> SendExamToEvaluationService(LoadExamAppDto examDto)
+    {
+        var questionIds = examDto.Questions.Select(q => q.Id).ToList();
+        var answers  = examDto.Questions.Select(q => new EvaluateQuestionDto()
+        {
+            QuestionId = q.Id,
+            AnswerId = q.Choices.FirstOrDefault(c => c.IsSelected)?.Id ?? 0,
+        });
+        var examAnswers = await unitOfWork.QuestionRepository.GetCorrectAnswersForQuestionsAsync(questionIds);
+        await publisher.PublishExamAsync(examAnswers, examDto.Id, answers);
         return Result<bool>.Success(true);
     }
 }

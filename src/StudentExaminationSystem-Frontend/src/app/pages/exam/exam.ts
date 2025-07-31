@@ -152,20 +152,40 @@ export class ExamComponent implements OnInit, OnDestroy {
       });
       return;
     }
+    this.fromFormToModel();
+    this.examService.submitExam(this.exam()!).subscribe({
+      next: (exam) => {
+        this.isExamSubmitted = true;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Exam submitted successfully'
+        });
+        setTimeout(() => {
+          this.router.navigate(['/home/exams']);
+        }, 2000);
+      },
+      error: (error) => {
+        console.error('Error submitting exam:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to submit exam. Please try again later.'
+        });
+      }
+    })
+  }
 
-    // Implementation for exam submission would go here
-    console.log('Exam submitted:', this.examForm.value);
-
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Success',
-      detail: 'Exam submitted successfully'
-    });
-
-    // Redirect to exam results or dashboard after submission
-    setTimeout(() => {
-      this.router.navigate(['/home/exams']);
-    }, 2000);
+  private fromFormToModel() {
+    this.exam()?.questions.forEach((question) => {
+      const answer = this.examForm.get('answers')?.value.find((a: any) => a.questionId === question.id);
+      if (answer) {
+        question.choices.forEach((choice) => {
+          choice.isSelected = answer.selectedChoiceId === choice.id;
+        });
+      }
+    })
+    console.log(this.exam());
   }
 
   private setupFormForExam(exam: LoadExamModel) {

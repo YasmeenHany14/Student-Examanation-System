@@ -2,7 +2,7 @@
 
 public class LoadExamInfraDto : BaseDto
 {
-    public int examId { get; set; }
+    public int Id { get; set; }
     public int subjectId { get; set; }
     public DateTime examStartTime { get; set; }
     public DateTime examEndTime { get; set; }

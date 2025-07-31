@@ -40,8 +40,8 @@ public static class GetQuestionDtoMapper
     {
         return questions.Select((q, index) => new LoadExamQuestionAppDto
         {
-            Id = q.QuestionId,
-            Content = q.QuestionText,
+            Id = q.Id,
+            Content = q.Content,
             QuestionOrder = index + 1,
             Choices = q.Choices.Select(c => c.MapTo<LoadExamChoiceInfraDto, LoadExamChoiceAppDto>())
         }).ToList();

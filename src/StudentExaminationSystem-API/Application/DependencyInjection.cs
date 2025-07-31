@@ -1,5 +1,6 @@
 ﻿using Application.Contracts;
 using Application.DTOs.StudentDtos;
+using Application.Helpers;
 using Application.Services;
 using FluentValidation;
 
@@ -23,6 +24,9 @@ public static class DependencyInjection
         services.AddScoped<IGenerateExamService, GenerateExamService>();
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IMessageProcessingService, MessageProcessingService>();
+        services.AddSingleton<IConsumer, Consumer>();
+        services.AddHostedService<Worker>();
         services.AddValidatorsFromAssemblyContaining<CreateStudentAppDto>();
         return services;
     }

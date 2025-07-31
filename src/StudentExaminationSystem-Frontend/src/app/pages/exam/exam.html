@@ -118,18 +118,19 @@
                 label="Next"
                 icon="pi pi-chevron-right"
                 iconPos="right"
+                [disabled]="!canGoNext() || isExamSubmitted || isExamExpired"
                 (onClick)="nextQuestion()">
               </p-button>
             }
 
             @if(!canGoNext()) {
               <p-button
-                label="Next"
-                icon="pi pi-chevron-right"
+                label="Submit"
+                icon="pi pi-check"
                 iconPos="right"
-                severity="secondary"
-                [disabled]="!canGoNext() || isExamSubmitted || isExamExpired"
-                (onClick)="nextQuestion()">
+                severity="primary"
+                [disabled]="isExamSubmitted || isExamExpired"
+                (onClick)="submitExam()">
               </p-button>
             }
           </div>

@@ -9,5 +9,5 @@ public interface IExamService
     Task<Result<PagedList<GetExamHistoryAppDto>>> GetAllAsync(ExamHistoryResourceParameters resourceParameters);
     Task<Result<GetFullExamAppDto?>> GetFullExamAsync(int examId);
     Task<Result<LoadExamAppDto>> GetExamAsync(int subjectId);
-    Task<Result<bool>> SubmitExamAsync(SubmitExamAppDto submitExamDto);
+    Task<Result<bool>> SubmitExamAsync(LoadExamAppDto ExamDto);
 }

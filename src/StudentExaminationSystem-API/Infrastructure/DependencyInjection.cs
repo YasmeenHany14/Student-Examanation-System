@@ -1,10 +1,12 @@
-﻿using Domain.Models;
+﻿using Domain.Interfaces;
+using Domain.Models;
 using Domain.Repositories;
 using Domain.UserContext;
 using Infrastructure.Helpers;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.Repositories;
+using Infrastructure.RabbitMQ;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -34,6 +36,8 @@ public static class DependencyInjection
         services.AddScoped<ISubjectExamConfigRepository, SubjectExamConfigRepository>();
         services.AddScoped<IDifficultyProfileRepository, DifficultyProfileRepository>();
         services.AddScoped<IExamRepository, ExamRepository>();
+        services.AddScoped<IPublisher, Publisher>();
+        
         services.AddSingleton<IUserContext, UserContext>();
         services.AddIdentity<User, IdentityRole>(options =>
             {

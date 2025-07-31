@@ -10,6 +10,25 @@ namespace Infrastructure.Persistence.Repositories;
 
 public class QuestionRepository(DataContext context) : BaseRepository<Question>(context), IQuestionRepository
 {
+    public async Task<IEnumerable<CorrectAnswersInfraDto>> GetCorrectAnswersForQuestionsAsync(IEnumerable<int> questionIds)
+    {
+        var answersQuery = context.Questions
+            .AsNoTracking()
+            .Where(q => questionIds.Contains(q.Id))
+            .AsQueryable();
+        
+        return await answersQuery
+            .Select(q => new CorrectAnswersInfraDto
+            {
+                QuestionId = q.Id,
+                CorrectAnswerId = q.Choices!
+                    .Where(c => c.IsCorrect)
+                    .Select(c => c.Id)
+                    .FirstOrDefault()
+            })
+            .ToListAsync();
+    }
+
     public async Task<Question?> GetEntityByIdAsync(int id)
     {
         return await context.Questions
@@ -72,8 +91,8 @@ public class QuestionRepository(DataContext context) : BaseRepository<Question>(
             .OrderBy(q => Guid.NewGuid()) // Random ordering
             .Select(q => new LoadExamQuestionInfraDto
             {
-                QuestionId = q.Id,
-                QuestionText = q.Content,
+                Id = q.Id,
+                Content = q.Content,
                 Difficulty = q.Difficulty,
                 Choices = q.Choices!.Select(c => new LoadExamChoiceInfraDto
                 {
@@ -111,8 +130,8 @@ public class QuestionRepository(DataContext context) : BaseRepository<Question>(
             .Take(count)
             .Select(q => new LoadExamQuestionInfraDto
             {
-                QuestionId = q.Id,
-                QuestionText = q.Content,
+                Id = q.Id,
+                Content = q.Content,
                 Choices = q.Choices!.Select(c => new LoadExamChoiceInfraDto
                 {
                     ChoiceId = c.Id,

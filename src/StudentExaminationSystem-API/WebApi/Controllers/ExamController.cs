@@ -60,11 +60,9 @@ public class ExamController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [Authorize(AuthenticationSchemes = "Bearer")]
-    public async Task<IActionResult> SubmitExamAsync([FromBody] SubmitExamAppDto submitExamDto)
+    public async Task<IActionResult> SubmitExamAsync([FromBody] LoadExamAppDto examDto)
     {
-        var result = await examService.SubmitExamAsync(submitExamDto);
+        var result = await examService.SubmitExamAsync(examDto);
         return result.ToActionResult();
     }
 }
-
-
