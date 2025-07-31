@@ -1,4 +1,5 @@
 ﻿using Domain.DTOs;
+using Domain.Enums;
 using Domain.Models;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -18,11 +19,13 @@ public class ExamRepository(
             collection = collection.Where(e => e.Student.UserId == userId);
         
         var projectedCollection = collection
+            .Where(e => e.ExamStatus != ExamStatus.Running)
             .Select(e => new GetAllExamsInfraDto
             {
                 Id = e.Id,
                 StudentName = e.Student.User.FirstName + " " + e.Student.User.LastName,
                 SubjectName = e.Subject.Name,
+                ExamStatus = e.ExamStatus.ToString(),
                 ExamDate = e.CreatedAt,
                 FinalScore = e.StudentScore,
                 Passed = e.StudentScore >= e.ExamTotalScore/2,
@@ -37,7 +40,7 @@ public class ExamRepository(
     {
         var query = await context.GeneratedExams
             .AsNoTracking()
-            .Where(e => e.IsCompleted)
+            .Where(e => e.ExamStatus == ExamStatus.Completed)
             .Select(e => new { passed = e.StudentScore >= e.ExamTotalScore / 2, })
             .ToListAsync();
         
@@ -57,7 +60,8 @@ public class ExamRepository(
             .Select(e => new 
             {
                 e.StudentScore,
-                UserId = e.Student.UserId
+                UserId = e.Student.UserId,
+                ExamStatus = e.ExamStatus
             })
             .FirstOrDefaultAsync();
 

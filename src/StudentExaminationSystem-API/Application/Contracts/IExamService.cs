@@ -1,4 +1,5 @@
 ﻿using Application.Common.ErrorAndResults;
+using Application.DTOs;
 using Application.DTOs.ExamDtos;
 using Shared.ResourceParameters;
 
@@ -10,4 +11,5 @@ public interface IExamService
     Task<Result<GetFullExamAppDto?>> GetFullExamAsync(int examId);
     Task<Result<LoadExamAppDto>> GetExamAsync(int subjectId);
     Task<Result<bool>> SubmitExamAsync(LoadExamAppDto ExamDto);
+    Task<Result<bool>> SaveExamEvaluationAsync(ExamEvaluationDto examEvaluationDto);
 }

@@ -2,6 +2,7 @@
 using Application.Common.Constants.ValidationMessages;
 using Application.Common.ErrorAndResults;
 using Application.Contracts;
+using Application.DTOs;
 using Application.DTOs.ExamDtos;
 using Application.Helpers;
 using Application.Mappers;
@@ -37,6 +38,12 @@ public class ExamService(
         var exam = await unitOfWork.ExamHistoryRepository.GetAllQuestionHistoryAsync(examId);
         if (exam is null)
             return Result<GetFullExamAppDto?>.Failure(CommonErrors.NotFound());
+        
+        if (exam.ExamStatus == Domain.Enums.ExamStatus.Running)
+            return Result<GetFullExamAppDto?>.Failure(CommonErrors.BadRequest(ExamValidationErrorMessages.ExamNotSubmitted));
+        
+        if (exam.ExamStatus == Domain.Enums.ExamStatus.PendingEvaluation)
+            return Result<GetFullExamAppDto?>.Failure(CommonErrors.BadRequest(ExamValidationErrorMessages.ExamPendingEvaluation));
 
         if(!AccessResourceIdFilter.IsAdminOrCanAccess(exam.userId, userContext))
             return Result<GetFullExamAppDto?>.Failure(AuthErrors.Forbidden);
@@ -83,6 +90,7 @@ public class ExamService(
         
         var examEntity = await unitOfWork.ExamHistoryRepository.GetExamForUpdate(ExamDto.Id);
         examEntity.SubmittedAt = DateTime.UtcNow;
+        examEntity.ExamStatus = Domain.Enums.ExamStatus.PendingEvaluation;
         // examEntity.MapUpdate(submitExamDto);
         
         unitOfWork.ExamHistoryRepository.UpdateAsync(examEntity);
@@ -104,6 +112,26 @@ public class ExamService(
         });
         var examAnswers = await unitOfWork.QuestionRepository.GetCorrectAnswersForQuestionsAsync(questionIds);
         await publisher.PublishExamAsync(examAnswers, examDto.Id, answers);
+        return Result<bool>.Success(true);
+    }
+    
+    public async Task<Result<bool>> SaveExamEvaluationAsync(ExamEvaluationDto examEvaluationDto)
+    {
+        var exam = await unitOfWork.ExamHistoryRepository.GetExamForUpdate(examEvaluationDto.ExamId);
+        if (exam is null)
+            return Result<bool>.Failure(CommonErrors.NotFound());
+
+        if (exam.ExamStatus != Domain.Enums.ExamStatus.PendingEvaluation)
+            return Result<bool>.Failure(CommonErrors.BadRequest(ExamValidationErrorMessages.ExamNotPendingEvaluation));
+
+        exam.StudentScore = examEvaluationDto.TotalScore;
+        exam.ExamStatus = Domain.Enums.ExamStatus.Completed;
+        
+        unitOfWork.ExamHistoryRepository.UpdateAsync(exam);
+        var result = await unitOfWork.SaveChangesAsync();
+        if (result <= 0)
+            return Result<bool>.Failure(CommonErrors.InternalServerError());
+        
         return Result<bool>.Success(true);
     }
 }

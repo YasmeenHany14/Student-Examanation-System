@@ -1,3 +1,4 @@
+using Domain.Enums;
 using Domain.Models.Common;
 
 namespace Domain.Models;
@@ -7,7 +8,7 @@ public class GeneratedExam : PrimaryKeyBaseEntity
     public int StudentId { get; set; } // FK
     public int SubjectId { get; set; } // FK
     public DateTime? SubmittedAt { get; set; }
-    public bool IsCompleted { get; set; }
+    public ExamStatus ExamStatus { get; set; } = ExamStatus.Running;
     public int ExamTotalScore { get; set; }
     public int StudentScore { get; set; }
     

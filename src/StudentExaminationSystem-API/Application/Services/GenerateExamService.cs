@@ -69,7 +69,6 @@ public class GenerateExamService(
             SubjectId = subjectId,
             StudentId = userId,
             SubmittedAt = null,
-            IsCompleted = false,
             ExamTotalScore = questions.Count(),
             StudentScore = 0,
             QuestionHistory = questions.Select(q => new AnswerHistory

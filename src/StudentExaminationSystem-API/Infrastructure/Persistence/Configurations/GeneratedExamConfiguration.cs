@@ -15,6 +15,9 @@ public class GeneratedExamConfiguration : IEntityTypeConfiguration<GeneratedExam
         builder.HasOne(ge => ge.Subject)
             .WithMany(s => s.GeneratedExams)
             .HasForeignKey(ge => ge.SubjectId);
+        builder.Property(ge => ge.ExamStatus)
+            .HasConversion<int>()
+            .IsRequired();
 
         // The current configuration already sets up the relationships between GeneratedExam, Student, and Subject via foreign keys.
         // No further configuration is needed for a 3-way relationship as EF Core will handle the navigation properties as defined in the models.

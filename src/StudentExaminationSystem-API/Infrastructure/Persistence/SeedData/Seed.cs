@@ -114,8 +114,8 @@ public class Seed(DataContext context)
             context.SaveChanges();
 
             // 6. Create GeneratedExams
-            var exam1 = new GeneratedExam { StudentId = student1.Id, SubjectId = math.Id, SubmittedAt = currentDate, IsCompleted = true, StudentScore = 90 };
-            var exam2 = new GeneratedExam { StudentId = student2.Id, SubjectId = science.Id, SubmittedAt = currentDate, IsCompleted = false, StudentScore = 0 };
+            var exam1 = new GeneratedExam { StudentId = student1.Id, SubjectId = math.Id, SubmittedAt = currentDate, ExamStatus = ExamStatus.Completed};
+            var exam2 = new GeneratedExam { StudentId = student2.Id, SubjectId = science.Id, SubmittedAt = currentDate, ExamStatus = ExamStatus.Completed, StudentScore = 0 };
             context.GeneratedExams.AddRange(exam1, exam2);
             context.SaveChanges();
 
