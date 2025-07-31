@@ -12,4 +12,5 @@ public interface IStudentRepository : IBaseRepository<Student>
     Task<int> GetHiddenUserIdAsync(string userId);
     Task<bool> IsSubjectAvailableAsync(int userId, int subjectId);
     Task<int> GetTotalStudentsCountAsync();
+    Task<Student?> GetByIdAsync(int id);
 }

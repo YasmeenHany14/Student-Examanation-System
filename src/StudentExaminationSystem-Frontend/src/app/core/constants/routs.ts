@@ -19,7 +19,7 @@
   public static readonly question = '/question';
   public static readonly studentSubjects = routes.subjects + '/all/student';
   public static readonly notFoundPage = '/not-found';
-  public static readonly notificationHub = '/notification-hub';
+  public static readonly notificationHub = 'https://localhost:5001/hubs/notifications';
 
   public static SetSubjectConfig(id: number | string) {
     return `/subject/${id}/exam-config`;

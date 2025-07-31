@@ -25,6 +25,7 @@ public static class DependencyInjection
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IMessageProcessingService, MessageProcessingService>();
+        services.AddScoped<INotificationsService, NotificationsService>();
         services.AddSingleton<IConsumer, Consumer>();
         services.AddHostedService<Worker>();
         services.AddValidatorsFromAssemblyContaining<CreateStudentAppDto>();

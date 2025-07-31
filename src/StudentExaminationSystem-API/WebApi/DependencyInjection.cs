@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Text;
+using Application.Contracts;
 using Application.DTOs.DifficultyProfileDtos;
 using Application.DTOs.ExamDtos;
 using Application.DTOs.QuestionDtos;
@@ -12,6 +13,7 @@ using Shared.ResourceParameters;
 using WebApi.Helpers.ExceptionHandlers;
 using WebApi.Helpers.Filters;
 using WebApi.Helpers.PaginationHelper;
+using WebApi.Hubs;
 
 namespace WebApi;
 
@@ -31,6 +33,8 @@ public static class DependencyInjection
             , PaginationHelper<GetDifficultyProfileAppDto, DifficultyProfileResourceParameters>>();
         services.AddScoped<IPaginationHelper<GetExamHistoryAppDto, ExamHistoryResourceParameters>
             , PaginationHelper<GetExamHistoryAppDto, ExamHistoryResourceParameters>>();
+        services.AddSignalR();
+        services.AddScoped<INotificationsHub, NotificationsHub>();
         
         services.AddProblemDetails();
         services.AddScoped<CanAccessResourceFilter>();

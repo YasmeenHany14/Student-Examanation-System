@@ -93,4 +93,13 @@ public class StudentRepository(DataContext context)
             .AsNoTracking()
             .CountAsync();
     }
+
+    public async Task<Student?> GetByIdAsync(int id)
+    {
+        return await context.Students
+            .AsNoTracking()
+            .Where(s => s.Id == id)
+            .Include(s => s.User)
+            .FirstOrDefaultAsync();
+    }
 }

@@ -115,14 +115,14 @@ public class ExamService(
         return Result<bool>.Success(true);
     }
     
-    public async Task<Result<bool>> SaveExamEvaluationAsync(ExamEvaluationDto examEvaluationDto)
+    public async Task<Result<(int, int)>> SaveExamEvaluationAsync(ExamEvaluationDto examEvaluationDto)
     {
         var exam = await unitOfWork.ExamHistoryRepository.GetExamForUpdate(examEvaluationDto.ExamId);
         if (exam is null)
-            return Result<bool>.Failure(CommonErrors.NotFound());
+            return Result<(int, int)>.Failure(CommonErrors.NotFound());
 
         if (exam.ExamStatus != Domain.Enums.ExamStatus.PendingEvaluation)
-            return Result<bool>.Failure(CommonErrors.BadRequest(ExamValidationErrorMessages.ExamNotPendingEvaluation));
+            return Result<(int, int)>.Failure(CommonErrors.BadRequest(ExamValidationErrorMessages.ExamNotPendingEvaluation));
 
         exam.StudentScore = examEvaluationDto.TotalScore;
         exam.ExamStatus = Domain.Enums.ExamStatus.Completed;
@@ -130,8 +130,8 @@ public class ExamService(
         unitOfWork.ExamHistoryRepository.UpdateAsync(exam);
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)
-            return Result<bool>.Failure(CommonErrors.InternalServerError());
+            return Result<(int, int)>.Failure(CommonErrors.InternalServerError());
         
-        return Result<bool>.Success(true);
+        return Result<(int, int)>.Success((exam.SubjectId, exam.StudentId));
     }
 }

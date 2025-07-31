@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Application;
+using Application.Common.Constants.Notifications;
 using Domain.Models;
 using Infrastructure;
 using Infrastructure.Persistence.SeedData;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using WebApi;
 using WebApi.Helpers;
 using WebApi.Helpers.Filters;
+using WebApi.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,5 +77,6 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.MapControllers();
 
+app.MapHub<NotificationsHub>("/hubs/notifications");
 
 app.Run();

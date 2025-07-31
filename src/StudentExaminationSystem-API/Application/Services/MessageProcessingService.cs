@@ -6,6 +6,7 @@ namespace Application.Services;
 
 public class MessageProcessingService(
     IExamService examService,
+    INotificationsService notificationsService,
     ILogger<MessageProcessingService> logger
     ) : IMessageProcessingService
 {
@@ -17,7 +18,8 @@ public class MessageProcessingService(
             logger.LogError("Failed to process exam evaluation message: {Error}", result.Error);
             return;
         }
-        // here comes signlrlR logic to notify the user about the evaluation result
         
+        var (subjectId, studentId) = result.Value;
+        await notificationsService.NotifyExamEvaluatedAsync(subjectId, studentId, data.TotalScore);
     }
 }
