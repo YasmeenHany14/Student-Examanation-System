@@ -1,8 +1,7 @@
-export interface Notification {
+export interface NotificationModel {
   id: string;
   message: string;
-  timestamp: Date;
+  createdAt: Date;
   isRead: boolean;
   type?: 'info' | 'warning' | 'error' | 'success';
 }
-

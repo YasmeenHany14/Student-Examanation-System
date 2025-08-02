@@ -40,4 +40,13 @@ public class NotificationsRepository(
     {
         return await context.Set<Notification>().FindAsync(id);
     }
+
+    public void UpdateRangeAsync(IEnumerable<Notification> notifications)
+    {
+        var enumerable = notifications.ToList();
+        if (!enumerable.Any())
+            return;
+
+        context.Set<Notification>().UpdateRange(enumerable);
+    }
 }

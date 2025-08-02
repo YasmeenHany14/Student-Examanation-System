@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Application.Contracts;
+using Application.DTOs;
 using Domain.UserContext;
 using Microsoft.AspNetCore.SignalR;
 using Shared.ResourceParameters;
@@ -19,7 +20,7 @@ public class NotificationsHub(IUserContext userContext,
         await base.OnConnectedAsync();
     }
 
-    public async Task LoadNotificationsAsync(BaseResourceParameters resourceParameters)
+    public async Task LoadNotificationsAsync(NotificationsResourceParameters resourceParameters)
     {
         if (!userContext.IsAuthenticated)
         {
@@ -32,10 +33,10 @@ public class NotificationsHub(IUserContext userContext,
         
         var notifications = await notificationsService.GetAllNotificationsAsync(resourceParameters, userId);
         
-        await Clients.Caller.LoadNotifications(notifications.Value);
+        await Clients.Caller.NotificationsLoaded(notifications.Value);
     }
     
-    public async Task MarkNotificationAsReadAsync(int notificationId)
+    public async Task MarkNotificationAsReadAsync()
     {
         if (!userContext.IsAuthenticated)
         {
@@ -44,9 +45,8 @@ public class NotificationsHub(IUserContext userContext,
         }
 
         var userId = userContext.UserId.ToString();
-        Console.WriteLine($"Marking notification {notificationId} as read for user: {userId}");
-        var result = await notificationsService.MarkNotificationAsReadAsync(notificationId, userId);
-        await Clients.Caller.MarkNotificationAsRead(notificationId);
+        Console.WriteLine($"Marking notifications as read for user: {userId}");
+        var result = await notificationsService.MarkAllNotificationsAsReadAsync(userId);
     }
     
 }

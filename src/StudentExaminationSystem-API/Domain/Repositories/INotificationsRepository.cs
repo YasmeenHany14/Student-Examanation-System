@@ -10,4 +10,5 @@ public interface INotificationsRepository : IBaseRepository<Notification>
     
     Task CreateAdminNotificationAsync(string message);
     Task<Notification?> GetByIdAsync(int id);
+    void UpdateRangeAsync(IEnumerable<Notification> notifications);
 }

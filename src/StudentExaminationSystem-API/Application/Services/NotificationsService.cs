@@ -54,14 +54,15 @@ public class NotificationsService(
         return Result<bool>.Success(true);
     }
     
-    public async Task<Result<bool>> MarkNotificationAsReadAsync(int notificationId, string userId)
+    public async Task<Result<bool>> MarkAllNotificationsAsReadAsync(string userId)
     {
-        var notification = await unitOfWork.NotificationsRepository.GetByIdAsync(notificationId);
-        if (notification == null || notification.UserId != userId)
-            return Result<bool>.Failure(CommonErrors.NotFound());
-
-        notification.IsRead = true;
-        unitOfWork.NotificationsRepository.UpdateAsync(notification);
+        var paginationInfo = new NotificationsResourceParameters();
+        var notifications = await unitOfWork.NotificationsRepository.GetNotificationsByUserIdAsync(paginationInfo, userId);
+        
+        foreach (var n in notifications.Data)
+            n.IsRead = true;
+        
+        unitOfWork.NotificationsRepository.UpdateRangeAsync(notifications.Data);
         
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)

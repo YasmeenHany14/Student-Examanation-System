@@ -46,8 +46,7 @@
               @for (notification of notifications(); track notification.id) {
                 <div
                   class="notification-item p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
-                  [class.notification-unread]="!notification.isRead"
-                  (click)="markAsRead(notification.id)">
+                  [class.notification-unread]="!notification.isRead">
 
                   <div class="flex items-start gap-3">
                     <!-- Notification Content -->
@@ -56,7 +55,7 @@
                         {{ notification.message }}
                       </p>
                       <p class="text-xs text-gray-500 mt-1">
-                        {{ formatTimestamp(notification.timestamp) }}
+                        {{ formatTimestamp(notification.createdAt) }}
                       </p>
                     </div>
                   </div>
