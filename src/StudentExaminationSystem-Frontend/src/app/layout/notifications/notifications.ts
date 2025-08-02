@@ -45,9 +45,6 @@ export class Notifications implements OnInit {
     await this.connectToNotificationService();
   }
 
-
-
-
   private async connectToNotificationService(): Promise<void> {
     try {
       await this.notificationService.connect();
@@ -66,6 +63,17 @@ export class Notifications implements OnInit {
     } catch (error) {
       console.error('Error connecting to notification service:', error);
     }
+  }
+
+  loadMoreNotifications(): void {
+    this.resourceParams.PageNumber++;
+    this.notificationService.loadNotificationsFromServer(this.resourceParams).then(notifications => {
+      if (notifications.data.length > 0) {
+        this.notifications.update(current => [...current, ...notifications.data]);
+      }
+    }).catch(error => {
+      console.error('Error loading more notifications:', error);
+    });
   }
 
   private addNotification(message: string): void {

@@ -9,18 +9,16 @@ public class EvaluateExamService(IPublisher publisher) : IEvaluateExamService
     public async Task EvaluateExamAsync(IncomingExamDto examDto)
     {
         int totalScore = 0;
-        examDto.EvaluateQuestions.Select(q =>
+        foreach(var question in examDto.EvaluateQuestions)
         {
             var correctAnswer = examDto.CorrectAnswers
-                .FirstOrDefault(c => c.QuestionId == q.QuestionId)?.CorrectAnswerId;
-
-            if (correctAnswer.HasValue && q.AnswerId == correctAnswer.Value)
+                .FirstOrDefault(c => c.QuestionId == question.QuestionId)?.CorrectAnswerId;
+        
+            if (correctAnswer.HasValue && question.AnswerId == correctAnswer.Value)
             {
                 totalScore += 1;
             }
-
-            return q;
-        });
+        }
 
         await publisher.PublishEvaluationAsync(examDto.ExamId, totalScore);
     }

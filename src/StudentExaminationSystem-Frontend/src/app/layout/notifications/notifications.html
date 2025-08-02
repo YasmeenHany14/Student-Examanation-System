@@ -42,8 +42,12 @@
               <p>No notifications</p>
             </div>
           } @else {
-            <p-scrollPanel [style]="{ width: '100%', height: '300px' }">
-              @for (notification of notifications(); track notification.id) {
+            <p-virtualscroller
+              [items]="notifications()"
+              [itemSize]="80"
+              [scrollHeight]="'300px'"
+              styleClass="border-none">
+              <ng-template pTemplate="item" let-notification>
                 <div
                   class="notification-item p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer"
                   [class.notification-unread]="!notification.isRead">
@@ -59,9 +63,20 @@
                       </p>
                     </div>
                   </div>
+                  @if(notifications().length == 200 && notification === notifications()[notifications().length - 1]) {
+                    <div class="text-xs text-gray-500 mt-2">
+                      <i class="pi pi-info-circle"></i>
+                      You have reached the end of the list. Load more to see older notifications.
+                      <button
+                        class="text-blue-600 hover:text-blue-800 text-sm"
+                        (click)="loadMoreNotifications()">
+                        Load more
+                      </button>
+                    </div>
+                  }
                 </div>
-              }
-            </p-scrollPanel>
+              </ng-template>
+            </p-virtualscroller>
           }
         </div>
       </div>

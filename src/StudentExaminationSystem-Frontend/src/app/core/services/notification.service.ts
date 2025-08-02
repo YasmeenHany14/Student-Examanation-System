@@ -52,16 +52,16 @@ export class NotificationService {
     }
   }
 
-  async NotificationsLoaded(callback: (notifications: PagedListModel<NotificationModel>) => void ) {
-    if (this.hubConnection) {
-      this.hubConnection.on('NotificationsLoaded', (notifications: PagedListModel<NotificationModel>) => {
-        console.log('Notifications loaded');
-        callback(notifications);
-      });
-    } else {
-      console.error('Hub connection is not established.');
-    }
-  }
+  // async NotificationsLoaded(callback: (notifications: PagedListModel<NotificationModel>) => void ) {
+  //   if (this.hubConnection) {
+  //     this.hubConnection.on('NotificationsLoaded', (notifications: PagedListModel<NotificationModel>) => {
+  //       console.log('Notifications loaded');
+  //       callback(notifications);
+  //     });
+  //   } else {
+  //     console.error('Hub connection is not established.');
+  //   }
+  // }
 
   async loadNotificationsFromServer(
     resourceParams: BaseResourceParametersModel
