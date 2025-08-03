@@ -23,7 +23,8 @@
         [options]="difficultyOptions()"
         [(ngModel)]="selectedDifficulty"
         (onChange)="onDifficultyChange()"
-        optionLabel="label"
+        optionLabel="name"
+        optionValue="id"
         placeholder="All difficulties"
         [showClear]="true"
         class="w-full">

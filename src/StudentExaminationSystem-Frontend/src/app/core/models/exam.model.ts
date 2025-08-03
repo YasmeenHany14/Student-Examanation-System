@@ -7,6 +7,7 @@ export interface ExamListModel extends BaseResponseModel {
   subjectName: string;
   examDate: string; // ISO date string
   finalScore: number;
+  examStatus: number;
   passed: boolean;
 }
 

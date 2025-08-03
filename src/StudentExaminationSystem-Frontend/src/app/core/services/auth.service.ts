@@ -37,9 +37,12 @@ export class AuthService {
 
   logout(): void {
     const refreshToken = this.tokenService.getRefreshToken();
-    this.tokenService.clearTokens();
-    this.currentUserSubject.next(null);
-    this.http.post<LogoutRequest>(this.API_URL + routes.authLogout, refreshToken);
+    this.http.post<LogoutRequest>(this.API_URL + routes.authLogout, refreshToken).subscribe({
+      next: () => {
+        this.tokenService.clearTokens();
+        this.currentUserSubject.next(null);
+      }
+    })
   }
 
   refreshToken(): Observable<LoginResponse> {
@@ -103,6 +106,10 @@ export class AuthService {
 
   getCurrentUser$(): Observable<User | null> {
     return this.currentUser$;
+  }
+
+  isLoggedIn(): boolean {
+    return this.currentUserSubject.value !== null;
   }
 
   private setSession(response: LoginResponse): void {

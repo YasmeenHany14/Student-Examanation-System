@@ -4,7 +4,7 @@ import { QuestionListModel } from '../../../core/models/question.model';
 import { GetSubjectModel } from '../../../core/models/subject.model';
 import { QuestionService } from '../../../core/services/question.service';
 import { SubjectService } from '../../../core/services/subject.service';
-import { Difficulty } from '../../../core/enums/difficulty';
+import {Difficulty, DifficultyDropdown} from '../../../core/enums/difficulty';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
@@ -14,12 +14,9 @@ import { ViewQuestionDialog } from '../view-question-dialog/view-question-dialog
 import { BaseResourceParametersModel } from '../../../core/models/common/base-resource-parameters.model';
 import {ToggleSwitch} from 'primeng/toggleswitch';
 import { SelectModule } from 'primeng/select';
-
-
-interface DifficultyOption {
-  label: string;
-  value: number;
-}
+import {DropdownModel} from '../../../core/models/common/common.model';
+import {ActivatedRoute, Router} from '@angular/router';
+import {changeQueryParams, getFromQueryParams} from '../../../shared/utils/nav.utils';
 
 @Component({
   selector: 'app-question-list',
@@ -40,7 +37,7 @@ interface DifficultyOption {
 export class QuestionList implements OnInit {
   questions = signal<QuestionListModel[]>([]);
   subjects = signal<GetSubjectModel[]>([]);
-  difficultyOptions = signal<DifficultyOption[]>([]);
+  difficultyOptions = signal<DropdownModel[]>([]);
   loading = signal(false);
   isError = signal(false);
   totalRecords = signal(0);
@@ -50,7 +47,7 @@ export class QuestionList implements OnInit {
 
   // Filters
   selectedSubject = signal<GetSubjectModel | null>(null);
-  selectedDifficulty = signal<DifficultyOption | null>(null);
+  selectedDifficulty = signal<DropdownModel | null>(null);
 
   // View question dialog
   viewQuestionDialogVisible = signal(false);
@@ -58,33 +55,41 @@ export class QuestionList implements OnInit {
 
   private questionService = inject(QuestionService);
   private subjectService = inject(SubjectService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   @Output() delete = new EventEmitter<number>();
 
-  ngOnInit() {
-    this.loadSubjects();
+  async ngOnInit() {
     this.setupDifficultyOptions();
+    await this.loadSubjects().then( () => {
+      const subjectId = getFromQueryParams(this.route, 'subjectId');
+      if (subjectId) {
+        const subject = this.subjects().find(s => s.id.toString() === subjectId);
+        this.selectedSubject.set(subject || null);
+      }
+      this.loadQuestions();
+    });
   }
 
   setupDifficultyOptions() {
-    const options: DifficultyOption[] = [
-      {label: 'Easy', value: Difficulty.Easy},
-      {label: 'Medium', value: Difficulty.Medium},
-      {label: 'Hard', value: Difficulty.Hard}
-    ];
+    const options = DifficultyDropdown;
     this.difficultyOptions.set(options);
   }
 
-  loadSubjects() {
+  loadSubjects(): Promise<void> {
     this.isSubjectsLoading.set(true);
-    this.subjectService.getDropdownOptions<GetSubjectModel>().subscribe({
-      next: (subjects) => {
-        this.subjects.set(subjects);
-        this.isSubjectsLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Error loading subjects:', err);
-      }
+    return new Promise((resolve, reject) => {
+      this.subjectService.getDropdownOptions<GetSubjectModel>().subscribe({
+        next: (subjects) => {
+          this.subjects.set(subjects);
+          this.isSubjectsLoading.set(false);
+          resolve();
+        },
+        error: (err) => {
+          reject(err);
+        }
+      });
     });
   }
 
@@ -96,6 +101,7 @@ export class QuestionList implements OnInit {
       this.questions.set([]);
       this.totalRecords.set(0);
     }
+    changeQueryParams(this.route, this.router, 'subjectId',  subject ? subject.id.toString() : '', subject ? 'Update' : 'Remove');
   }
 
   onDifficultyChange() {
@@ -123,7 +129,7 @@ export class QuestionList implements OnInit {
     };
 
     if (this.selectedDifficulty()) {
-      queryParams.DifficultyId = this.selectedDifficulty()!.value;
+      queryParams.DifficultyId = this.selectedDifficulty()!.id;
     }
 
     this.questionService.getAllPaged<BaseResourceParametersModel, QuestionListModel>(queryParams).subscribe({
@@ -171,8 +177,8 @@ export class QuestionList implements OnInit {
   }
 
   getDifficultyName(difficultyId: number): string {
-    const option = this.difficultyOptions().find(d => d.value === difficultyId);
-    return option ? option.label : 'Unknown';
+    const option = this.difficultyOptions().find(d => d.id === difficultyId);
+    return option ? option.name : 'Unknown';
   }
 
   getSubjectName(subjectId: number): string {

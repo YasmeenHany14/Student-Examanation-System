@@ -10,6 +10,7 @@ import { Spinner } from '../../shared/components/spinner/spinner';
 import { NoDataToShowComponent } from '../../shared/components/no-data-to-show/no-data-to-show';
 import { BaseResourceParametersModel } from '../../core/models/common/base-resource-parameters.model';
 import { DatePipe } from '@angular/common';
+import {ExamStatus} from '../../core/enums/exam-status';
 
 @Component({
   selector: 'app-exam-list',
@@ -79,6 +80,24 @@ export class ExamList implements OnInit {
 
   isAdmin(): boolean {
     return this.authService.isAdmin();
+  }
+
+  getExamTag(exam: ExamListModel): string {
+    let tag = ExamStatus[exam.examStatus] || 'Unknown';
+    if (exam.examStatus === ExamStatus.Completed) {
+      tag = exam.passed ? 'Passed' : 'Failed';
+    }
+    return tag;
+  }
+
+  getExamTagSeverity(exam: ExamListModel): string {
+    let severity = 'info';
+    if (exam.examStatus === ExamStatus.Completed) {
+      severity = exam.passed ? 'success' : 'danger';
+    } else if (exam.examStatus === ExamStatus.Running || exam.examStatus === ExamStatus.PendingEvaluation) {
+      severity = 'warn';
+    }
+    return severity;
   }
 
   refreshData() {

@@ -142,6 +142,7 @@ export class QuestionForm implements OnChanges, OnInit {
         showSuccessMessage(this.messageService, 'create', 'Question');
         subscription.unsubscribe();
         this.onClose();
+        this.saved.emit();
       }
     });
   }

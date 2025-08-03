@@ -19,13 +19,13 @@ public class ExamRepository(
             collection = collection.Where(e => e.Student.UserId == userId);
         
         var projectedCollection = collection
-            .Where(e => e.ExamStatus != ExamStatus.Running)
+            // .Where(e => e.ExamStatus != ExamStatus.Running)
             .Select(e => new GetAllExamsInfraDto
             {
                 Id = e.Id,
                 StudentName = e.Student.User.FirstName + " " + e.Student.User.LastName,
                 SubjectName = e.Subject.Name,
-                ExamStatus = e.ExamStatus.ToString(),
+                ExamStatus = (int)e.ExamStatus,
                 ExamDate = e.CreatedAt,
                 FinalScore = e.StudentScore,
                 Passed = e.StudentScore >= e.ExamTotalScore/2,

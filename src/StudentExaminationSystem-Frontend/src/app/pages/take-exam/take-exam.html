@@ -117,11 +117,7 @@
               }
               <div class="space-y-4">
                 <div class="flex items-center justify-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="understand"
-                    #understandCheckbox
-                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                  <p-checkbox [(ngModel)]="understandChecked" [binary]="true" inputId="understand" />
                   <label for="understand" class="text-gray-700 cursor-pointer">
                     I understand the instructions and am ready to start the exam
                   </label>
@@ -129,7 +125,7 @@
 
                 <p-button
                   label="🚀 Start Exam"
-                  [disabled]="disableExamButton() || !understandCheckbox.checked"
+                  [disabled]="disableExamButton()"
                   [loading]="loading()"
                   size="large"
                   styleClass="p-button-success"

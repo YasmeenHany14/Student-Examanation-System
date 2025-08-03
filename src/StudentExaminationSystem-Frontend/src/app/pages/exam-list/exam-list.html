@@ -29,7 +29,7 @@
         <td>{{ exam.examDate | date:'short' }}</td>
         <td>{{ exam.finalScore }}</td>
         <td>
-          <p-tag [value]="exam.passed ? 'Passed' : 'Failed'" [severity]="exam.passed ? 'success' : 'danger'"></p-tag>
+          <p-tag [value]="getExamTag(exam)" [severity]="getExamTagSeverity(exam)"></p-tag>
         </td>
         <td class="text-center">
           <button pButton type="button" icon="pi pi-eye" class="p-button-rounded p-button-info p-button-sm" (click)="onViewDetails(exam)" title="View Details"></button>

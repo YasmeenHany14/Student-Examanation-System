@@ -7,11 +7,13 @@ import { StudentService } from '../../core/services/student.service';
 import { ExamService } from '../../core/services/exam.service';
 import { AuthService } from '../../core/services/auth.service';
 import { DropdownModel } from '../../core/models/common/common.model';
+import {Checkbox} from 'primeng/checkbox';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-take-exam',
   standalone: true,
-  imports: [CommonModule, CardModule, ButtonModule],
+  imports: [CommonModule, CardModule, ButtonModule, Checkbox, FormsModule],
   templateUrl: './take-exam.html',
   styleUrls: ['./take-exam.scss']
 })
@@ -26,6 +28,7 @@ export class TakeExam implements OnInit {
   selectedSubject = signal<DropdownModel | null>(null);
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
+  understandChecked: boolean = false;
 
   ngOnInit() {
     this.loadStudentSubjects();
@@ -96,6 +99,6 @@ export class TakeExam implements OnInit {
   }
 
   disableExamButton() {
-    return !this.selectedSubject() || this.loading();
+    return !this.selectedSubject() || this.loading() || !this.understandChecked;
   }
 }

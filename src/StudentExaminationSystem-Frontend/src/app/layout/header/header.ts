@@ -41,7 +41,8 @@ export class Header {
         { label: 'Questions', routerLink: '/home/questions', icon: 'pi pi-question' },
         { label: 'Difficulty Profiles', routerLink: '/home/difficulty-profiles', icon: 'pi pi-chart-line' },
         { label: 'Students', routerLink: '/home/students', icon: 'pi pi-users' },
-        { label: 'Logout', icon: 'pi pi-sign-out', command: () => this.onLogout() }
+        { label: 'Logout', icon: 'pi pi-sign-out', command: () => this.onLogout(),},
+        { label: 'Exams', routerLink: '/home/exams', icon: 'pi pi-file' },
       ];
     } else if (this.user.role === UserRole.STUDENT) {
       this.navLinks = [
@@ -68,7 +69,7 @@ export class Header {
   }
 
   isLoggedIn(): boolean {
-    return this.authService.getCurrentUser$() !== null;
+    return this.authService.isLoggedIn()
   }
 
   protected readonly UserRole = UserRole;
