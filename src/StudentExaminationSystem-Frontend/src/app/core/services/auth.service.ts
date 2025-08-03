@@ -37,12 +37,9 @@ export class AuthService {
 
   logout(): void {
     const refreshToken = this.tokenService.getRefreshToken();
-    this.http.post<LogoutRequest>(this.API_URL + routes.authLogout, refreshToken).subscribe({
-      next: () => {
-        this.tokenService.clearTokens();
-        this.currentUserSubject.next(null);
-      }
-    })
+    this.http.post<LogoutRequest>(this.API_URL + routes.authLogout, refreshToken);
+    this.tokenService.clearTokens();
+    this.currentUserSubject.next(null);
   }
 
   refreshToken(): Observable<LoginResponse> {
