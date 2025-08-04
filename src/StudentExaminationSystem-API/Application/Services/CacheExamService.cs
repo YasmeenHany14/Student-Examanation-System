@@ -32,12 +32,15 @@ public class CacheExamService(IMemoryCache cache, ExamTimerService examTimer, IS
             {
                 EvictionCallback = (key, value, reason, state) =>
                 {
-                    _ = Task.Run(async () =>
+                    if (reason == EvictionReason.TokenExpired || reason == EvictionReason.Expired)
                     {
-                        using var scope = serviceScopeFactory.CreateScope();
-                        var examService = scope.ServiceProvider.GetRequiredService<IExamService>();
-                        await examService.OnExamEntryExpired(entry);
-                    });
+                        _ = Task.Run(async () =>
+                        {
+                            using var scope = serviceScopeFactory.CreateScope();
+                            var examService = scope.ServiceProvider.GetRequiredService<IExamService>();
+                            await examService.OnExamEntryExpired(entry);
+                        });
+                    }
                 }
             });
 

@@ -35,7 +35,7 @@ public static class ExamMappers
         {
             FinalScore = fullExam.FinalScore,
             Passed = fullExam.FinalScore >= (fullExam.Questions.Count() / 2),
-            QuestionHistory = fullExam.Questions.Select(qh => qh.MapToGetQuestionHistoryAppDto())
+            Questions = fullExam.Questions.Select(qh => qh.MapToGetQuestionHistoryAppDto())
         };
     }
 
@@ -57,18 +57,15 @@ public static class ExamMappers
         };
     }
     
-    public static void MapUpdate(this GeneratedExam examEntity, SubmitExamAppDto submitExamDto)
+    public static void MapUpdate(this GeneratedExam examEntity, LoadExamAppDto submitExamDto)
     {
-        foreach (var answer in submitExamDto.Answers)
+        foreach (var question in examEntity.QuestionHistory!)
         {
-            var existingQuestionHistory = examEntity.QuestionHistory?
-                .FirstOrDefault(qh => qh.QuestionId == answer.QuestionId);
-                
-            if (existingQuestionHistory != null)
-            {
-                existingQuestionHistory.QuestionChoiceId = answer.ChoiceId;
-                existingQuestionHistory.IsCorrect = answer.IsCorrect;
-            }
+            var selectedChoice = submitExamDto.Questions
+                .FirstOrDefault(q => q.Id == question.QuestionId)?
+                .Choices.FirstOrDefault(c => c.IsSelected);
+            if (selectedChoice != null)
+                question.QuestionChoiceId = selectedChoice.Id;
         }
     }
 }

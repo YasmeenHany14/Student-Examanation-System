@@ -12,6 +12,7 @@ export interface ExamListModel extends BaseResponseModel {
 }
 
 export interface GetExamHistoryModel extends BaseResponseModel {
+  subjectName: string;
   finalScore: number;
   passed: boolean;
   questions: QuestionHistoryModel[];

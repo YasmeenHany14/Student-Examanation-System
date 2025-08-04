@@ -74,6 +74,12 @@ export const routes: Routes = [
     canActivate: [AuthGuard, StudentGuard]
   },
   {
+    path: 'home/exam-details',
+    loadComponent: () => import('./pages/exam-details/exam-details')
+      .then(m => m.ExamDetails),
+    canActivate: [AuthGuard]
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'

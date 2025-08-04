@@ -80,22 +80,22 @@ public class ExamRepository(
                 {
                     Id = c.Id,
                     Content = c.Content,
-                    IsCorrect = c.IsCorrect
+                    IsCorrect = c.IsCorrect,
+                    IsSelected = ah.QuestionChoiceId == c.Id
                 })
             })
             .OrderBy(ah => ah.DisplayOrder)
             .ToListAsync();
 
         var questionHistory = answerHistoryQuery
-            .GroupBy(ah => ah.QuestionId)
-            .Select(g => new GetQuestionHistoryInfraDto
+            .Select(ah => new GetQuestionHistoryInfraDto
             {
-                Id = g.Key,
-                Content = g.First().QuestionContent ?? string.Empty,
-                Choices = g.First().QuestionChoices ?? new List<GetQuestionChoiceHistoryInfraDto>(),
+                Id = ah.QuestionId,
+                Content = ah.QuestionContent,
+                Choices = ah.QuestionChoices.ToList(),
             })
             .ToList();
-
+        
         return new GetFullExamInfraDto
         {
             userId = examInfo.UserId,

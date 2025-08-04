@@ -73,8 +73,10 @@ export class ExamList implements OnInit {
   }
 
   onViewDetails(exam: ExamListModel) {
-    this.router.navigate(['/home/exam', exam.id], {
-      queryParams: { mode: 'history' }
+    // 1- add examId to query params
+    this.router.navigate(["home/exam-details"], {
+      queryParams: { examId: exam.id },
+      queryParamsHandling: 'merge'
     });
   }
 

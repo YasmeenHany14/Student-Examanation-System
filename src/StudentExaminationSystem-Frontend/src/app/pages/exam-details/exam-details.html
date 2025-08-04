@@ -1,0 +1,85 @@
+<div class="exam-details-container min-h-screen bg-gray-50">
+  @if(isLoading()) {
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <app-spinner/>
+    </div>
+  }
+
+  @if(isError()) {
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <app-error-message [message]="'Failed to load exam details. Please try again later.'"/>
+    </div>
+  }
+
+  @if(!isLoading() && !isError()) {
+    <!-- Header Section -->
+    <div class="bg-white shadow-sm border-b">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">Exam Results</h1>
+            <p class="text-lg text-gray-600 mt-1">{{ examModel()!.subjectName }}</p>
+          </div>
+        </div>
+        <!-- Summary Statistics -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div class="text-blue-800 text-sm font-medium">Total Questions</div>
+            <div class="text-2xl font-bold text-blue-900">{{ examModel()!.questions.length }}</div>
+          </div>
+
+          <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+            <div class="text-green-800 text-sm font-medium">Correct Answers</div>
+            <div class="text-2xl font-bold text-green-900">{{ getCorrectAnswersCount() }}</div>
+          </div>
+
+          <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+            <div class="text-red-800 text-sm font-medium">Incorrect Answers</div>
+            <div class="text-2xl font-bold text-red-900">{{ getIncorrectAnswersCount() }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Questions Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Question Review</h2>
+        <p class="text-gray-600">Review your answers and see the correct solutions</p>
+      </div>
+
+      <!-- Questions Carousel -->
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <p-carousel
+          [value]="examModel()!.questions"
+          [numVisible]="1"
+          [numScroll]="1"
+          [circular]="true"
+          [showIndicators]="true"
+          [showNavigators]="true">
+
+          <ng-template let-question #item>
+            <div class="p-6">
+              <!-- Question Header with Tag -->
+              <div class="flex items-center justify-between mb-4">
+                <ng-container *ngIf="setTag(question) as tag">
+                  <p-tag [severity]="tag[1]" [value]="tag[0]" class="mb-2" />
+                </ng-container>
+              </div>
+
+              <!-- Question Content -->
+              <div class="mb-6">
+                <app-question-card
+                  [question]="question"
+                  [viewMode]="true"
+                  [showMetadata]="false"
+                  [selectedChoiceId]="getSelectedChoiceId(question)">
+                </app-question-card>
+              </div>
+            </div>
+          </ng-template>
+        </p-carousel>
+      </div>
+    </div>
+  }
+</div>

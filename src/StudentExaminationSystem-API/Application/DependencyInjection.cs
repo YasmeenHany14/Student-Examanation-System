@@ -27,8 +27,8 @@ public static class DependencyInjection
         services.AddScoped<IMessageProcessingService, MessageProcessingService>();
         services.AddScoped<INotificationsService, NotificationsService>();
         services.AddSingleton<IConsumer, Consumer>();
-        // services.AddSingleton<ExamTimerService>();
-        // services.AddHostedService(provider => provider.GetRequiredService<ExamTimerService>());
+        services.AddSingleton<ExamTimerService>();
+        services.AddHostedService(provider => provider.GetRequiredService<ExamTimerService>());
         services.AddHostedService<Worker>();
         services.AddValidatorsFromAssemblyContaining<CreateStudentAppDto>();
         return services;

@@ -8,6 +8,7 @@ using Application.Helpers;
 using Application.Mappers;
 using Domain.DTOs.ExamDtos;
 using Domain.Interfaces;
+using Domain.Models;
 using Domain.Repositories;
 using Domain.UserContext;
 using FluentValidation;
@@ -76,8 +77,6 @@ public class ExamService(
     public async Task<Result<bool>> SubmitExamAsync(LoadExamAppDto ExamDto, bool entryExpired = false)
     {
         var userId = userContext.UserId;
-        var hiddenUserId = await unitOfWork.StudentRepository.GetHiddenUserIdAsync(userId.ToString());
-
         if (!entryExpired)
         {
             var examEntry = cacheService.GetExamEntryAsync(userId.ToString());
@@ -92,7 +91,8 @@ public class ExamService(
         var examEntity = await unitOfWork.ExamHistoryRepository.GetExamForUpdate(ExamDto.Id);
         examEntity.SubmittedAt = DateTime.UtcNow;
         examEntity.ExamStatus = Domain.Enums.ExamStatus.PendingEvaluation;
-        // examEntity.MapUpdate(submitExamDto);
+        examEntity.MapUpdate(ExamDto);
+        examEntity = (await MarkExamCorrectAnswers(examEntity)).Value;
         
         unitOfWork.ExamHistoryRepository.UpdateAsync(examEntity);
         var result = await unitOfWork.SaveChangesAsync();
@@ -102,7 +102,7 @@ public class ExamService(
         cacheService.RemoveExamEntry(userId.ToString());
         return Result<bool>.Success(true);
     }
-
+    
     private async Task<Result<bool>> SendExamToEvaluationService(LoadExamAppDto examDto)
     {
         var questionIds = examDto.Questions.Select(q => q.Id).ToList();
@@ -114,6 +114,20 @@ public class ExamService(
         var examAnswers = await unitOfWork.QuestionRepository.GetCorrectAnswersForQuestionsAsync(questionIds);
         await publisher.PublishExamAsync(examAnswers, examDto.Id, answers);
         return Result<bool>.Success(true);
+    }
+
+    private async Task<Result<GeneratedExam>> MarkExamCorrectAnswers(GeneratedExam exam)
+    {
+        var questionIds = exam.QuestionHistory!.Select(qh => qh.QuestionId).ToList();
+        var examAnswers = await unitOfWork.QuestionRepository.GetCorrectAnswersForQuestionsAsync(questionIds);
+        
+        foreach (var question in exam.QuestionHistory!)
+        {
+            var correctAnswer = examAnswers.FirstOrDefault(c => c.QuestionId == question.QuestionId)?.CorrectAnswerId;
+            if (correctAnswer.HasValue)
+                question.IsCorrect = question.QuestionChoiceId == correctAnswer.Value;
+        }
+        return Result<GeneratedExam>.Success(exam);
     }
     
     public async Task<Result<(int, int)>> SaveExamEvaluationAsync(ExamEvaluationDto examEvaluationDto)
@@ -135,7 +149,7 @@ public class ExamService(
         
         return Result<(int, int)>.Success((exam.SubjectId, exam.StudentId));
     }
-
+    
     public async Task OnExamEntryExpired(ExamCacheEntryDto entryDto)
     {
         var examEntry = await generateService.GetCachedExamEntryAsync(entryDto);
