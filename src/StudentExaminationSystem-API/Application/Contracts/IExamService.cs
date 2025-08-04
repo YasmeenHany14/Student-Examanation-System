@@ -10,6 +10,7 @@ public interface IExamService
     Task<Result<PagedList<GetExamHistoryAppDto>>> GetAllAsync(ExamHistoryResourceParameters resourceParameters);
     Task<Result<GetFullExamAppDto?>> GetFullExamAsync(int examId);
     Task<Result<LoadExamAppDto>> GetExamAsync(int subjectId);
-    Task<Result<bool>> SubmitExamAsync(LoadExamAppDto ExamDto);
+    Task<Result<bool>> SubmitExamAsync(LoadExamAppDto ExamDto, bool entryExpired = false);
     Task<Result<(int, int)>> SaveExamEvaluationAsync(ExamEvaluationDto examEvaluationDto);
+    Task OnExamEntryExpired(ExamCacheEntryDto entryDto);
 }

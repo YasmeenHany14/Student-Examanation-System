@@ -73,19 +73,20 @@ public class ExamService(
         return await generateService.GenerateExamAsync(subjectId, hiddenUserId);
     }
 
-    public async Task<Result<bool>> SubmitExamAsync(LoadExamAppDto ExamDto)
+    public async Task<Result<bool>> SubmitExamAsync(LoadExamAppDto ExamDto, bool entryExpired = false)
     {
         var userId = userContext.UserId;
         var hiddenUserId = await unitOfWork.StudentRepository.GetHiddenUserIdAsync(userId.ToString());
-        var examEntry = cacheService.GetExamEntryAsync(userId.ToString());
 
-        if (examEntry.Value is null)
-            return Result<bool>.Failure(CommonErrors.BadRequest(ExamValidationErrorMessages.ExamNotFound));
-
-        if (examEntry.Value.SubjectId != ExamDto.SubjectId)
-            return Result<bool>.Failure(CommonErrors.BadRequest(ExamValidationErrorMessages.ExamSubjectMismatch));
-
-
+        if (!entryExpired)
+        {
+            var examEntry = cacheService.GetExamEntryAsync(userId.ToString());
+            if (examEntry.Value is null)
+                return Result<bool>.Failure(CommonErrors.BadRequest(ExamValidationErrorMessages.ExamNotFound));
+            if (examEntry.Value.SubjectId != ExamDto.SubjectId)
+                return Result<bool>.Failure(CommonErrors.BadRequest(ExamValidationErrorMessages.ExamSubjectMismatch));
+        }
+        
         await SendExamToEvaluationService(ExamDto);
         
         var examEntity = await unitOfWork.ExamHistoryRepository.GetExamForUpdate(ExamDto.Id);
@@ -133,5 +134,11 @@ public class ExamService(
             return Result<(int, int)>.Failure(CommonErrors.InternalServerError());
         
         return Result<(int, int)>.Success((exam.SubjectId, exam.StudentId));
+    }
+
+    public async Task OnExamEntryExpired(ExamCacheEntryDto entryDto)
+    {
+        var examEntry = await generateService.GetCachedExamEntryAsync(entryDto);
+        await SubmitExamAsync(examEntry.Value, true);
     }
 }

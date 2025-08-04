@@ -20,13 +20,15 @@ public static class DependencyInjection
         services.AddScoped<ISubjectExamConfigService, SubjectExamConfigService>();
         services.AddScoped<IDifficultyProfileService, DifficultyProfileService>();
         services.AddScoped<IExamService, ExamService>();
-        services.AddScoped<ICacheExamService, CacheExamService>();
+        services.AddScoped<ICacheExamService, CacheExamService>();  // TODO: Make it singleton later because now it throws an error when used as a singleton
         services.AddScoped<IGenerateExamService, GenerateExamService>();
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IMessageProcessingService, MessageProcessingService>();
         services.AddScoped<INotificationsService, NotificationsService>();
         services.AddSingleton<IConsumer, Consumer>();
+        // services.AddSingleton<ExamTimerService>();
+        // services.AddHostedService(provider => provider.GetRequiredService<ExamTimerService>());
         services.AddHostedService<Worker>();
         services.AddValidatorsFromAssemblyContaining<CreateStudentAppDto>();
         return services;
