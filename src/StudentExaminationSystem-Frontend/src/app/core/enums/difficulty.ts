@@ -1,9 +1,9 @@
 import {DropdownModel} from '../models/common/common.model';
 
 export enum Difficulty {
-  Easy,
-  Medium,
-  Hard ,
+  Easy = 1,
+  Medium = 2,
+  Hard = 3
 }
 
 export const DifficultyDropdown: DropdownModel[] = [

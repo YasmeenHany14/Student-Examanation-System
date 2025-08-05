@@ -3,12 +3,12 @@ using Application.Common.ErrorAndResults;
 using Application.Contracts;
 using Application.DTOs.SubjectsDtos;
 using Application.Helpers;
-using Application.Mappers.SubjectMappers;
+using AutoMapper;
 using Domain.DTOs;
+using Domain.Models;
 using Domain.Repositories;
 using Domain.UserContext;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Shared.ResourceParameters;
 
 namespace Application.Services;
@@ -17,14 +17,16 @@ public class SubjectService(
     IUnitOfWork unitOfWork,
     IValidator<CreateSubjectAppDto> createDtoValidator,
     IValidator<UpdateSubjectAppDto> updateDtoValidator,
-    IUserContext userContext
+    IUserContext userContext,
+    IMapper mapper
     ) : ISubjectService
 {
     public async Task<Result<PagedList<GetSubjectAppDto>>> GetAllAsync(SubjectResourceParameters resourceParameters)
     {
         var subjects = await unitOfWork.SubjectRepository.GetAllAsync(resourceParameters);
-        return Result<PagedList<GetSubjectAppDto>>.Success(
-            subjects.ToListDto());
+        var mappedData = mapper.Map<List<GetSubjectAppDto>>(subjects.Data);
+        var mappedPagedList = new PagedList<GetSubjectAppDto>(subjects.Pagination, mappedData);
+        return Result<PagedList<GetSubjectAppDto>>.Success(mappedPagedList);
     }
     
     public async Task<Result<IEnumerable<GetSubjectAppDto>>> GetAllAsync(string? userId)
@@ -34,7 +36,8 @@ public class SubjectService(
             subjects = await unitOfWork.SubjectRepository.GetAllAsync();
         else
             subjects = await unitOfWork.SubjectRepository.GetAllAsync(userId);
-        return Result<IEnumerable<GetSubjectAppDto>>.Success(subjects.Select(s => s.ToGetSubjectAppDto()));
+        var mappedSubjects = mapper.Map<IEnumerable<GetSubjectAppDto>>(subjects);
+        return Result<IEnumerable<GetSubjectAppDto>>.Success(mappedSubjects);
     }
 
     public async Task<Result<int>> CreateAsync(CreateSubjectAppDto subjectAppDto)
@@ -44,7 +47,7 @@ public class SubjectService(
         if (!validationResult.IsSuccess)
             return Result<int>.Failure(validationResult.Error);
 
-        var subject = subjectAppDto.ToEntity();
+        var subject = mapper.Map<Subject>(subjectAppDto);
         await unitOfWork.SubjectRepository.AddAsync(subject);
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)
@@ -57,7 +60,8 @@ public class SubjectService(
         var subject = await unitOfWork.SubjectRepository.GetByIdAsync(id);
         if (subject == null)
             return Result<GetSubjectAppDto?>.Failure(CommonErrors.NotFound());
-        return Result<GetSubjectAppDto?>.Success(subject.ToGetSubjectAppDto());
+        var mappedSubject = mapper.Map<GetSubjectAppDto>(subject);
+        return Result<GetSubjectAppDto?>.Success(mappedSubject);
     }
 
     public async Task<Result<bool>> UpdateAsync(int id, UpdateSubjectAppDto subjectAppDto)
@@ -70,7 +74,10 @@ public class SubjectService(
             return Result<bool>.Failure(validationResult.Error);
         
         var subject = await unitOfWork.SubjectRepository.GetEntityByIdAsync(id);
-        subject.UpdateEntityFromDto(subjectAppDto);
+        if (subject == null)
+            return Result<bool>.Failure(CommonErrors.NotFound());
+            
+        mapper.Map(subjectAppDto, subject);
         unitOfWork.SubjectRepository.UpdateAsync(subject);
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)

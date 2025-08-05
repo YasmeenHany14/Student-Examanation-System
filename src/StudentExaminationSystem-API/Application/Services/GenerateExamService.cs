@@ -4,7 +4,7 @@ using Application.Contracts;
 using Application.DTOs.ExamDtos;
 using Application.DTOs.QuestionChoiceDtos;
 using Application.Mappers;
-using Application.Mappers.QuestionMappers;
+using AutoMapper;
 using Domain.DTOs.ExamDtos;
 using Domain.Enums;
 using Domain.Models;
@@ -17,7 +17,8 @@ public class GenerateExamService(
     IUnitOfWork unitOfWork,
     ICacheExamService cacheService,
     IUserContext userContext,
-    INotificationsService notificationsService
+    INotificationsService notificationsService,
+    IMapper mapper
     ) : IGenerateExamService
 {
     public async Task<Result<LoadExamAppDto>> GenerateExamAsync(int subjectId, int userId)
@@ -42,7 +43,7 @@ public class GenerateExamService(
         if (!loadExamQuestionInfraDtos.Any() || loadExamQuestionInfraDtos.Count() < examConfig.TotalQuestions)
             return Result<LoadExamAppDto>.Failure(CommonErrors.InternalServerError());
 
-        var examQuestions = loadExamQuestionInfraDtos.ToLoadExamQuestionAppDto();
+        var examQuestions = mapper.Map<List<LoadExamQuestionAppDto>>(loadExamQuestionInfraDtos);
         var examEntryResult = await SaveExamEntryToDatabaseAsync(
             subjectId, userId, examConfig, examQuestions);
         if (!examEntryResult.IsSuccess)

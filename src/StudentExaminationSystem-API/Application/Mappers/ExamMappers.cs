@@ -9,36 +9,6 @@ namespace Application.Mappers;
 
 public static class ExamMappers
 {
-    public static PagedList<GetExamHistoryAppDto> ToListDto(this PagedList<GetAllExamsInfraDto> exams)
-    {
-        return new PagedList<GetExamHistoryAppDto>(
-            exams.Pagination,
-            exams.Data.Select(s => s.MapTo<GetAllExamsInfraDto, GetExamHistoryAppDto>()).ToList()
-        );
-    }
-
-    private static GetQuestionHistoryAppDto MapToGetQuestionHistoryAppDto(
-        this GetQuestionHistoryInfraDto questionHistory)
-    {
-        return new GetQuestionHistoryAppDto
-        {
-            Content = questionHistory.Content,
-            Choices = questionHistory.Choices.Select(c =>
-                c.MapTo<GetQuestionChoiceHistoryInfraDto, GetQuestionChoiceHistoryAppDto>())
-        };
-    }
-    
-    public static GetFullExamAppDto MapToGetFullExamAppDto(
-        this GetFullExamInfraDto fullExam)
-    {
-        return new GetFullExamAppDto
-        {
-            FinalScore = fullExam.FinalScore,
-            Passed = fullExam.FinalScore >= (fullExam.Questions.Count() / 2),
-            Questions = fullExam.Questions.Select(qh => qh.MapToGetQuestionHistoryAppDto())
-        };
-    }
-
     public static LoadExamAppDto MapToLoadExamAppDto(
         this GetFullExamInfraDto fullExam, ExamCacheEntryDto examCacheEntry)
     {

@@ -3,6 +3,7 @@ using Application.DTOs.StudentDtos;
 using Application.Helpers;
 using Application.Services;
 using FluentValidation;
+using AutoMapper;
 
 namespace Application;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,6 +13,10 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {   
         services.AddMemoryCache();
+        
+        // Register AutoMapper
+        services.AddAutoMapper(cfg => { }, typeof(DependencyInjection).Assembly);
+        
         services.AddScoped<IStudentService, StudentService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IGenerateTokenService, GenerateTokenService>();

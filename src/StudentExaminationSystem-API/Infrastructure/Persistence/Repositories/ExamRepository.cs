@@ -61,7 +61,7 @@ public class ExamRepository(
             {
                 e.StudentScore,
                 UserId = e.Student.UserId,
-                ExamStatus = e.ExamStatus
+                ExamStatus = e.ExamStatus,
             })
             .FirstOrDefaultAsync();
 
@@ -100,6 +100,7 @@ public class ExamRepository(
         {
             userId = examInfo.UserId,
             FinalScore = examInfo.StudentScore,
+            ExamStatus = examInfo.ExamStatus,
             Questions = questionHistory
         };
     }

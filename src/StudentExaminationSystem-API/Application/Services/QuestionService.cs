@@ -3,7 +3,7 @@ using Application.Common.ErrorAndResults;
 using Application.Contracts;
 using Application.DTOs.QuestionDtos;
 using Application.Helpers;
-using Application.Mappers.QuestionMappers;
+using AutoMapper;
 using Domain.Repositories;
 using FluentValidation;
 using Shared.ResourceParameters;
@@ -12,14 +12,21 @@ namespace Application.Services;
 
 public class QuestionService(
     IUnitOfWork unitOfWork,
-    IValidator<CreateQuestionAppDto> createQuestionValidator
+    IValidator<CreateQuestionAppDto> createQuestionValidator,
+    IMapper mapper
     ) : IQuestionService
 {
     public async Task<Result<PagedList<GetQuestionAppDto>>> GetAllAsync(
         QuestionResourceParameters resourceParameters)
     {
         var questions = await unitOfWork.QuestionRepository.GetAllAsync(resourceParameters);
-        return Result<PagedList<GetQuestionAppDto>>.Success(questions.ToListDto());
+        
+        var mappedQuestions = new PagedList<GetQuestionAppDto>(
+            questions.Pagination,
+            mapper.Map<List<GetQuestionAppDto>>(questions.Data)
+        );
+        
+        return Result<PagedList<GetQuestionAppDto>>.Success(mappedQuestions);
     }
 
     public async Task<Result<int>> CreateAsync(CreateQuestionAppDto questionAppDto)
@@ -31,7 +38,7 @@ public class QuestionService(
         if (!validationResult.IsSuccess)
             return Result<int>.Failure(validationResult.Error);
         
-        var question = questionAppDto.ToEntity();
+        var question = mapper.Map<Domain.Models.Question>(questionAppDto);
         await unitOfWork.QuestionRepository.AddAsync(question);
         
         var result = unitOfWork.SaveChangesAsync();

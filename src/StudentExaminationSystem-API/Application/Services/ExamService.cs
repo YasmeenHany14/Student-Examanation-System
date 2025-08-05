@@ -6,6 +6,7 @@ using Application.DTOs;
 using Application.DTOs.ExamDtos;
 using Application.Helpers;
 using Application.Mappers;
+using AutoMapper;
 using Domain.DTOs.ExamDtos;
 using Domain.Interfaces;
 using Domain.Models;
@@ -22,7 +23,8 @@ public class ExamService(
     IValidator<GenerateExamRequestDto> generateValidator,
     IGenerateExamService generateService,
     ICacheExamService cacheService,
-    IPublisher publisher
+    IPublisher publisher,
+    IMapper mapper
     ): IExamService
 {
     public async Task<Result<PagedList<GetExamHistoryAppDto>>> GetAllAsync(
@@ -31,7 +33,9 @@ public class ExamService(
         var userId = AccessResourceIdFilter.FilterResourceId<string?>(userContext);
         var exams = await unitOfWork.ExamHistoryRepository.GetAllExamHistoryAsync(
             resourceParameters, userId);
-        return Result<PagedList<GetExamHistoryAppDto>>.Success(exams.ToListDto());
+        
+        var mappedExams = mapper.Map<List<GetExamHistoryAppDto>>(exams.Data);
+        return Result<PagedList<GetExamHistoryAppDto>>.Success(new PagedList<GetExamHistoryAppDto>(exams.Pagination, mappedExams));
     }
     
     public async Task<Result<GetFullExamAppDto?>> GetFullExamAsync(int examId)
@@ -49,7 +53,8 @@ public class ExamService(
         if(!AccessResourceIdFilter.IsAdminOrCanAccess(exam.userId, userContext))
             return Result<GetFullExamAppDto?>.Failure(AuthErrors.Forbidden);
         
-        return Result<GetFullExamAppDto?>.Success(exam.MapToGetFullExamAppDto());
+        var mappedExam = mapper.Map<GetFullExamAppDto>(exam);
+        return Result<GetFullExamAppDto?>.Success(mappedExam);
     }
     
     public async Task<Result<LoadExamAppDto>> GetExamAsync(int subjectId)

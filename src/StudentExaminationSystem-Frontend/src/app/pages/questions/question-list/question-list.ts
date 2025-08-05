@@ -129,7 +129,7 @@ export class QuestionList implements OnInit {
     };
 
     if (this.selectedDifficulty()) {
-      queryParams.DifficultyId = this.selectedDifficulty()!.id;
+      queryParams.DifficultyId = this.selectedDifficulty();
     }
 
     this.questionService.getAllPaged<BaseResourceParametersModel, QuestionListModel>(queryParams).subscribe({

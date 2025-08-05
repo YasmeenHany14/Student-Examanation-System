@@ -2,8 +2,9 @@
 using Application.Common.ErrorAndResults;
 using Application.Contracts;
 using Application.DTOs.StudentDtos;
+using Application.DTOs.UserDtos;
 using Application.Helpers;
-using Application.Mappers.StudentMappers;
+using AutoMapper;
 using Domain.Models;
 using Domain.Repositories;
 using FluentValidation;
@@ -14,15 +15,16 @@ namespace Application.Services;
 public class StudentService(
     IValidator<CreateStudentAppDto> createStudentValidator,
     IUnitOfWork unitOfWork,
-    IAuthService authService
+    IAuthService authService,
+    IMapper mapper
     ) : IStudentService
 {
-    private IStudentService _studentServiceImplementation;
-
     public async Task<Result<PagedList<GetStudentByIdAppDto>>> GetAllAsync(StudentResourceParameters resourceParameters)
     {
         var students = await unitOfWork.StudentRepository.GetAllAsync(resourceParameters);
-        return Result<PagedList<GetStudentByIdAppDto>>.Success(students.ToListDto());
+        var mappedData = mapper.Map<List<GetStudentByIdAppDto>>(students.Data);
+        var mappedPagedList = new PagedList<GetStudentByIdAppDto>(students.Pagination, mappedData);
+        return Result<PagedList<GetStudentByIdAppDto>>.Success(mappedPagedList);
     }
 
     public async Task<Result<string>> AddAsync(CreateStudentAppDto studentAppDto)
@@ -31,11 +33,13 @@ public class StudentService(
         if(!validationResult.IsSuccess)
             return Result<string>.Failure(validationResult.Error);
 
-        var createUserResult = await authService.RegisterAsync(studentAppDto.ToCreateUserAppDto());
+        var createUserDto = mapper.Map<CreateUserAppDto>(studentAppDto);
+        var createUserResult = await authService.RegisterAsync(createUserDto);
         if (!createUserResult.IsSuccess)
             return Result<string>.Failure(createUserResult.Error);
         
-        var newStudent = studentAppDto.ToEntity(createUserResult.Value.Id);
+        var newStudent = mapper.Map<Student>(studentAppDto);
+        newStudent.UserId = createUserResult.Value.Id; // Set UserId manually since it's not in the DTO
         await unitOfWork.StudentRepository.AddAsync(newStudent);
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)
@@ -52,7 +56,8 @@ public class StudentService(
         if (student == null)
             return Result<GetStudentByIdAppDto>.Failure(CommonErrors.NotFound());
         
-        return Result<GetStudentByIdAppDto>.Success(student.ToGetStudentAppDto());
+        var mappedStudent = mapper.Map<GetStudentByIdAppDto>(student);
+        return Result<GetStudentByIdAppDto>.Success(mappedStudent);
     }
 
     public Task<Result<bool>> DeleteAsync(int id)
@@ -67,7 +72,7 @@ public class StudentService(
             return Result<bool>.Failure(CommonErrors.NotFound());
         
         var studentSubjectRepository = unitOfWork.GetRepository<StudentSubject>();
-        studentSubjectRepository.AddAsync(new StudentSubject
+        await studentSubjectRepository.AddAsync(new StudentSubject
         {
             StudentId = student.Id,
             SubjectId = subjectId

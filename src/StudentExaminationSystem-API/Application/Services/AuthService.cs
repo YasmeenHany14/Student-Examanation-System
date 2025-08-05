@@ -4,7 +4,7 @@ using Application.Common.ErrorAndResults;
 using Application.Contracts;
 using Application.DTOs.AuthDtos;
 using Application.DTOs.UserDtos;
-using Application.Mappers.UserMappers;
+using AutoMapper;
 using Domain.Models;
 using Domain.Repositories;
 
@@ -12,11 +12,13 @@ namespace Application.Services;
 
 public class AuthService(
     IGenerateTokenService generateTokenService,
-    IUnitOfWork unitOfWork) : IAuthService
+    IUnitOfWork unitOfWork,
+    IMapper mapper
+    ) : IAuthService
 {
     public async Task<Result<User>> RegisterAsync(CreateUserAppDto registerDto)
     {
-        var user = registerDto.ToUser();
+        var user = mapper.Map<User>(registerDto);
         var (id, identityResult) = await unitOfWork.UserRepository.CreateAsync(user, registerDto.Password);
         if (id == null || !identityResult.Succeeded)
             return Result<User>.Failure(CommonErrors.InternalServerError());

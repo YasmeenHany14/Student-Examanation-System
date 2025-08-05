@@ -3,9 +3,8 @@ using Application.Common.ErrorAndResults;
 using Application.Contracts;
 using Application.DTOs.SubjectExamConfigDtos;
 using Application.Helpers;
-using Application.Mappers;
-using Application.Mappers.SubjectConfigMappers;
-using Domain.DTOs;
+using AutoMapper;
+using Domain.Models;
 using Domain.Repositories;
 using FluentValidation;
 
@@ -13,7 +12,8 @@ namespace Application.Services;
 
 public class SubjectExamConfigService(
     IUnitOfWork unitOfWork,
-    IValidator<CreateUpdateSubjectExamConfig> configValidator
+    IValidator<CreateUpdateSubjectExamConfig> configValidator,
+    IMapper mapper
     ) : ISubjectExamConfigService
 {
     public async Task<Result<GetSubjectExamConfigAppDto?>> GetByIdAsync(int id) // includes difficulty profile
@@ -22,7 +22,7 @@ public class SubjectExamConfigService(
         if (config == null)
             return Result<GetSubjectExamConfigAppDto?>.Failure(CommonErrors.NotFound());
 
-        var configDto = config.MapTo<GetSubjectExamConfigInfraDto, GetSubjectExamConfigAppDto>();
+        var configDto = mapper.Map<GetSubjectExamConfigAppDto>(config);
         return Result<GetSubjectExamConfigAppDto?>.Success(configDto);
     }
 
@@ -38,7 +38,8 @@ public class SubjectExamConfigService(
         if (!validationResult.IsSuccess)
             return Result<int>.Failure(validationResult.Error);
 
-        var configEntity = createDto.ToEntity(id);
+        var configEntity = mapper.Map<SubjectExamConfig>(createDto);
+        configEntity.SubjectId = id;
         await unitOfWork.SubjectExamConfigRepository.AddAsync(configEntity);
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)
@@ -50,7 +51,7 @@ public class SubjectExamConfigService(
     {
         var config = await unitOfWork.SubjectExamConfigRepository.FindAsync(id);
         
-        updateDto.MapUpdate(config);
+        mapper.Map(updateDto, config);
         unitOfWork.SubjectExamConfigRepository.UpdateAsync(config);
         
         var result = await unitOfWork.SaveChangesAsync();

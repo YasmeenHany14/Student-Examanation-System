@@ -36,17 +36,17 @@
     font-weight: 600;
     text-transform: uppercase;
 
-    &.difficulty-0 { // Easy
+    &.difficulty-1 { // Easy
       background-color: #d4edda;
       color: #155724;
     }
 
-    &.difficulty-1 { // Medium
+    &.difficulty-2 { // Medium
       background-color: #fff3cd;
       color: #856404;
     }
 
-    &.difficulty-2 { // Hard
+    &.difficulty-3 { // Hard
       background-color: #f8d7da;
       color: #721c24;
     }
