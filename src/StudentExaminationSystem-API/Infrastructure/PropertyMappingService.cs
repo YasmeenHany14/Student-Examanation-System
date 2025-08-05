@@ -18,11 +18,46 @@ public class PropertyMappingService : IPropertyMappingService
             { "Age", new PropertyMappingValue(["User.DateOfBirth"], true) },
             { "EnrollmentDate", new PropertyMappingValue(["EnrollmentDate"]) }
         };
+    
+    private readonly Dictionary<string, PropertyMappingValue> _subjectPropertyMapping =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "Name", new PropertyMappingValue(["Name"]) },
+            { "Code", new PropertyMappingValue(["Code"]) },
+        };
+    
+    private readonly Dictionary<string, PropertyMappingValue> _difficultyProfilePropertyMapping =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "Name", new PropertyMappingValue(["Name"]) },
+            { "EasyQuestionsPercent", new PropertyMappingValue(["EasyPercentage"]) },
+            { "MediumQuestionsPercent", new PropertyMappingValue(["MediumPercentage"]) },
+            { "HardQuestionsPercent", new PropertyMappingValue(["HardPercentage"]) }
+        };
+    
+    private readonly Dictionary<string, PropertyMappingValue> _examPropertyMapping =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "SubjectName", new PropertyMappingValue(["Subject.Name"]) },
+            { "ExamDate", new PropertyMappingValue(["CreatedAt"]) },
+            { "FinalScore", new PropertyMappingValue(["StudentScore"]) }
+        };
+    
+    private readonly Dictionary<string, PropertyMappingValue> _questionPropertyMapping =
+        new(StringComparer.OrdinalIgnoreCase)
+        {
+            { "Content", new PropertyMappingValue(["Content"]) }
+        };
+    
     private readonly IList<IPropertyMapping> _propertyMappings = new List<IPropertyMapping>();
     
     public PropertyMappingService()
     {
         _propertyMappings.Add(new PropertyMapping<GetStudentByIdInfraDto, Student>(_studentPropertyMapping));
+        _propertyMappings.Add(new PropertyMapping<GetSubjectInfraDto, Subject>(_subjectPropertyMapping));
+        _propertyMappings.Add(new PropertyMapping<GetDifficultyProfileInfraDto, DifficultyProfile>(_difficultyProfilePropertyMapping));
+        _propertyMappings.Add(new PropertyMapping<GetQuestionInfraDto, Question>(_questionPropertyMapping));
+        _propertyMappings.Add(new PropertyMapping<GetAllExamsInfraDto, GeneratedExam>(_examPropertyMapping));
     }
 
     public Dictionary<string, PropertyMappingValue>

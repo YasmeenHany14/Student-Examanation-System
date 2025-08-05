@@ -80,3 +80,4 @@ export class DifficultyProfilesPage {
     this.difficultyProfileIdToDelete = null;
   }
 }
+

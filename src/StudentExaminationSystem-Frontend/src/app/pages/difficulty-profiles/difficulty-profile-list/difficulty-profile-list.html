@@ -7,13 +7,56 @@
 }
 
 @if (difficultyProfiles() && difficultyProfiles().length !== 0) {
-  <p-table [value]="difficultyProfiles()" [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords()" (onLazyLoad)="onLazyLoad($event)" [lazy]="true" [loading]="loading()">
+  <p-toolbar>
+    <ng-template #start>
+      <div class="flex flex-col md:flex-row gap-2">
+        <p-iconfield iconPosition="left">
+          <p-inputicon class="pi pi-search" />
+          <input
+            type="text"
+            pInputText
+            placeholder="Search By Name"
+            [(ngModel)]="searchQuery"
+          />
+        </p-iconfield>
+        <p-button
+          icon="pi pi-search"
+          label="Search"
+          severity="contrast"
+          (click)="onSearchQuestion()">
+        </p-button>
+      </div>
+    </ng-template>
+  </p-toolbar>
+  <p-table [value]="difficultyProfiles()" [paginator]="true" [rows]="paginationInfo().PageSize" [totalRecords]="totalRecords()"
+           (onLazyLoad)="onLazyLoad($event)" [lazy]="true" [loading]="loading()"
+           (onSort)="customSort($event)" [customSort]="true">
     <ng-template pTemplate="header">
       <tr>
-        <th>Name</th>
-        <th>Easy %</th>
-        <th>Medium %</th>
-        <th>Hard %</th>
+        <th pSortableColumn="name">
+          <div class="flex items-center gap-2">
+            Name
+            <p-sortIcon field="name" />
+          </div>
+        </th>
+        <th pSortableColumn="easyQuestionsPercent">
+          <div class="flex items-center gap-2">
+            Easy %
+            <p-sortIcon field="easyQuestionsPercent" />
+          </div>
+        </th>
+        <th pSortableColumn="mediumQuestionsPercent">
+          <div class="flex items-center gap-2">
+            Medium %
+            <p-sortIcon field="mediumQuestionsPercent" />
+          </div>
+        </th>
+        <th pSortableColumn="hardQuestionsPercent">
+          <div class="flex items-center gap-2">
+            Hard %
+            <p-sortIcon field="hardQuestionsPercent" />
+          </div>
+        </th>
         <th style="width: 120px;"></th>
       </tr>
     </ng-template>

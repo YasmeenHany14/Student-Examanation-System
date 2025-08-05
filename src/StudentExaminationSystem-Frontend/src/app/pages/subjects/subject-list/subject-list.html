@@ -7,11 +7,44 @@
 }
 
 @if (subjects() && subjects().length !== 0) {
-  <p-table [value]="subjects()" [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords()" (onLazyLoad)="onLazyLoad($event)" [lazy]="true" [loading]="loading()">
+  <p-toolbar>
+    <ng-template #start>
+      <div class="flex flex-col md:flex-row gap-2">
+        <p-iconfield iconPosition="left">
+          <p-inputicon class="pi pi-search" />
+          <input
+            type="text"
+            pInputText
+            placeholder="Search By Name"
+            [(ngModel)]="searchQuery"
+          />
+        </p-iconfield>
+        <p-button
+          icon="pi pi-search"
+          label="Search"
+          severity="contrast"
+          (click)="onSearchSubject()">
+        </p-button>
+      </div>
+    </ng-template>
+  </p-toolbar>
+  <p-table [value]="subjects()" [paginator]="true" [rows]="paginationInfo().PageSize" [totalRecords]="totalRecords()"
+           (onLazyLoad)="onLazyLoad($event)" [lazy]="true" [loading]="loading()"
+           (onSort)="customSort($event)" [customSort]="true">
     <ng-template pTemplate="header">
       <tr>
-        <th>Name</th>
-        <th>Code</th>
+        <th pSortableColumn="name">
+          <div class="flex items-center gap-2">
+            Name
+            <p-sortIcon field="name" />
+          </div>
+        </th>
+        <th pSortableColumn="code">
+          <div class="flex items-center gap-2">
+            Code
+            <p-sortIcon field="code" />
+          </div>
+        </th>
         <th>Has Config</th>
         <th style="width: 120px;"></th>
       </tr>

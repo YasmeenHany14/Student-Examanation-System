@@ -1,13 +1,18 @@
 import { Component, Output, EventEmitter, OnInit, signal, inject } from '@angular/core';
 import { GetSubjectModel } from '../../../core/models/subject.model';
 import { SubjectService } from '../../../core/services/subject.service';
-import { TableModule } from 'primeng/table';
+import {TableLazyLoadEvent, TableModule} from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { Spinner } from '../../../shared/components/spinner/spinner';
 import { NoDataToShowComponent } from '../../../shared/components/no-data-to-show/no-data-to-show';
-import { BaseResourceParametersModel } from '../../../core/models/resource-parameters/base-resource-parameters.model';
 import { SubjectConfigPopover } from '../subject-config-popover/subject-config-popover';
-// import { PopoverModule } from 'primeng/popover';
+import { SubjectResourceParametersModel } from '../../../core/models/resource-parameters/subject-resource-parameters.model';
+import {FormsModule} from '@angular/forms';
+import {IconField} from 'primeng/iconfield';
+import {InputIcon} from 'primeng/inputicon';
+import {InputText} from 'primeng/inputtext';
+import {Toolbar} from 'primeng/toolbar';
+import {SortEvent} from 'primeng/api';
 
 @Component({
   selector: 'app-subject-list',
@@ -18,6 +23,11 @@ import { SubjectConfigPopover } from '../subject-config-popover/subject-config-p
     Spinner,
     NoDataToShowComponent,
     SubjectConfigPopover,
+    FormsModule,
+    IconField,
+    InputIcon,
+    InputText,
+    Toolbar,
   ],
   styleUrls: ['./subject-list.scss']
 })
@@ -26,8 +36,14 @@ export class SubjectList implements OnInit {
   loading = signal(false);
   isError = signal(false);
   totalRecords = signal(0);
-  pageSize: number = 5;
-  currentPage: number = 1;
+
+  paginationInfo = signal<SubjectResourceParametersModel>({
+    PageNumber: 1,
+    PageSize: 10,
+    OrderBy: null,
+    Name: null,
+  });
+  searchQuery = "";
 
   private subjectService = inject(SubjectService);
 
@@ -41,20 +57,10 @@ export class SubjectList implements OnInit {
     this.loadSubjects();
   }
 
-  loadSubjects(event?: any) {
+  loadSubjects() {
     this.loading.set(true);
-    const page = event ? event.first / event.rows + 1 : 1;
-    const pageSize = event ? event.rows : this.pageSize;
 
-    this.currentPage = page;
-    this.pageSize = pageSize;
-
-    const queryParams = {
-      PageNumber: page,
-      PageSize: pageSize
-    };
-
-    this.subjectService.getAllPaged<BaseResourceParametersModel, GetSubjectModel>(queryParams).subscribe({
+    this.subjectService.getAllPaged<SubjectResourceParametersModel, GetSubjectModel>(this.paginationInfo()).subscribe({
       next: (result) => {
         this.subjects.set(result.data);
         this.totalRecords.set(result.pagination.totalCount);
@@ -68,8 +74,11 @@ export class SubjectList implements OnInit {
     });
   }
 
-  onLazyLoad(event: any) {
-    this.loadSubjects(event);
+  onLazyLoad(event: TableLazyLoadEvent) {
+    this.paginationInfo().PageNumber = event ? event.first! / event.rows! + 1 : 1;
+    this.paginationInfo().PageSize = event ? event.rows! : this.paginationInfo().PageSize;
+
+    this.loadSubjects();
   }
 
   onEdit(subject: GetSubjectModel) {
@@ -103,5 +112,21 @@ export class SubjectList implements OnInit {
 
   onCreateConfig(id: number) {
     this.createConfig.emit(id);
+  }
+
+  onSearchSubject() {
+    if (this.searchQuery.trim() === "") {
+      if (this.paginationInfo().Name === "")
+        return;
+    }
+    this.paginationInfo().Name = this.searchQuery === "" ? null : this.searchQuery;
+    this.paginationInfo().PageNumber = 1;
+    this.loadSubjects();
+  }
+
+  customSort(event: SortEvent) {
+    const sortField = event.field;
+    const sortOrder = event.order !== 1 ? 'asc' : 'desc';
+    this.paginationInfo().OrderBy = sortField ? `${sortField} ${sortOrder}` : null;
   }
 }

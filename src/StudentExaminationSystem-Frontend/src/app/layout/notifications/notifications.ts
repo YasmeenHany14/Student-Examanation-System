@@ -36,7 +36,8 @@ export class Notifications implements OnInit {
   private destroyRef = inject(DestroyRef);
   private resourceParams: BaseResourceParametersModel = {
     PageNumber: 1,
-    PageSize: 200
+    PageSize: 200,
+    OrderBy: null,
   }
 
 

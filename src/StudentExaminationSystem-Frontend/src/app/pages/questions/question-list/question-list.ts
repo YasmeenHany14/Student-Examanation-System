@@ -5,7 +5,7 @@ import { GetSubjectModel } from '../../../core/models/subject.model';
 import { QuestionService } from '../../../core/services/question.service';
 import { SubjectService } from '../../../core/services/subject.service';
 import {Difficulty, DifficultyDropdown} from '../../../core/enums/difficulty';
-import { TableModule } from 'primeng/table';
+import {TableLazyLoadEvent, TableModule} from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { Spinner } from '../../../shared/components/spinner/spinner';
@@ -17,6 +17,14 @@ import { SelectModule } from 'primeng/select';
 import {DropdownModel} from '../../../core/models/common/common.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {changeQueryParams, getFromQueryParams} from '../../../shared/utils/nav.utils';
+import {
+  QuestionResourceParametersModel
+} from '../../../core/models/resource-parameters/question-resource-parameters.model';
+import {Toolbar} from 'primeng/toolbar';
+import {IconField} from 'primeng/iconfield';
+import {InputIcon} from 'primeng/inputicon';
+import {InputText} from 'primeng/inputtext';
+import {SortEvent} from 'primeng/api';
 
 @Component({
   selector: 'app-question-list',
@@ -30,7 +38,11 @@ import {changeQueryParams, getFromQueryParams} from '../../../shared/utils/nav.u
     Spinner,
     NoDataToShowComponent,
     SelectModule,
-    ViewQuestionDialog
+    ViewQuestionDialog,
+    Toolbar,
+    IconField,
+    InputIcon,
+    InputText
   ],
   styleUrls: ['./question-list.scss']
 })
@@ -42,16 +54,19 @@ export class QuestionList implements OnInit {
   isError = signal(false);
   totalRecords = signal(0);
   isSubjectsLoading = signal(true);
-  pageSize: number = 10;
-  currentPage: number = 1;
-
-  // Filters
-  selectedSubject = signal<GetSubjectModel | null>(null);
-  selectedDifficulty = signal<DropdownModel | null>(null);
+  paginationInfo = signal<QuestionResourceParametersModel>({
+    PageNumber: 1,
+    PageSize: 10,
+    OrderBy: null,
+    subjectId: null,
+    difficultyId: null,
+    searchQuery: null
+  });
 
   // View question dialog
   viewQuestionDialogVisible = signal(false);
   selectedQuestionForView = signal<QuestionListModel | null>(null);
+  searchQuery = "";
 
   private questionService = inject(QuestionService);
   private subjectService = inject(SubjectService);
@@ -66,7 +81,7 @@ export class QuestionList implements OnInit {
       const subjectId = getFromQueryParams(this.route, 'subjectId');
       if (subjectId) {
         const subject = this.subjects().find(s => s.id.toString() === subjectId);
-        this.selectedSubject.set(subject || null);
+        this.paginationInfo().subjectId = subject ? subject.id : null;
       }
       this.loadQuestions();
     });
@@ -93,46 +108,35 @@ export class QuestionList implements OnInit {
     });
   }
 
-  onSubjectChange(subject: GetSubjectModel | null) {
-    this.selectedSubject.set(subject);
+  onSubjectChange(subject: number | null) {
+    this.paginationInfo().subjectId = subject;
+    this.paginationInfo().PageNumber = 1;
+
     if (subject) {
       this.loadQuestions();
     } else {
       this.questions.set([]);
       this.totalRecords.set(0);
     }
-    changeQueryParams(this.route, this.router, 'subjectId',  subject ? subject.id.toString() : '', subject ? 'Update' : 'Remove');
+    changeQueryParams(this.route, this.router, 'subjectId',  subject ? subject.toString() : '', subject ? 'Update' : 'Remove');
   }
 
-  onDifficultyChange() {
-    if (this.selectedSubject()) {
+  onDifficultyChange(difficulty: number | null) {
+    this.paginationInfo().difficultyId = difficulty ? difficulty : null;
+
+    if (this.paginationInfo().subjectId) {
       this.loadQuestions();
     }
   }
 
-  loadQuestions(event?: any) {
-    if (!this.selectedSubject()) {
+  loadQuestions() {
+    if (!this.paginationInfo().subjectId) {
       return;
     }
-
     this.loading.set(true);
-    const page = event ? event.first / event.rows + 1 : 1;
-    const pageSize = event ? event.rows : this.pageSize;
+    this.isError.set(false);
 
-    this.currentPage = page;
-    this.pageSize = pageSize;
-
-    const queryParams: any = {
-      PageNumber: page,
-      PageSize: pageSize,
-      SubjectId: this.selectedSubject()!.id
-    };
-
-    if (this.selectedDifficulty()) {
-      queryParams.DifficultyId = this.selectedDifficulty();
-    }
-
-    this.questionService.getAllPaged<BaseResourceParametersModel, QuestionListModel>(queryParams).subscribe({
+    this.questionService.getAllPaged<QuestionResourceParametersModel, QuestionListModel>(this.paginationInfo()).subscribe({
       next: (result) => {
         this.questions.set(result.data);
         this.totalRecords.set(result.pagination.totalCount);
@@ -146,8 +150,20 @@ export class QuestionList implements OnInit {
     });
   }
 
-  onLazyLoad(event: any) {
-    this.loadQuestions(event);
+  customSort(event: SortEvent) {
+    const sortField = event.field;
+    const sortOrder = event.order !== 1 ? 'asc' : 'desc';
+    const pagination = this.paginationInfo();
+    this.paginationInfo().OrderBy = sortField ? `${sortField} ${sortOrder}` : null;
+  }
+  onLazyLoad(event: TableLazyLoadEvent) {
+    const pagination = this.paginationInfo();
+    this.paginationInfo.set({
+      ...pagination,
+      PageNumber: event ? event.first! / event.rows! + 1 : 1,
+      PageSize: event ? event.rows! : pagination.PageSize
+    });
+    this.loadQuestions();
   }
 
   onDelete(id: number) {
@@ -211,4 +227,12 @@ export class QuestionList implements OnInit {
     }
   }
 
+  onSearchQuestion() {
+    if (this.searchQuery.trim() === "") {
+      if (this.paginationInfo().searchQuery === "")
+        return;
+    }
+    this.paginationInfo().searchQuery = this.searchQuery == "" ? null : this.searchQuery;
+    this.loadQuestions();
+  }
 }

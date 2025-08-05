@@ -3,12 +3,16 @@ using Domain.DTOs.ExamDtos;
 using Domain.Enums;
 using Domain.Models;
 using Domain.Repositories;
+using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Shared.ResourceParameters;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class QuestionRepository(DataContext context) : BaseRepository<Question>(context), IQuestionRepository
+public class QuestionRepository(
+    DataContext context,
+    IPropertyMappingService propertyMappingService
+    ) : BaseRepository<Question>(context), IQuestionRepository
 {
     public async Task<IEnumerable<CorrectAnswersInfraDto>> GetCorrectAnswersForQuestionsAsync(IEnumerable<int> questionIds)
     {
@@ -41,11 +45,22 @@ public class QuestionRepository(DataContext context) : BaseRepository<Question>(
             .AsNoTracking()
             .Where(q => q.SubjectId == resourceParameters.SubjectId);
         
+        var questionMappingDictionary = propertyMappingService
+            .GetPropertyMapping<GetQuestionInfraDto, Question>();
+        
         if (resourceParameters.DifficultyId.HasValue)
             collection = collection.Where(q => q.Difficulty == (Domain.Enums.Difficulty?)resourceParameters.DifficultyId);
+        
+        if (!string.IsNullOrWhiteSpace(resourceParameters.SearchQuery))
+        {
+            var searchQuery = resourceParameters.SearchQuery.Trim().ToLower();
+            collection = collection.Where(q => q.Content.ToLower().StartsWith(searchQuery));
+        }
 
         collection = collection.Include(q => q.Choices);
-        var projectedCollection = collection.Select(q => new GetQuestionInfraDto
+        
+        var sortedList = collection.ApplySort(resourceParameters.OrderBy, questionMappingDictionary);
+        var projectedCollection = sortedList.Select(q => new GetQuestionInfraDto
         {
             Id = q.Id,
             Content = q.Content,

@@ -1,36 +1,36 @@
 <div class="question-list">
   <!-- Filters Section -->
-  <div class="filters-section">
-    <div class="filter-group">
-      <label for="subject-filter">Subject *</label>
-      <p-select
-        id="subject-filter"
-        [options]="subjects()"
-        [(ngModel)]="selectedSubject"
-        (onChange)="onSubjectChange($event.value)"
-        optionLabel="name"
-        placeholder="Select a subject"
-        [showClear]="true"
-        [loading]="isSubjectsLoading()"
-        class="w-full">
-      </p-select>
-    </div>
 
-    <div class="filter-group">
-      <label for="difficulty-filter">Difficulty</label>
-      <p-select
-        id="difficulty-filter"
-        [options]="difficultyOptions()"
-        [(ngModel)]="selectedDifficulty"
-        (onChange)="onDifficultyChange()"
-        optionLabel="name"
-        optionValue="id"
-        placeholder="All difficulties"
-        [showClear]="true"
-        class="w-full">
-      </p-select>
+  <div class="filters-section">
+      <div class="filter-group">
+        <label for="subject-filter">Subject *</label>
+        <p-select
+          id="subject-filter"
+          [options]="subjects()"
+          (onChange)="onSubjectChange($event.value)"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="Select a subject"
+          [showClear]="true"
+          [loading]="isSubjectsLoading()"
+          class="w-full">
+        </p-select>
+      </div>
+
+      <div class="filter-group">
+        <label for="difficulty-filter">Difficulty</label>
+        <p-select
+          id="difficulty-filter"
+          [options]="difficultyOptions()"
+          (onChange)="onDifficultyChange($event.value)"
+          optionLabel="name"
+          optionValue="id"
+          placeholder="All difficulties"
+          [showClear]="true"
+          class="w-full">
+        </p-select>
+      </div>
     </div>
-  </div>
 
   <!-- Loading State -->
   @if(loading()) {
@@ -43,22 +43,39 @@
   }
 
   <!-- No Subject Selected Message -->
-  @if(!selectedSubject() && !loading()) {
+  @if(!paginationInfo().subjectId && !loading()) {
     <div class="no-subject-message">
       <p>Please select a subject to view questions.</p>
     </div>
   }
 
   <!-- Questions Table -->
-  @if (questions() && questions().length !== 0 && selectedSubject()) {
-    <p-table
-      [value]="questions()"
-      [paginator]="true"
-      [rows]="pageSize"
-      [totalRecords]="totalRecords()"
-      (onLazyLoad)="onLazyLoad($event)"
-      [lazy]="true"
-      [loading]="loading()">
+  @if (questions() && questions().length !== 0 && paginationInfo().subjectId) {
+    <p-toolbar>
+      <ng-template #start>
+        <div class="flex flex-col md:flex-row gap-2">
+          <p-iconfield iconPosition="left">
+            <p-inputicon class="pi pi-search" />
+            <input
+              type="text"
+              pInputText
+              placeholder="Search By Name"
+              [(ngModel)]="searchQuery"
+            />
+          </p-iconfield>
+          <p-button
+            icon="pi pi-search"
+            label="Search"
+            severity="contrast"
+            (click)="onSearchQuestion()">
+          </p-button>
+        </div>
+      </ng-template>
+    </p-toolbar>
+    <p-table [value]="questions()" [paginator]="true"
+      [rows]="paginationInfo().PageSize" [totalRecords]="totalRecords()"
+      (onLazyLoad)="onLazyLoad($event)" [lazy]="true" [loading]="loading()"
+      (onSort)="customSort($event)" [customSort]="true">
 
       <ng-template pTemplate="header">
         <tr>
@@ -104,7 +121,7 @@
   }
 
   <!-- No Questions Found -->
-  @if(selectedSubject() && questions().length === 0 && !loading() && !isError()) {
+  @if(paginationInfo().subjectId && questions().length === 0 && !loading() && !isError()) {
     <div class="no-questions-message">
       <p>No questions found for the selected filters.</p>
     </div>

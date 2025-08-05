@@ -1,12 +1,16 @@
 ﻿using Domain.DTOs;
 using Domain.Models;
 using Domain.Repositories;
+using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Shared.ResourceParameters;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class SubjectRepository(DataContext context) : BaseRepository<Subject>(context), ISubjectRepository
+public class SubjectRepository(
+    DataContext context,
+    IPropertyMappingService propertyMappingService
+    ) : BaseRepository<Subject>(context), ISubjectRepository
 {
     public async Task<bool> CheckSubjectsExists(IEnumerable<int> subjectIds)
     {
@@ -28,7 +32,18 @@ public class SubjectRepository(DataContext context) : BaseRepository<Subject>(co
     public async Task<PagedList<GetSubjectInfraDto>> GetAllAsync(SubjectResourceParameters resourceParameters)
     {
         var collection = context.Subjects.AsQueryable().AsNoTracking();
-        var projectedCollection = collection
+        var propertyMappingDictionary = propertyMappingService
+            .GetPropertyMapping<GetSubjectInfraDto, Subject>();
+        
+        if (!string.IsNullOrWhiteSpace(resourceParameters.Name))
+        {
+            var name = resourceParameters.Name.Trim().ToLower();
+            collection = collection.Where(s => s.Name.ToLower().Contains(name));
+        }
+
+        var sortedList = collection.ApplySort(resourceParameters.OrderBy, propertyMappingDictionary);
+        
+        var projectedCollection = sortedList
             .Select(s => new GetSubjectInfraDto
             {
                 Id = s.Id,
@@ -36,9 +51,6 @@ public class SubjectRepository(DataContext context) : BaseRepository<Subject>(co
                 Code = s.Code,
                 HasConfiguration = s.SubjectExamConfig != null
             });
-        
-        //TODO: add name, code filters later
-
         return await CreateAsync(projectedCollection, resourceParameters.PageNumber, resourceParameters.PageSize);
     }
 

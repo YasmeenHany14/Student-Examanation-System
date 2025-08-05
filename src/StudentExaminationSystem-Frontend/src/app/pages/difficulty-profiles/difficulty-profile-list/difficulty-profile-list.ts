@@ -1,11 +1,19 @@
 import { Component, Output, EventEmitter, OnInit, signal, inject } from '@angular/core';
 import { GetDifficultyProfileModel } from '../../../core/models/difficulty-profile.model';
 import { DifficultyProfileService } from '../../../core/services/difficulty-profile.service';
-import { TableModule } from 'primeng/table';
+import {TableLazyLoadEvent, TableModule} from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { Spinner } from '../../../shared/components/spinner/spinner';
 import { NoDataToShowComponent } from '../../../shared/components/no-data-to-show/no-data-to-show';
-import { BaseResourceParametersModel } from '../../../core/models/resource-parameters/base-resource-parameters.model';
+import {
+  DifficultyProfileResourceParametersModel
+} from '../../../core/models/resource-parameters/difficulty-resource-parameters.model';
+import {FormsModule} from '@angular/forms';
+import {IconField} from 'primeng/iconfield';
+import {InputIcon} from 'primeng/inputicon';
+import {InputText} from 'primeng/inputtext';
+import {Toolbar} from 'primeng/toolbar';
+import {SortEvent} from 'primeng/api';
 
 @Component({
   selector: 'app-difficulty-profile-list',
@@ -15,6 +23,11 @@ import { BaseResourceParametersModel } from '../../../core/models/resource-param
     ButtonModule,
     Spinner,
     NoDataToShowComponent,
+    FormsModule,
+    IconField,
+    InputIcon,
+    InputText,
+    Toolbar,
   ],
   styleUrls: ['./difficulty-profile-list.scss']
 })
@@ -23,8 +36,14 @@ export class DifficultyProfileList implements OnInit {
   loading = signal(false);
   isError = signal(false);
   totalRecords = signal(0);
-  pageSize: number = 5;
-  currentPage: number = 1;
+
+  paginationInfo = signal<DifficultyProfileResourceParametersModel>({
+    PageNumber: 1,
+    PageSize: 10,
+    OrderBy: null,
+    Name: null,
+  });
+  searchQuery = '';
 
   private difficultyProfileService = inject(DifficultyProfileService);
 
@@ -35,20 +54,11 @@ export class DifficultyProfileList implements OnInit {
     this.loadDifficultyProfiles();
   }
 
-  loadDifficultyProfiles(event?: any) {
+  loadDifficultyProfiles() {
     this.loading.set(true);
-    const page = event ? event.first / event.rows + 1 : 1;
-    const pageSize = event ? event.rows : this.pageSize;
+    this.isError.set(false);
 
-    this.currentPage = page;
-    this.pageSize = pageSize;
-
-    const queryParams = {
-      PageNumber: page,
-      PageSize: pageSize
-    };
-
-    this.difficultyProfileService.getAllPaged<BaseResourceParametersModel, GetDifficultyProfileModel>(queryParams).subscribe({
+    this.difficultyProfileService.getAllPaged<DifficultyProfileResourceParametersModel, GetDifficultyProfileModel>(this.paginationInfo()).subscribe({
       next: (result) => {
         this.difficultyProfiles.set(result.data);
         this.totalRecords.set(result.pagination.totalCount);
@@ -63,7 +73,9 @@ export class DifficultyProfileList implements OnInit {
   }
 
   onLazyLoad(event: any) {
-    this.loadDifficultyProfiles(event);
+    this.paginationInfo().PageNumber = event ? event.first! / event.rows! + 1 : 1;
+    this.paginationInfo().PageSize = event ? event.rows! : this.paginationInfo().PageSize;
+    this.loadDifficultyProfiles();
   }
 
   onEdit(difficultyProfile: GetDifficultyProfileModel) {
@@ -85,5 +97,21 @@ export class DifficultyProfileList implements OnInit {
       updatedDifficultyProfiles[index] = updatedDifficultyProfile;
       this.difficultyProfiles.set(updatedDifficultyProfiles);
     }
+  }
+
+  customSort(event: SortEvent) {
+    const sortField = event.field;
+    const sortOrder = event.order !== 1 ? 'asc' : 'desc';
+    this.paginationInfo().OrderBy = sortField ? `${sortField} ${sortOrder}` : null;
+  }
+
+  onSearchQuestion() {
+    if (this.searchQuery.trim() === "") {
+      if (this.paginationInfo().Name === "")
+        return;
+    }
+    this.paginationInfo().Name = this.searchQuery === "" ? null : this.searchQuery;
+    this.paginationInfo().PageNumber = 1;
+    this.loadDifficultyProfiles();
   }
 }

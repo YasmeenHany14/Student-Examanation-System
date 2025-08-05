@@ -2,24 +2,35 @@
 using Domain.Enums;
 using Domain.Models;
 using Domain.Repositories;
+using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Shared.ResourceParameters;
 
 namespace Infrastructure.Persistence.Repositories;
 
 public class ExamRepository(
-    DataContext context
+    DataContext context,
+    IPropertyMappingService propertyMappingService
     ) : BaseRepository<GeneratedExam>(context), IExamRepository 
 {
     public async Task<PagedList<GetAllExamsInfraDto>> GetAllExamHistoryAsync(
         ExamHistoryResourceParameters resourceParameters, string? userId)
     {
         var collection = context.GeneratedExams.AsQueryable().AsNoTracking();
+        var examMappingDictionary = propertyMappingService.GetPropertyMapping<GetAllExamsInfraDto, GeneratedExam>();
+        
         if (!string.IsNullOrEmpty(userId))
             collection = collection.Where(e => e.Student.UserId == userId);
+
+        if (!string.IsNullOrWhiteSpace(resourceParameters.SearchQuery))
+        {
+            var studentName = resourceParameters.SearchQuery.Trim().ToLower();
+            collection = collection.Where(e => (e.Student.User.FirstName + " " + e.Student.User.LastName).ToLower().Contains(studentName));
+        }
         
-        var projectedCollection = collection
-            // .Where(e => e.ExamStatus != ExamStatus.Running)
+        var sortedList = collection.ApplySort(resourceParameters.OrderBy, examMappingDictionary);
+        
+        var projectedCollection = sortedList
             .Select(e => new GetAllExamsInfraDto
             {
                 Id = e.Id,

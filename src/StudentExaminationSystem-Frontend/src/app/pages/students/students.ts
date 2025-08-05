@@ -1,7 +1,6 @@
 import { Component, OnInit, signal, inject } from '@angular/core';
 import { StudentService } from '../../core/services/student.service';
 import { GetStudentListModel } from '../../core/models/student.model';
-import { BaseResourceParametersModel } from '../../core/models/resource-parameters/base-resource-parameters.model';
 import {TableLazyLoadEvent, TableModule} from 'primeng/table';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { ButtonModule } from 'primeng/button';
@@ -44,6 +43,7 @@ export class Students implements OnInit {
   loading = signal(false);
   isError = signal(false);
   totalRecords = signal(0);
+  private isLoadingData = false; // Add this flag
 
   paginationInfo = signal<StudentResourceParametersModel>({
     PageNumber: 1,
@@ -65,6 +65,7 @@ export class Students implements OnInit {
 
   loadStudents() {
     this.loading.set(true);
+    this.isLoadingData = true; // Set the flag to true when starting to load data
 
     this.studentService.getAllPaged<StudentResourceParametersModel ,GetStudentListModel>(this.paginationInfo()).subscribe({
       next: (result) => {
@@ -72,10 +73,12 @@ export class Students implements OnInit {
         this.totalRecords.set(result.pagination.totalCount);
         this.loading.set(false);
         this.isError.set(false);
+        this.isLoadingData = false;
       },
       error: (_err) => {
         this.loading.set(false);
         this.isError.set(true);
+        this.isLoadingData = false;
       }
     });
   }
@@ -83,12 +86,24 @@ export class Students implements OnInit {
   customSort(event: SortEvent) {
     const sortField = event.field;
     const sortOrder = event.order !== 1 ? 'asc' : 'desc';
-    this.paginationInfo().OrderBy = sortField ? `${sortField} ${sortOrder}` : null;
+    const currentPagination = this.paginationInfo();
+    this.paginationInfo.set({
+      ...currentPagination,
+      OrderBy: sortField ? `${sortField} ${sortOrder}` : null
+    });
   }
 
   onLazyLoad(event: TableLazyLoadEvent) {
-    this.paginationInfo().PageNumber = event ? event.first! / event.rows! + 1 : 1;
-    this.paginationInfo().PageSize = event ? event.rows! : this.paginationInfo().PageSize;
+    if (this.isLoadingData) {
+      return;
+    }
+
+    const currentPagination = this.paginationInfo();
+    this.paginationInfo.set({
+      ...currentPagination,
+      PageNumber: event ? event.first! / event.rows! + 1 : 1,
+      PageSize: event ? event.rows! : currentPagination.PageSize
+    });
     this.loadStudents();
   }
 
@@ -115,8 +130,12 @@ export class Students implements OnInit {
       if (this.paginationInfo().Name === "")
         return;
     }
-    this.paginationInfo().Name = this.searchQuery === "" ? null : this.searchQuery;
-    this.paginationInfo().PageNumber = 1;
+    const currentPagination = this.paginationInfo();
+    this.paginationInfo.set({
+      ...currentPagination,
+      Name: this.searchQuery === "" ? null : this.searchQuery,
+      PageNumber: 1
+    });
     this.loadStudents();
   }
 

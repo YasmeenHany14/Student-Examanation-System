@@ -1,4 +1,5 @@
 import {BaseResourceParametersModel} from './base-resource-parameters.model';
-export interface StudentResourceParametersModel extends BaseResourceParametersModel {
+
+export interface DifficultyProfileResourceParametersModel extends BaseResourceParametersModel {
   Name: string | null;
 }
