@@ -8,7 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { Spinner } from '../../shared/components/spinner/spinner';
 import { NoDataToShowComponent } from '../../shared/components/no-data-to-show/no-data-to-show';
-import { BaseResourceParametersModel } from '../../core/models/common/base-resource-parameters.model';
+import { BaseResourceParametersModel } from '../../core/models/resource-parameters/base-resource-parameters.model';
 import { DatePipe } from '@angular/common';
 import {ExamStatus} from '../../core/enums/exam-status';
 

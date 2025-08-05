@@ -38,7 +38,8 @@ public static class DependencyInjection
         services.AddScoped<IExamRepository, ExamRepository>();
         services.AddScoped<INotificationsRepository, NotificationsRepository>();
         services.AddScoped<IPublisher, Publisher>();
-        
+
+        services.AddTransient<IPropertyMappingService, PropertyMappingService>();
         services.AddSingleton<IUserContext, UserContext>();
         services.AddIdentity<User, IdentityRole>(options =>
             {

@@ -8,7 +8,7 @@ import { NotificationService } from '../../core/services/notification.service';
 import { NotificationModel } from '../../core/models/notification.model';
 import { ListboxModule } from 'primeng/listbox';
 import { PopoverModule } from 'primeng/popover';
-import {BaseResourceParametersModel} from '../../core/models/common/base-resource-parameters.model';
+import {BaseResourceParametersModel} from '../../core/models/resource-parameters/base-resource-parameters.model';
 import { ScrollerModule } from 'primeng/scroller';
 
 

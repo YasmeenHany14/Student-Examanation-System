@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { PagedListModel } from '../models/common/paged-list.model';
-import { BaseResourceParametersModel } from '../models/common/base-resource-parameters.model';
+import { BaseResourceParametersModel } from '../models/resource-parameters/base-resource-parameters.model';
 import { BaseRequestModel, BaseResponseModel } from '../models/common/base-model';
 import {BaseService} from './base.service';
 
@@ -11,7 +11,15 @@ import {BaseService} from './base.service';
 export abstract class BaseCrudService extends BaseService {
   getAllPaged<TResourceParams extends BaseResourceParametersModel,
     TResponseModel extends BaseResponseModel>(queryParams: TResourceParams) {
-    const params = new HttpParams({ fromObject: { ...queryParams } });
+    const filteredParams: { [key: string]: string | number | boolean | readonly (string | number | boolean)[] } = {};
+    Object.keys(queryParams).forEach(key => {
+      const value = queryParams[key];
+      if (value !== null) {
+        filteredParams[key] = value;
+      }
+    });
+
+    const params = new HttpParams({ fromObject: filteredParams });
     return this.httpClient.get<PagedListModel<TResponseModel>>(this.API_URL + this.route, { params });
   }
 

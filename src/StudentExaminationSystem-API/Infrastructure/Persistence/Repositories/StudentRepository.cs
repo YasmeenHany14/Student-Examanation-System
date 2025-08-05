@@ -1,12 +1,13 @@
 ﻿using Domain.DTOs;
 using Domain.Models;
 using Domain.Repositories;
+using Infrastructure.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Shared.ResourceParameters;
 
 namespace Infrastructure.Persistence.Repositories;
 
-public class StudentRepository(DataContext context)
+public class StudentRepository(DataContext context, IPropertyMappingService propertyMappingService)
     : BaseRepository<Student>(context), IStudentRepository
 {
     public async Task<PagedList<GetStudentByIdInfraDto>> GetAllAsync(StudentResourceParameters resourceParameters)
@@ -19,26 +20,25 @@ public class StudentRepository(DataContext context)
             var searchQuery = resourceParameters.SearchQuery.Trim().ToLower();
             collection = collection.Where(o => o.User.FirstName.ToLower().Contains(searchQuery));
         }
-        if (!string.IsNullOrWhiteSpace(resourceParameters.FirstName))
+        
+        if (!string.IsNullOrWhiteSpace(resourceParameters.Name))
         {
-            var firstName = resourceParameters.FirstName.Trim().ToLower();
-            collection = collection.Where(o => o.User.FirstName.ToLower().Equals(firstName));
+            var name = resourceParameters.Name.Trim().ToLower();
+            collection = collection.Where(s =>
+                (s.User.FirstName + " " + s.User.LastName).ToLower().Contains(name));
         }
         
-        if (!string.IsNullOrWhiteSpace(resourceParameters.LastName))
-        {
-            var lastName = resourceParameters.LastName.Trim().ToLower();
-            collection = collection.Where(o => o.User.LastName.ToLower().Equals(lastName));
-        }
+        var studentMappingDictionary = propertyMappingService
+            .GetPropertyMapping<GetStudentByIdInfraDto, Student>();
+        var sortedList = collection.ApplySort(resourceParameters.OrderBy, studentMappingDictionary);
              
-        var projectedCollection = collection.Select(s => new GetStudentByIdInfraDto
+        var projectedCollection = sortedList.Select(s => new GetStudentByIdInfraDto
         {
             Id = s.UserId,
             Name = s.User.FirstName + " " + s.User.LastName,
             IsActive = s.User.IsActive
         });
-        
-        // var sortedList = sortHelper.ApplySort(collection, resourceParameters.OrderBy);
+
         var createdCollection = await CreateAsync(projectedCollection, resourceParameters.PageNumber, resourceParameters.PageSize);
         return createdCollection;
     }

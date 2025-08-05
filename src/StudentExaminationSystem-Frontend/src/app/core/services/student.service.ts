@@ -1,7 +1,7 @@
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {inject, Injectable} from '@angular/core';
 import {routes} from '../constants/routs';
-import {BaseResourceParametersModel} from '../models/common/base-resource-parameters.model';
+import {BaseResourceParametersModel} from '../models/resource-parameters/base-resource-parameters.model';
 import {PagedListModel} from '../models/common/paged-list.model';
 import {GetStudentListModel} from '../models/student.model';
 import {DropdownModel} from '../models/common/common.model';

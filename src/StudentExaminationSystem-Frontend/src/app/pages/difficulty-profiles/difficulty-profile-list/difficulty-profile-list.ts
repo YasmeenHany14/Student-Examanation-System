@@ -5,7 +5,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { Spinner } from '../../../shared/components/spinner/spinner';
 import { NoDataToShowComponent } from '../../../shared/components/no-data-to-show/no-data-to-show';
-import { BaseResourceParametersModel } from '../../../core/models/common/base-resource-parameters.model';
+import { BaseResourceParametersModel } from '../../../core/models/resource-parameters/base-resource-parameters.model';
 
 @Component({
   selector: 'app-difficulty-profile-list',

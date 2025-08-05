@@ -4,7 +4,7 @@ import {routes} from '../constants/routs';
 import {TokenService} from './token.service';
 import {PagedListModel} from '../models/common/paged-list.model';
 import {NotificationModel} from '../models/notification.model';
-import {BaseResourceParametersModel} from '../models/common/base-resource-parameters.model';
+import {BaseResourceParametersModel} from '../models/resource-parameters/base-resource-parameters.model';
 
 @Injectable({
   providedIn: 'root'
