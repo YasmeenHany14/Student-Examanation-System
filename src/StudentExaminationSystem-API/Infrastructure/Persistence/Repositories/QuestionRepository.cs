@@ -129,7 +129,7 @@ public class QuestionRepository(
         {
             var questions = dbQuestions
                 .FirstOrDefault(g => (int)g.Key == difficulty.Key)?
-                .Questions ?? new List<LoadExamQuestionInfraDto>();
+                .Questions.Take(difficulty.Value);
             allQuestions.AddRange(questions);
         }
         return allQuestions.OrderBy(_ => Guid.NewGuid()).ToList();

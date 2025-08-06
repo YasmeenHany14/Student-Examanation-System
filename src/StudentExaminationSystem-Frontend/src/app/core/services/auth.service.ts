@@ -54,6 +54,25 @@ export class AuthService {
       );
   }
 
+  async getTokenForSignalR(): Promise<string | null> {
+    const token = this.tokenService.getToken();
+    if (!token) {
+      return null;
+    }
+    if (this.tokenService.isAccessTokenExpired()) {
+      this.refreshToken().subscribe({
+        next: (response) => {
+          return response.accessToken;
+        },
+        error: (error) => {
+          console.error('Error refreshing token:', error);
+          this.logout();
+        }
+      })
+    }
+    return token;
+  }
+
   getUserId(): string | null {
     return this.currentUserSubject.value?.id || null;
   }

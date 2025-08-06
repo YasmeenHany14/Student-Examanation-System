@@ -48,9 +48,10 @@ export class Notifications implements OnInit {
 
   private async connectToNotificationService(): Promise<void> {
     try {
-      await this.notificationService.connect();
-
+      await this.notificationService.connect().then(async () => {
         await this.notificationService.loadNotificationsFromServer(this.resourceParams);
+      });
+
 
       const notifications = await this.notificationService.loadNotificationsFromServer(this.resourceParams);
       this.notifications.set(notifications.data);

@@ -1,11 +1,13 @@
 ﻿using Application.Contracts;
 using Domain.UserContext;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Shared.ResourceParameters;
 using WebApi.Services;
 
 namespace WebApi.Hubs;
 
+[Authorize(AuthenticationSchemes = "Bearer")]
 public class NotificationsHub(IUserContext userContext,
     INotificationsService notificationsService,
     IConnectionHelper connectionHelper
@@ -24,6 +26,7 @@ public class NotificationsHub(IUserContext userContext,
             else
                 connectionHelper.AddUserToGroup(_studentGroupName, userContext.UserId.ToString());
         }
+
         await base.OnConnectedAsync();
     }
     
