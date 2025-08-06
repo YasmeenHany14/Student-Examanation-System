@@ -121,7 +121,7 @@ export class QuestionForm implements OnChanges, OnInit {
   canRemoveChoice(): boolean {
     return this.questionChoicesArray.length > 2;
   }
-
+l
   onSubmit() {
     if (!validateFormBeforeSubmit(this.messageService, this.form)) {
       return;
