@@ -118,14 +118,18 @@ public class QuestionRepository(
                 }).ToList()
             })
             .GroupBy(q => q.Difficulty)
-            // .Take(maxQuestionsCount)
+            .Select(g => new
+            {
+                Key = g.Key,
+                Questions = g.Take(maxQuestionsCount).ToList()
+            })
             .ToListAsync();
         
         foreach (var difficulty in generateExamConfig.QuestionCounts)
         {
             var questions = dbQuestions
                 .FirstOrDefault(g => (int)g.Key == difficulty.Key)?
-                .Take(difficulty.Value) ?? new List<LoadExamQuestionInfraDto>();
+                .Questions ?? new List<LoadExamQuestionInfraDto>();
             allQuestions.AddRange(questions);
         }
         return allQuestions.OrderBy(_ => Guid.NewGuid()).ToList();
