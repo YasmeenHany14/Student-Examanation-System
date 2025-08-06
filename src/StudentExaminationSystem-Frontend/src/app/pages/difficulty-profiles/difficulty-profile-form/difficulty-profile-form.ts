@@ -72,7 +72,6 @@ export class DifficultyProfileForm implements OnChanges {
     } else {
       this.createDifficultyProfile();
     }
-    this.saved.emit();
   }
 
   private updateDifficultyProfile() {
@@ -118,6 +117,7 @@ export class DifficultyProfileForm implements OnChanges {
       next: (result) => {
         showSuccessMessage(this.messageService, this.mode === 'edit' ? 'update' : 'create', 'Difficulty Profile');
         subscription.unsubscribe();
+        this.saved.emit();
         this.onClose();
       }
     });
