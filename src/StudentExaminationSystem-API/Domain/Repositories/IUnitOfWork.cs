@@ -13,6 +13,7 @@ public interface IUnitOfWork
     IDifficultyProfileRepository DifficultyProfileRepository { get; set; }
     IExamRepository ExamHistoryRepository { get; set; }
     INotificationsRepository NotificationsRepository { get; }
+    IUserExtensionsRepository UserExtensionsRepository { get; }
     Task<int> SaveChangesAsync();
     IBaseRepository<TEntity> GetRepository<TEntity>()
         where TEntity : BaseEntity;

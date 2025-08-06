@@ -4,6 +4,7 @@ using Application.Common.ErrorAndResults;
 using Application.Contracts;
 using Application.DTOs;
 using Application.Mappers;
+using AutoMapper;
 using Domain.Models;
 using Domain.Repositories;
 using Shared.ResourceParameters;
@@ -12,7 +13,8 @@ namespace Application.Services;
 
 public class NotificationsService(
     IUnitOfWork unitOfWork,
-    INotificationsHub notificationsHub
+    INotificationsHub notificationsHub,
+    IMapper mapper
     ): INotificationsService
 {
     public async Task<Result<bool>> NotifyExamStartedAsync(int subjectId, string userId)
@@ -21,13 +23,15 @@ public class NotificationsService(
         var student = await unitOfWork.StudentRepository.GetByIdAsync(userId);
         var message = string.Format(Notifications.ExamStarted, student?.Name, subject?.Name);
         
-        await unitOfWork.NotificationsRepository.CreateAdminNotificationAsync(message);
-        var result = await unitOfWork.SaveChangesAsync();
+        var adminNotificationsResult = await GenerateAdminNotificationsAsync(message);
+        if (!adminNotificationsResult.IsSuccess)
+            return Result<bool>.Failure(adminNotificationsResult.Error);
         
-        if (result <= 0)
-            return Result<bool>.Failure(CommonErrors.InternalServerError());
+        var notificationsDict = new Dictionary<string, NotificationAppDto>();
+        foreach (var notification in adminNotificationsResult.Value)
+            notificationsDict.Add(notification.UserId, mapper.Map<NotificationAppDto>(notification));
         
-        await notificationsHub.SendExamStartedAsync(message);
+        await notificationsHub.SendAdminNotificationsAsync(notificationsDict);
         return Result<bool>.Success(true);
     }
 
@@ -40,29 +44,28 @@ public class NotificationsService(
             student!.User!.FirstName + " " + student.User.LastName);
         
         var studentNotification = new Notification(student.UserId, studentMsg);
+        var adminNotificationsResult = await GenerateAdminNotificationsAsync(adminMsg);
+        if (!adminNotificationsResult.IsSuccess)
+            return Result<bool>.Failure(adminNotificationsResult.Error);
         
-        await unitOfWork.NotificationsRepository.AddAsync(studentNotification);
-        await unitOfWork.NotificationsRepository.CreateAdminNotificationAsync(adminMsg);
-        
-        var result = await unitOfWork.SaveChangesAsync();
-        if (result <= 0)
-            return Result<bool>.Failure(CommonErrors.InternalServerError());
+        var notificationsDict = new Dictionary<string, NotificationAppDto>();
+        foreach (var notification in adminNotificationsResult.Value)
+            notificationsDict.Add(notification.UserId, mapper.Map<NotificationAppDto>(notification));
 
-        await notificationsHub.SendEvaluationCompletedAsync(student.UserId, studentMsg);
-        await notificationsHub.SendEvaluationCompletedAsync("Admins", adminMsg);
+        await notificationsHub.SendEvaluationCompletedAsync(student.UserId, mapper.Map<NotificationAppDto>(studentNotification));
+        await notificationsHub.SendAdminNotificationsAsync(notificationsDict);
         
         return Result<bool>.Success(true);
     }
     
     public async Task<Result<bool>> MarkAllNotificationsAsReadAsync(string userId)
     {
-        var paginationInfo = new NotificationsResourceParameters();
-        var notifications = await unitOfWork.NotificationsRepository.GetNotificationsByUserIdAsync(paginationInfo, userId);
+        var notifications = await unitOfWork.NotificationsRepository.GetAllUnreadNotificationsAsync(userId);
         
-        foreach (var n in notifications.Data)
+        foreach (var n in notifications)
             n.IsRead = true;
         
-        unitOfWork.NotificationsRepository.UpdateRangeAsync(notifications.Data);
+        unitOfWork.NotificationsRepository.UpdateRangeAsync(notifications);
         
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)
@@ -71,12 +74,28 @@ public class NotificationsService(
         return Result<bool>.Success(true);
     }
 
-    public async Task<Result<PagedList<NotificationAppDto>>> GetAllNotificationsAsync(BaseResourceParameters resourceParameters, string userId)
+    public async Task<Result<PagedList<NotificationAppDto>>> GetAllNotificationsAsync(
+        BaseResourceParameters resourceParameters, string userId)
     {
-        var notifications = await unitOfWork.NotificationsRepository.GetNotificationsByUserIdAsync(resourceParameters, userId);
-        var notificationDtos = notifications.Data.Select(n => n.MapTo<Notification, NotificationAppDto>());
+        var notifications =
+            await unitOfWork.NotificationsRepository.GetNotificationsByUserIdAsync(resourceParameters, userId);
+        var notificationDtos = mapper.Map<IEnumerable<NotificationAppDto>>(notifications.Data);
 
         return Result<PagedList<NotificationAppDto>>.Success(
             new PagedList<NotificationAppDto>(notifications.Pagination, notificationDtos.ToList()));
+    }
+
+    private async Task<Result<IEnumerable<Notification>>> GenerateAdminNotificationsAsync(string message)
+    {
+        var adminIds = (await unitOfWork.UserExtensionsRepository.GetAdminUserIdsAsync()).ToList();
+        var notifications = new List<Notification>();
+        foreach(var adminId in adminIds)
+            notifications.Add(new Notification(adminId, message));
+        
+        notifications = (await unitOfWork.NotificationsRepository.CreateRangeAsync(notifications)).ToList();
+        var result = await unitOfWork.SaveChangesAsync();
+        if (result <= 0)
+            return Result<IEnumerable<Notification>>.Failure(CommonErrors.InternalServerError());
+        return Result<IEnumerable<Notification>>.Success(notifications);
     }
 }

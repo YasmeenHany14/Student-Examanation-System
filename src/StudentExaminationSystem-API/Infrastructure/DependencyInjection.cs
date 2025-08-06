@@ -1,5 +1,5 @@
-﻿using Domain.Interfaces;
-using Domain.Models;
+﻿using Domain.Models;
+using Domain.RabitMQInterfaces;
 using Domain.Repositories;
 using Domain.UserContext;
 using Infrastructure.Helpers;
@@ -37,6 +37,7 @@ public static class DependencyInjection
         services.AddScoped<IDifficultyProfileRepository, DifficultyProfileRepository>();
         services.AddScoped<IExamRepository, ExamRepository>();
         services.AddScoped<INotificationsRepository, NotificationsRepository>();
+        services.AddScoped<IUserExtensionsRepository, UserExtensionsRepository>();
         services.AddScoped<IPublisher, Publisher>();
 
         services.AddTransient<IPropertyMappingService, PropertyMappingService>();

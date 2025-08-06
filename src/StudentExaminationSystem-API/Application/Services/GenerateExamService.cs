@@ -1,4 +1,5 @@
 ﻿using Application.Common.Constants.Errors;
+using Application.Common.Constants.ValidationMessages;
 using Application.Common.ErrorAndResults;
 using Application.Contracts;
 using Application.DTOs.ExamDtos;
@@ -26,7 +27,7 @@ public class GenerateExamService(
         var examConfig = await unitOfWork.SubjectExamConfigRepository.GetConfigToGenerateExamAsync(subjectId);
         // calculate number of questions based on exam config
         if (examConfig is null)
-            return Result<LoadExamAppDto>.Failure(CommonErrors.InternalServerError());
+            return Result<LoadExamAppDto>.Failure(CommonErrors.ValidationError(ExamValidationErrorMessages.ExamConfigDoesNotExist));
 
         var generateConfig = new GenerateExamConfigDto(
             examConfig.TotalQuestions,
@@ -37,11 +38,11 @@ public class GenerateExamService(
                 { (int)Difficulty.Hard, examConfig.DifficultyProfile.HardPercentage }
             });
         
-        var questions = await unitOfWork.QuestionRepository.GetQuestionsForExamAsync(generateConfig);
+        var questions = await unitOfWork.QuestionRepository.GetQuestionsForExamAsync(subjectId, generateConfig);
         var loadExamQuestionInfraDtos = questions.ToList();
         
         if (!loadExamQuestionInfraDtos.Any() || loadExamQuestionInfraDtos.Count() < examConfig.TotalQuestions)
-            return Result<LoadExamAppDto>.Failure(CommonErrors.InternalServerError());
+            return Result<LoadExamAppDto>.Failure(CommonErrors.ValidationError(ExamValidationErrorMessages.NotEnoughQuestions));
 
         var examQuestions = mapper.Map<List<LoadExamQuestionAppDto>>(loadExamQuestionInfraDtos);
         var examEntryResult = await SaveExamEntryToDatabaseAsync(

@@ -95,13 +95,14 @@ public class QuestionRepository(
     // }
 
     public async Task<IEnumerable<LoadExamQuestionInfraDto>> GetQuestionsForExamAsync(
+        int subjectId,
         GenerateExamConfigDto generateExamConfig)
     {
         var allQuestions = new List<LoadExamQuestionInfraDto>();
         var maxQuestionsCount = generateExamConfig.QuestionCounts.Values.Max();
         var dbQuestions = await context.Questions
             .AsNoTracking()
-            .Where(q => q.IsActive)
+            .Where(q => q.IsActive && q.SubjectId == subjectId)
             .Include(q => q.Choices)
             .OrderBy(q => Guid.NewGuid()) // Random ordering
             .Select(q => new LoadExamQuestionInfraDto

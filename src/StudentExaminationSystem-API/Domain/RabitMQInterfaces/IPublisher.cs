@@ -1,6 +1,6 @@
 ﻿using Domain.DTOs.ExamDtos;
 
-namespace Domain.Interfaces;
+namespace Domain.RabitMQInterfaces;
 
 public interface IPublisher
 {

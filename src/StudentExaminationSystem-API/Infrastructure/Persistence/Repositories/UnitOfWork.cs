@@ -14,6 +14,7 @@ public class UnitOfWork : IUnitOfWork
     public ISubjectExamConfigRepository SubjectExamConfigRepository { get; set; }
     public IDifficultyProfileRepository DifficultyProfileRepository { get; set; }
     public IExamRepository ExamHistoryRepository { get; set; }
+    public IUserExtensionsRepository UserExtensionsRepository { get; set; }
 
     public INotificationsRepository NotificationsRepository { get; }
 
@@ -32,7 +33,8 @@ public class UnitOfWork : IUnitOfWork
         ISubjectExamConfigRepository subjectExamConfigRepository,
         IDifficultyProfileRepository difficultyProfileRepository,
         IExamRepository examHistoryRepository,
-        INotificationsRepository notificationRepository)
+        INotificationsRepository notificationRepository,
+        IUserExtensionsRepository userExtensionsRepository)
     {
         _dbContext = dbContext;
         RefreshTokenRepository = refreshTokenRepository;
@@ -44,6 +46,7 @@ public class UnitOfWork : IUnitOfWork
         DifficultyProfileRepository = difficultyProfileRepository;
         ExamHistoryRepository = examHistoryRepository;
         NotificationsRepository = notificationRepository;
+        UserExtensionsRepository = userExtensionsRepository;
     }
     
     public IBaseRepository<TEntity> GetRepository<TEntity>() where TEntity : BaseEntity

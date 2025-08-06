@@ -63,10 +63,13 @@ export class TakeExam implements OnInit {
 
   selectSubject(subject: DropdownModel) {
     this.selectedSubject.set(subject);
+    console.log(this.selectedSubject());
+
+    console.log(!this.selectedSubject());
   }
 
   startExam() {
-    if (!this.selectedSubject) {
+    if (!this.selectedSubject()) {
       this.error.set('Please select a subject to start the exam.');
       return;
     }

@@ -8,7 +8,9 @@ public interface INotificationsRepository : IBaseRepository<Notification>
     Task<PagedList<Notification>> GetNotificationsByUserIdAsync(BaseResourceParameters resourceParameters,
         string userId);
     
-    Task CreateAdminNotificationAsync(string message);
+    Task<IEnumerable<Notification>> GetAllUnreadNotificationsAsync(string userId);
+    
+    Task<IEnumerable<Notification>> CreateRangeAsync(IEnumerable<Notification> notifications);
     Task<Notification?> GetByIdAsync(int id);
     void UpdateRangeAsync(IEnumerable<Notification> notifications);
 }

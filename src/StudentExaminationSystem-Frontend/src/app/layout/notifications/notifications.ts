@@ -56,8 +56,8 @@ export class Notifications implements OnInit {
       this.notifications.set(notifications.data);
       this.updateUnreadCount();
 
-      this.notificationService.receiveNotification((message: string) => {
-        this.addNotification(message);
+      this.notificationService.receiveNotification((notification: NotificationModel) => {
+        this.addNotification(notification);
       });
 
       this.notificationService.handleDisconnects();
@@ -77,16 +77,8 @@ export class Notifications implements OnInit {
     });
   }
 
-  private addNotification(message: string): void {
-    const newNotification: NotificationModel = {
-      id: this.generateId(),
-      message,
-      createdAt: new Date(),
-      isRead: false,
-      type: 'info'
-    };
-
-    this.notifications.update(notifications => [newNotification, ...notifications]);
+  private addNotification(notification: NotificationModel): void {
+    this.notifications.update(notifications => [notification, ...notifications]);
     this.updateUnreadCount();
   }
 
@@ -102,10 +94,6 @@ export class Notifications implements OnInit {
   private updateUnreadCount(): void {
     const unread = this.notifications().filter(n => !n.isRead).length;
     this.unreadCount.set(unread);
-  }
-
-  private generateId(): string {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
 
   formatTimestamp(timestamp: Date | string): string {

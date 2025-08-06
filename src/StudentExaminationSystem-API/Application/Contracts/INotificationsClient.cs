@@ -5,7 +5,7 @@ namespace Application.Contracts;
 
 public interface INotificationsClient
 {
-    Task ReceiveNotification(string message);
+    Task ReceiveNotification(NotificationAppDto notification);
     Task NotificationsLoaded(PagedList<NotificationAppDto> notifications);
     Task MarkNotificationAsReadAsync();
 }

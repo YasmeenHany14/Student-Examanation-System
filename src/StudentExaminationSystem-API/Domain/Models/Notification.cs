@@ -2,8 +2,9 @@
 
 namespace Domain.Models;
 
-public class Notification : PrimaryKeyBaseEntity, IAuditDateOnly
+public class Notification : BaseEntity, IAuditDateOnly
 {
+    public string Id { get; set; }
     public string UserId { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
     public bool IsRead { get; set; } = false;
@@ -12,6 +13,7 @@ public class Notification : PrimaryKeyBaseEntity, IAuditDateOnly
 
     public Notification(string userId, string message)
     {
+        Id = Guid.NewGuid().ToString();
         UserId = userId;
         Message = message;
     }

@@ -35,6 +35,7 @@ public static class DependencyInjection
             , PaginationHelper<GetExamHistoryAppDto, ExamHistoryResourceParameters>>();
         services.AddSignalR();
         services.AddScoped<INotificationsHub, NotificationsHubWrapper>();
+        services.AddSingleton<IConnectionHelper, ConnectionHelper>();
         
         services.AddProblemDetails();
         services.AddScoped<CanAccessResourceFilter>();

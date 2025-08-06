@@ -1,7 +1,7 @@
 export interface NotificationModel {
   id: string;
   message: string;
-  createdAt: Date;
+  timeStamp: Date;
   isRead: boolean;
   type?: 'info' | 'warning' | 'error' | 'success';
 }

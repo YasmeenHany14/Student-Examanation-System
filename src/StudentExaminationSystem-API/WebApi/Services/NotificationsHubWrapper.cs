@@ -1,31 +1,30 @@
 using Application.Contracts;
+using Application.DTOs;
 using Microsoft.AspNetCore.SignalR;
 using WebApi.Hubs;
 
 namespace WebApi.Services;
 
-public class NotificationsHubWrapper(IHubContext<NotificationsHub, INotificationsClient> hubContext) : INotificationsHub
+public class NotificationsHubWrapper(
+    IHubContext<NotificationsHub, 
+    INotificationsClient> hubContext,
+    IConnectionHelper connectionHelper
+    ) : INotificationsHub
 {
-    public async Task SendEvaluationCompletedAsync(string userId, string message)
+    private readonly string _adminGroupName = "Admins";
+    private readonly string _studentGroupName = "Students";
+    public async Task SendEvaluationCompletedAsync(string userId, NotificationAppDto notification)
     {
-        if (string.IsNullOrWhiteSpace(message))
-            return;
-
-        Console.WriteLine("Sending evaluation completed notification to user: " + userId);
-        
-        if (userId == "Admins")
-            await hubContext.Clients.Group("Admins").ReceiveNotification(message);
-        else
-            await hubContext.Clients.User(userId).ReceiveNotification(message);
+        if (connectionHelper.CheckUserInGroup(_studentGroupName, userId))
+            await hubContext.Clients.User(userId).ReceiveNotification(notification);
     }
-
-    public async Task SendExamStartedAsync(string message)
+    
+    public async Task SendAdminNotificationsAsync(Dictionary<string, NotificationAppDto> notifications)
     {
-        if (string.IsNullOrWhiteSpace(message))
-            return;
-        
-        Console.WriteLine("Sending exam started notification: " + message);
-
-        await hubContext.Clients.Group("Admins").ReceiveNotification(message);
+        foreach (var notification in notifications)
+        {
+            if (connectionHelper.CheckUserInGroup(_adminGroupName, notification.Key))
+                await hubContext.Clients.User(notification.Key).ReceiveNotification(notification.Value);
+        }
     }
 }

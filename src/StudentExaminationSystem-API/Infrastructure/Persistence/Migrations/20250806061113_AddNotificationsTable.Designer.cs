@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250731184807_AddNotificationTable")]
-    partial class AddNotificationTable
+    [Migration("20250806061113_AddNotificationsTable")]
+    partial class AddNotificationsTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -176,11 +176,8 @@ namespace Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Domain.Models.Notification", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");

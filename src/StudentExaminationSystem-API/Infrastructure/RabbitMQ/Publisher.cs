@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using Domain.DTOs.ExamDtos;
-using Domain.Interfaces;
+using Domain.RabitMQInterfaces;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;

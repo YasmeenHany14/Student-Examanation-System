@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using System.Collections;
+using Domain.Models;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,16 +25,18 @@ public class NotificationsRepository(
             resourceParameters.PageSize);
     }
 
-    public async Task CreateAdminNotificationAsync(string message)
+    public async Task<IEnumerable<Notification>> GetAllUnreadNotificationsAsync(string userId)
     {
-        var adminUserIds = await (from userRole in context.Set<IdentityUserRole<string>>()
-                                  join role in context.Set<IdentityRole>() on userRole.RoleId equals role.Id
-                                  where role.Name == "Admin"
-                                  select userRole.UserId).ToListAsync();
+        return await context.Set<Notification>()
+            .Where(n => n.UserId == userId && !n.IsRead)
+            .ToListAsync();
+    }
 
-        var notifications = adminUserIds.Select(userId => new Notification(userId, message)).ToList();
-        await context.Set<Notification>().AddRangeAsync(notifications);
-
+    public async Task<IEnumerable<Notification>> CreateRangeAsync(IEnumerable<Notification> notifications)
+    {
+        var enumerable = notifications.ToList();
+        await context.Set<Notification>().AddRangeAsync(enumerable);
+        return enumerable;
     }
 
     public async Task<Notification?> GetByIdAsync(int id)

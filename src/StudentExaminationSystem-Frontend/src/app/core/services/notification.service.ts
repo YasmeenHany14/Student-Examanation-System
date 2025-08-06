@@ -41,11 +41,11 @@ export class NotificationService {
     }
   }
 
-  receiveNotification(callback: (message: string) => void): void {
+  receiveNotification(callback: (notification: NotificationModel) => void): void {
     if (this.hubConnection) {
-      this.hubConnection.on('ReceiveNotification', (message: string) => {
-        console.log('Notification received: ', message);
-        callback(message);
+      this.hubConnection.on('ReceiveNotification', (notification: NotificationModel) => {
+        console.log('Notification received: ', notification.message);
+        callback(notification);
       });
     } else {
       console.error('Hub connection is not established.');

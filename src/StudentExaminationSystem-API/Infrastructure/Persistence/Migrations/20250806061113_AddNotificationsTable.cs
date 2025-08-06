@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddNotificationTable : Migration
+    public partial class AddNotificationsTable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,8 +15,7 @@ namespace Infrastructure.Persistence.Migrations
                 name: "Notifications",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     IsRead = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
