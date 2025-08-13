@@ -16,6 +16,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
 import {DropdownModel} from '../../../core/models/common/common.model';
 import {DifficultyProfileService} from '../../../core/services/difficulty-profile.service';
+import {GetSubjectModel} from '../../../core/models/subject.model';
 
 
 @Component({

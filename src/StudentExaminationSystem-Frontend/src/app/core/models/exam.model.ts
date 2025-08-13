@@ -9,6 +9,7 @@ export interface ExamListModel extends BaseResponseModel {
   finalScore: number;
   examStatus: number;
   passed: boolean;
+  subjectId: number;
 }
 
 export interface GetExamHistoryModel extends BaseResponseModel {

@@ -62,8 +62,6 @@ export class SubjectForm implements OnInit {
     } else {
       this.createSubject();
     }
-    this.saved.emit();
-
   }
 
   private updateSubject() {
@@ -91,6 +89,7 @@ export class SubjectForm implements OnInit {
       next: (result) => {
         showSuccessMessage(this.messageService, this.mode === 'edit' ? 'update' : 'create', 'Subject');
         subscription.unsubscribe();
+        this.saved.emit();
         this.onClose();
       }
     });

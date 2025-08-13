@@ -1,32 +1,58 @@
-<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-    <img src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" class="mx-auto h-10 w-auto" />
-    <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign in to your account</h2>
-  </div>
-
-  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 w-full sm:w-56">
-      <div class="flex flex-col gap-1">
-        <p-iftalabel>
-          <input pInputText psize="large" type="email" id="email" placeholder="Email"
-                 formControlName="email" [invalid]="isInvalid(loginForm, 'email')" [appAutoFormError]="loginForm" />
-          <label for="email">Email</label>
-        </p-iftalabel>
+<div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center px-4 py-8">
+  <div class="w-full max-w-md">
+    <!-- Header Section -->
+    <div class="text-center mb-8">
+      <div class="mx-auto w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center mb-6 shadow-lg">
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>
       </div>
+      <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
+      <p class="text-gray-600">Sign in to your examination account</p>
+    </div>
 
-      <div class="flex flex-col gap-1">
-        <p-ifta-label>
-          <input pInputText psize="large" type="password" id="password" placeholder="Password"
-                 formControlName="password" [invalid]="isInvalid(loginForm, 'password')" [appAutoFormError]="loginForm" />
-          <label for="password">Password</label>
-        </p-ifta-label>
+    <!-- Login Form Card -->
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Email Field -->
+        <div class="space-y-2">
+          <p-iftalabel>
+            <input pInputText psize="large" type="email" id="email" placeholder="Enter your email"
+                   formControlName="email" [invalid]="isInvalid(loginForm, 'email')" [appAutoFormError]="loginForm"
+                   class="w-full border rounded-lg focus:ring-1 transition-colors duration-200" />
+            <label for="email" class="text-gray-700">Email Address</label>
+          </p-iftalabel>
+        </div>
+
+        <!-- Password Field -->
+        <div class="space-y-2">
+          <p-ifta-label>
+            <input pInputText psize="large" type="password" id="password" placeholder="Enter your password"
+                   formControlName="password" [invalid]="isInvalid(loginForm, 'password')" [appAutoFormError]="loginForm"
+                   class="w-full border rounded-lg focus:ring-1 transition-colors duration-200" />
+            <label for="password" class="text-gray-700">Password</label>
+          </p-ifta-label>
+        </div>
+
+        <!-- Login Button -->
+        <button pButton severity="primary" type="submit" [disabled]="loginForm.invalid"
+                class="w-full disabled:cursor-not-allowed text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+          <span pButtonLabel>Sign In</span>
+        </button>
+      </form>
+
+      <!-- Register Link -->
+      <div class="mt-6 text-center">
+        <p class="text-gray-600">
+          Don't have an account?
+          <a routerLink="/account/register" class="text-indigo-600 hover:text-indigo-500 font-semibold ml-1 transition-colors duration-200">Create one here</a>
+        </p>
       </div>
-      <button pButton severity="secondary" type="submit" [disabled]="loginForm.invalid" ><span pButtonLabel>Login</span></button>
-    </form>
+    </div>
 
-    <p class="mt-3 text-center">
-      Not a member?
-      <a routerLink="/account/register" class="text-primary hover:underline cursor-pointer">Register</a>
-    </p>
+    <!-- Footer -->
+    <div class="text-center mt-8">
+      <p class="text-sm text-gray-500">© 2025 Student Examination System. All rights reserved.</p>
+    </div>
   </div>
 </div>

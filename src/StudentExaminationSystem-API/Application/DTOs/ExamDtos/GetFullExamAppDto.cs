@@ -6,5 +6,6 @@ public class GetFullExamAppDto : AppBaseDto
 {
     public int FinalScore { get; set; }
     public bool Passed { get; set; }
+    public string SubjectName { get; set; }
     public IEnumerable<GetQuestionHistoryAppDto> Questions { get; set; }
 }

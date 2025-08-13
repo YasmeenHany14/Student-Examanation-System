@@ -73,6 +73,9 @@
             @if(exam.examStatus === 3) {
               <button pButton type="button" icon="pi pi-eye" class="p-button-rounded p-button-info p-button-sm" (click)="onViewDetails(exam)" title="View Details"></button>
             }
+            @if (exam.examStatus === 1 && !isAdmin()) {
+              <button pButton type="button" icon="pi pi-play" class="p-button-rounded p-button-success p-button-sm" (click)="goToRunningExam(exam.subjectId)" title="Go to Exam"></button>
+            }
           </td>
       </tr>
     </ng-template>

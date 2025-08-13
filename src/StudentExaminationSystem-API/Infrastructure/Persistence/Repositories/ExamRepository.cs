@@ -34,12 +34,13 @@ public class ExamRepository(
             .Select(e => new GetAllExamsInfraDto
             {
                 Id = e.Id,
+                SubjectId = e.SubjectId,
                 StudentName = e.Student.User.FirstName + " " + e.Student.User.LastName,
                 SubjectName = e.Subject.Name,
                 ExamStatus = (int)e.ExamStatus,
                 ExamDate = e.CreatedAt,
                 FinalScore = e.StudentScore,
-                Passed = e.StudentScore >= e.ExamTotalScore/2,
+                Passed = e.StudentScore >= (int)Math.Ceiling(e.ExamTotalScore/2.0),
             });
         return await CreateAsync(
             projectedCollection,
@@ -73,6 +74,7 @@ public class ExamRepository(
                 e.StudentScore,
                 UserId = e.Student.UserId,
                 ExamStatus = e.ExamStatus,
+                SubjectName = e.Subject.Name,
             })
             .FirstOrDefaultAsync();
 
@@ -110,6 +112,7 @@ public class ExamRepository(
         return new GetFullExamInfraDto
         {
             userId = examInfo.UserId,
+            SubjectName = examInfo.SubjectName,
             FinalScore = examInfo.StudentScore,
             ExamStatus = examInfo.ExamStatus,
             Questions = questionHistory

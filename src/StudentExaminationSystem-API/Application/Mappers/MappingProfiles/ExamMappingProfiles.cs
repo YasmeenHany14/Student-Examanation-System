@@ -25,7 +25,7 @@ public class ExamMappingProfiles : Profile
         // GetFullExamInfraDto to GetFullExamAppDto
         CreateMap<GetFullExamInfraDto, GetFullExamAppDto>()
             .ForMember(dest => dest.FinalScore, opt => opt.MapFrom(src => src.FinalScore))
-            .ForMember(dest => dest.Passed, opt => opt.MapFrom(src => src.FinalScore >= (src.Questions.Count() / 2)))
+            .ForMember(dest => dest.Passed, opt => opt.MapFrom(src => src.FinalScore >= (int)Math.Ceiling(src.Questions.Count() / 2.0)))
             .ForMember(dest => dest.Questions, opt => opt.MapFrom(src => src.Questions));
 
         // GetFullExamInfraDto to LoadExamAppDto (requires custom mapping with ExamCacheEntryDto)

@@ -21,6 +21,13 @@ public class SubjectService(
     IMapper mapper
     ) : ISubjectService
 {
+    private static readonly SubjectExamConfig DefaultSubjectConfig = new SubjectExamConfig
+    {
+        TotalQuestions = 10,
+        DurationMinutes = 30,
+        DifficultyProfileId = 1
+    };
+    
     public async Task<Result<PagedList<GetSubjectAppDto>>> GetAllAsync(SubjectResourceParameters resourceParameters)
     {
         var subjects = await unitOfWork.SubjectRepository.GetAllAsync(resourceParameters);
@@ -48,6 +55,8 @@ public class SubjectService(
             return Result<int>.Failure(validationResult.Error);
 
         var subject = mapper.Map<Subject>(subjectAppDto);
+        subject.SubjectExamConfig = DefaultSubjectConfig;
+        
         await unitOfWork.SubjectRepository.AddAsync(subject);
         var result = await unitOfWork.SaveChangesAsync();
         if (result <= 0)

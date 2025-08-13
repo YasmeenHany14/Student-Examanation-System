@@ -17,6 +17,7 @@ import {InputIcon} from 'primeng/inputicon';
 import {InputText} from 'primeng/inputtext';
 import {Toolbar} from 'primeng/toolbar';
 import {SortEvent} from 'primeng/api';
+import {routes} from '../../core/constants/routs';
 
 @Component({
   selector: 'app-exam-list',
@@ -132,5 +133,11 @@ export class ExamList implements OnInit {
     this.paginationInfo().searchQuery = this.searchQuery === "" ? null : this.searchQuery;
     this.paginationInfo().PageNumber = 1;
     this.loadExams();
+  }
+
+  goToRunningExam(subjectId: number) {
+    if (subjectId) {
+      this.router.navigate([routes.home + routes.exam + "/" + subjectId]);
+    }
   }
 }
