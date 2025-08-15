@@ -19,7 +19,7 @@ A full-stack Student Examination System built with ASP.NET Core (.NET) for the b
 - **Real-time**: SignalR (for notifications)
 
 ## Video Demo
-[![Watch the video](https://raw.githubusercontent.com/YasmeenHany14/Student-Examanation-System/main/assets/DemoThumbnail.png)](https://raw.githubusercontent.com/YasmeenHany14/Student-Examanation-System/main/assets/Demo.mp4)
+https://github.com/user-attachments/assets/d29ca0f3-a85e-49d1-954d-8459c1461e3a
 
 ## Project Structure
 
