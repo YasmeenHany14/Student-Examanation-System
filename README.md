@@ -1,6 +1,6 @@
 # Student Examination System
 
-A full-stack Student Examination System built with ASP.NET Core (.NET) for the backend and Angular for the frontend. This platform enables educational institutions to efficiently manage and monitor student examinations, automate exam generation, and streamline evaluation processes.
+A full-stack Student Examination System built with ASP.NET Core (.NET) for the backend and Angular for the frontend. This website enables educational institutions to efficiently manage and monitor student examinations, automate exam generation, and streamline evaluation processes.
 
 ## Features
 
@@ -17,6 +17,9 @@ A full-stack Student Examination System built with ASP.NET Core (.NET) for the b
 - **Frontend**: Angular, Tailwind CSS
 - **Messaging**: RabbitMQ (for microservice communication)
 - **Real-time**: SignalR (for notifications)
+
+## Video Demo
+[![Watch the video](https://raw.githubusercontent.com/YasmeenHany14/Student-Examanation-System/main/assets/DemoThumbnail.png)](https://raw.githubusercontent.com/YasmeenHany14/Student-Examanation-System/main/assets/Demo.mp4)
 
 ## Project Structure
 
